@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proicere AI Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f4f6f9; --bg2:#ffffff; --bg3:#f0f3f7; --bg4:#e2e7ef;
+  --border:rgba(10,25,60,0.08); --border2:rgba(10,25,60,0.15);
+  --text:#0a1a3c; --text2:#4a5872; --text3:#8c97ad;
+  --blue:#1a6bff; --blue2:#0f52d4; --blue-bg:rgba(26,107,255,0.08);
+  --navy:#0a1a3c; --navy2:#122050; --navy3:#1a2d6b;
+  --navy-border:rgba(255,255,255,0.1);
+  --navy-text:rgba(255,255,255,0.9); --navy-text2:rgba(255,255,255,0.5); --navy-text3:rgba(255,255,255,0.28);
+  --teal:#0d9e75; --teal-bg:rgba(13,158,117,0.09);
+  --amber:#d4820a; --amber-bg:rgba(212,130,10,0.09);
+  --red:#d63b3b; --red-bg:rgba(214,59,59,0.09);
+  --green:#2a9e4f; --green-bg:rgba(42,158,79,0.09);
+  --purple:#6b4fd4; --purple-bg:rgba(107,79,212,0.09);
+  --coral:#d44f3f; --coral-bg:rgba(212,79,63,0.09);
+  --gold:#b8860b; --silver:#6b7f96; --bronze:#8b5a2b;
+  --r:10px; --rs:6px;
+  --font:'DM Sans',sans-serif; --mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;font-size:14px;line-height:1.6;}
+
+/* PASSWORD GATE */
+#gate{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:0;}
+#gate.hidden{display:none;}
+.gate-card{background:#ffffff;border:1px solid rgba(10,25,60,0.15);border-radius:14px;padding:36px 40px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:20px;}
+.gate-logo{display:flex;flex-direction:column;gap:4px;margin-bottom:4px;}
+.gate-eyebrow{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);}
+.gate-title{font-size:22px;font-weight:600;color:var(--text);line-height:1.2;}
+.gate-title span{color:var(--blue);}
+.gate-sub{font-size:13px;color:var(--text2);line-height:1.55;margin-top:-8px;}
+.gate-field{display:flex;flex-direction:column;gap:6px;}
+.gate-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);}
+.gate-input{background:#f0f3f7;border:1px solid rgba(10,25,60,0.15);border-radius:8px;color:var(--text);font-family:var(--font);font-size:14px;padding:10px 14px;outline:none;transition:border-color .15s;width:100%;}
+.gate-input:focus{border-color:var(--blue);}
+.gate-input::placeholder{color:var(--text3);}
+.gate-btn{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:500;font-family:var(--font);cursor:pointer;transition:background .15s;width:100%;}
+.gate-btn:hover{background:var(--blue2);}
+.gate-error{font-size:12.5px;color:var(--red);text-align:center;min-height:18px;transition:opacity .2s;}
+.gate-error.hidden{opacity:0;}
+.gate-footer{font-size:11.5px;color:var(--text3);text-align:center;margin-top:-8px;}
+#app{display:none;width:100%;}
+
+/* SIDEBAR */
+.sidebar{width:228px;min-width:228px;background:var(--navy);border-right:none;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;padding:20px 0;}
+.s-logo{padding:0 16px 18px;border-bottom:1px solid var(--navy-border);margin-bottom:10px;}
+.s-eyebrow{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--navy-text3);margin-bottom:3px;}
+.s-title{font-size:15px;font-weight:600;color:var(--navy-text);line-height:1.2;}
+.s-title span{color:#5b9bff;}
+.s-cycle{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+.s-cycle-txt{font-size:11px;color:var(--navy-text2);font-family:var(--mono);}
+.cycle-bar{width:60px;height:3px;background:rgba(255,255,255,0.15);border-radius:2px;overflow:hidden;}
+.cycle-fill{height:100%;background:var(--blue);border-radius:2px;width:33%;}
+.s-sec{padding:4px 8px;}
+.s-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--navy-text3);padding:6px 8px 5px;}
+.nav{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--rs);cursor:pointer;color:var(--navy-text2);font-size:13px;transition:all .15s;user-select:none;}
+.nav:hover{background:var(--navy2);color:var(--navy-text);}
+.nav.active{background:rgba(255,255,255,0.12);color:#ffffff;}
+.nav-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.nav-count{margin-left:auto;background:rgba(255,255,255,0.1);color:var(--navy-text2);font-size:10px;font-family:var(--mono);padding:1px 6px;border-radius:4px;}
+.nav-live{margin-left:auto;background:rgba(13,158,117,0.25);color:#4dd9a8;font-size:10px;font-family:var(--mono);padding:1px 6px;border-radius:4px;}
+.s-divider{border:none;border-top:1px solid var(--navy-border);margin:8px 16px;}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;overflow-x:hidden;}
+.page{display:none;padding:40px 48px 80px;max-width:1000px;}
+.page.active{display:block;}
+.crumb{font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:12px;}
+.ptitle{font-size:30px;font-weight:600;line-height:1.15;margin-bottom:8px;}
+.ptitle .hl{color:var(--blue);}
+.psub{font-size:14.5px;color:var(--text2);max-width:560px;line-height:1.6;}
+.sec-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.divider{border:none;border-top:1px solid var(--border);margin:30px 0;}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-family:var(--mono);}
+.b-blue{background:var(--blue-bg);color:var(--blue);}
+.b-teal{background:var(--teal-bg);color:var(--teal);}
+.b-amber{background:var(--amber-bg);color:var(--amber);}
+.b-purple{background:var(--purple-bg);color:var(--purple);}
+.b-coral{background:var(--coral-bg);color:var(--coral);}
+.b-green{background:var(--green-bg);color:var(--green);}
+.b-red{background:var(--red-bg);color:var(--red);}
+
+/* STAT CARDS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0 30px;}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;}
+.stat-n{font-size:26px;font-weight:600;font-family:var(--mono);line-height:1;margin-bottom:4px;}
+.stat-l{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;}
+
+/* MISSION */
+.mission-card{background:linear-gradient(135deg,rgba(26,107,255,.05),rgba(107,79,212,.05));border:1px solid rgba(26,107,255,.2);border-radius:var(--r);padding:20px 24px;margin:24px 0;position:relative;overflow:hidden;}
+.mission-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--blue),#6b4fd4);border-radius:2px 0 0 2px;}
+.mission-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:6px;}
+.mission-text{font-size:14px;color:var(--text);line-height:1.65;font-style:italic;}
+
+/* MODULES */
+.module-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px;}
+.module-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:all .15s;}
+.module-card:hover{border-color:var(--border2);background:var(--bg3);transform:translateY(-1px);}
+.module-num{font-size:10px;font-family:var(--mono);color:var(--text3);margin-bottom:6px;}
+.module-name{font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:4px;}
+.module-desc{font-size:12px;color:var(--text2);line-height:1.5;}
+.progress-bar{height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;margin-top:8px;}
+.progress-fill{height:100%;border-radius:2px;background:var(--blue);}
+
+/* PODS */
+.pod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.pod-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:all .15s;}
+.pod-card:hover{border-color:var(--border2);background:var(--bg3);}
+.pod-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.pod-name{font-size:13.5px;font-weight:500;}
+.pod-tag{font-size:10px;padding:2px 8px;border-radius:4px;font-family:var(--mono);}
+.tag-active{background:var(--teal-bg);color:var(--teal);}
+.tag-pending{background:var(--amber-bg);color:var(--amber);}
+.member-list{display:flex;flex-direction:column;gap:5px;}
+.member-item{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text2);}
+.avatar{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;flex-shrink:0;}
+.role-tag{font-size:10px;padding:1px 6px;border-radius:3px;margin-left:auto;font-family:var(--mono);}
+
+/* HOME HIGHLIGHTS STRIP */
+.highlights{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:10px;}
+.hl-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;display:flex;align-items:flex-start;gap:12px;}
+.hl-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.hl-body{}
+.hl-title{font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.hl-sub{font-size:11.5px;color:var(--text2);line-height:1.45;}
+.hl-meta{font-size:10.5px;color:var(--text3);margin-top:4px;font-family:var(--mono);}
+
+/* LOG FORM */
+.log-form{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:28px;}
+.log-form-header{background:#f4f6f9;padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.log-form-title{font-size:13px;font-weight:500;}
+.week-selector{display:flex;gap:6px;}
+.week-btn{font-size:11px;padding:3px 10px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-family:var(--font);transition:all .1s;}
+.week-btn.active,.week-btn:hover{background:var(--blue-bg);border-color:rgba(79,142,247,.3);color:var(--blue);}
+.log-body{padding:20px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group.full{grid-column:1/-1;}
+.form-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;}
+.form-input,.form-textarea,.form-select{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-family:var(--font);font-size:13.5px;padding:8px 12px;transition:border-color .15s;outline:none;resize:vertical;}
+.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--blue);}
+.form-textarea{min-height:80px;}
+.form-select option{background:var(--bg3);}
+.rating-row{display:flex;gap:6px;}
+.rating-btn{flex:1;padding:8px;border:1px solid var(--border2);border-radius:var(--rs);background:transparent;color:var(--text2);cursor:pointer;font-size:12px;font-family:var(--font);transition:all .1s;text-align:center;}
+.rating-btn:hover,.rating-btn.selected{border-color:var(--blue);background:var(--blue-bg);color:var(--blue);}
+.submit-btn{background:var(--blue);color:#fff;border:none;border-radius:var(--rs);padding:10px 20px;font-size:13.5px;font-weight:500;font-family:var(--font);cursor:pointer;transition:background .15s;margin-top:8px;}
+.submit-btn:hover{background:var(--blue2);}
+.log-entries{display:flex;flex-direction:column;gap:10px;}
+.log-entry{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;}
+.entry-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:11.5px;color:var(--text3);font-family:var(--mono);}
+.entry-text{font-size:13.5px;color:var(--text2);line-height:1.55;}
+
+/* USE CASE TABLE */
+.filter-bar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.filter-pill{padding:5px 14px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-family:var(--font);cursor:pointer;transition:all .15s;}
+.filter-pill:hover{border-color:var(--blue);color:var(--blue);}
+.filter-pill.active{background:var(--blue-bg);border-color:rgba(79,142,247,.4);color:var(--blue);}
+.search-input{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-family:var(--font);font-size:13px;padding:7px 14px;width:220px;outline:none;margin-left:auto;}
+.search-input:focus{border-color:var(--blue);}
+.search-input::placeholder{color:var(--text3);}
+.uc-table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;}
+.uc-table th{text-align:left;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:8px 12px;border-bottom:1px solid var(--border);}
+.uc-table td{padding:11px 12px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;}
+.uc-table tr:hover td{background:var(--bg2);}
+.uc-table tr:last-child td{border-bottom:none;}
+.uc-name{font-weight:500;color:var(--text);font-size:13.5px;}
+.uc-detail{font-size:11.5px;color:var(--text3);margin-top:2px;}
+.time-saved{font-family:var(--mono);font-size:12px;color:var(--teal);}
+
+/* PROMPT PACK */
+.prompt-grid{display:flex;flex-direction:column;gap:14px;}
+.prompt-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.prompt-header{padding:12px 16px;display:flex;align-items:center;gap:10px;background:#f4f6f9;border-bottom:1px solid var(--border);cursor:pointer;}
+.prompt-title{font-size:13.5px;font-weight:500;flex:1;}
+.prompt-expand{color:var(--text3);font-size:12px;transition:transform .2s;}
+.prompt-card.open .prompt-expand{transform:rotate(180deg);}
+.prompt-body{display:none;padding:16px;}
+.prompt-card.open .prompt-body{display:block;}
+.prompt-meta{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+.prompt-code{background:#f8fafc;border:1px solid rgba(10,25,60,0.12);border-radius:var(--rs);padding:14px 16px;font-family:var(--mono);font-size:12.5px;color:var(--text);line-height:1.65;white-space:pre-wrap;position:relative;margin-bottom:10px;}
+.copy-btn{position:absolute;top:8px;right:8px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text2);font-size:11px;padding:3px 8px;cursor:pointer;font-family:var(--font);transition:all .1s;}
+.copy-btn:hover{background:var(--blue-bg);color:var(--blue);}
+.prompt-note{font-size:12.5px;color:var(--text3);line-height:1.5;font-style:italic;}
+.add-prompt-card{background:transparent;border:1px dashed var(--border2);border-radius:var(--r);padding:16px;text-align:center;cursor:pointer;color:var(--text3);font-size:13px;transition:all .15s;}
+.add-prompt-card:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-bg);}
+
+/* LEADERBOARD */
+.tab-row{display:flex;gap:4px;margin-bottom:20px;}
+.tab{padding:5px 14px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-family:var(--font);cursor:pointer;transition:all .15s;}
+.tab:hover{border-color:var(--blue);color:var(--blue);}
+.tab.active{background:var(--blue-bg);border-color:rgba(79,142,247,.4);color:var(--blue);}
+.lb-table{width:100%;border-collapse:collapse;}
+.lb-table th{text-align:left;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:8px 12px;border-bottom:1px solid var(--border);}
+.lb-table td{padding:11px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.lb-table tr:last-child td{border-bottom:none;}
+.lb-table tr:hover td{background:var(--bg2);}
+.rank{font-size:13px;font-weight:600;font-family:var(--mono);width:36px;}
+.rank-1{color:var(--gold);} .rank-2{color:var(--silver);} .rank-3{color:var(--bronze);} .rank-n{color:var(--text3);}
+.bar-wrap{width:100px;}
+.bar-bg{height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;transition:width .6s ease;}
+.medal-row{display:flex;gap:4px;}
+.medal{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;}
+.m-gold{background:rgba(245,200,66,.15);color:var(--gold);}
+.m-silver{background:rgba(168,180,192,.15);color:var(--silver);}
+.m-bronze{background:rgba(196,132,90,.15);color:var(--bronze);}
+.delta{font-size:11px;font-family:var(--mono);}
+.delta.up{color:var(--teal);} .delta.same{color:var(--text3);}
+
+/* CHALLENGES */
+.chal-grid{display:flex;flex-direction:column;gap:14px;}
+.chal-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.chal-top{padding:14px 18px;border-bottom:1px solid var(--border);background:#ffffff;display:flex;align-items:flex-start;gap:14px;}
+.chal-fort{font-size:11px;font-family:var(--mono);color:var(--text3);padding-top:2px;flex-shrink:0;width:70px;}
+.chal-info{flex:1;}
+.chal-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px;}
+.chal-desc{font-size:13px;color:var(--text2);line-height:1.55;}
+.chal-foot{padding:11px 18px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.expand-btn{background:transparent;border:none;color:var(--text3);font-size:12px;cursor:pointer;padding:5px;transition:transform .2s;font-family:var(--font);}
+.chal-card.open .expand-btn{transform:rotate(180deg);}
+.chal-body{display:none;padding:16px 18px;}
+.chal-card.open .chal-body{display:block;}
+.prog-track{width:80px;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:2px;background:var(--blue);}
+.prog-txt{font-size:11px;font-family:var(--mono);color:var(--text3);}
+.tip-box{background:var(--amber-bg);border:1px solid rgba(245,166,35,.2);border-radius:var(--rs);padding:10px 14px;font-size:12.5px;color:var(--text2);margin-top:8px;}
+.tip-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);margin-bottom:3px;}
+.sub-area{margin-top:12px;display:flex;gap:8px;align-items:center;}
+.sub-input{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-family:var(--font);font-size:13px;padding:7px 12px;flex:1;outline:none;}
+.sub-input:focus{border-color:var(--blue);}
+.sub-input::placeholder{color:var(--text3);}
+.sub-btn{background:var(--blue);color:#fff;border:none;border-radius:var(--rs);padding:8px 16px;font-size:13px;font-weight:500;font-family:var(--font);cursor:pointer;}
+.sub-btn:hover{background:var(--blue2);}
+
+/* HONOURS */
+.honour-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:28px;}
+.honour-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px;}
+.honour-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
+.honour-award{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:6px;}
+.honour-winner{font-size:15px;font-weight:500;color:var(--text);margin-bottom:3px;}
+.honour-sub{font-size:12.5px;color:var(--text2);line-height:1.5;}
+.honour-pod{font-size:11px;font-family:var(--mono);color:var(--text3);margin-top:6px;}
+
+/* SHOWCASE */
+.showcase-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;gap:16px;align-items:flex-start;margin-bottom:12px;}
+.showcase-month{font-size:10px;font-family:var(--mono);color:var(--text3);writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);min-width:20px;}
+.showcase-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px;}
+.showcase-desc{font-size:12.5px;color:var(--text2);line-height:1.55;margin-bottom:8px;}
+.showcase-meta{display:flex;gap:6px;flex-wrap:wrap;}
+
+/* SCORING GRID */
+.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.score-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;}
+.score-pts{font-size:20px;font-weight:600;font-family:var(--mono);line-height:1;margin-bottom:4px;}
+.score-desc{font-size:12px;color:var(--text2);}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--navy);border:1px solid var(--navy2);border-radius:var(--r);padding:11px 16px;font-size:13px;color:#ffffff;opacity:0;transform:translateY(6px);transition:all .2s;pointer-events:none;z-index:999;}
+.toast.show{opacity:1;transform:translateY(0);}
+.t-dot{color:var(--teal);margin-right:6px;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#c8d0dc;border-radius:3px;}
+/* ── TUTORIALS ── */
+.tut-layout{display:grid;grid-template-columns:1fr 280px;gap:20px;align-items:start;}
+.video-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px;}
+.video-frame{width:100%;aspect-ratio:16/9;background:var(--navy);display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;}
+.v-play-btn{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.v-play-btn:hover{background:rgba(26,107,255,0.7);border-color:var(--blue);}
+.v-play-icon{width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:16px solid white;margin-left:3px;}
+.v-label{position:absolute;top:10px;left:10px;background:rgba(10,25,60,0.75);color:#fff;font-size:10px;font-weight:600;padding:3px 8px;border-radius:4px;letter-spacing:.06em;text-transform:uppercase;font-family:var(--mono);}
+.v-duration{position:absolute;bottom:10px;right:10px;background:rgba(10,25,60,0.75);color:#fff;font-size:11px;padding:2px 7px;border-radius:4px;font-family:var(--mono);}
+.video-info{padding:14px 16px;}
+.video-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:6px;}
+.video-meta-row{display:flex;align-items:center;gap:10px;font-size:11.5px;color:var(--text3);flex-wrap:wrap;}
+.ch-section{padding:0 16px 14px;}
+.ch-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px;}
+.ch-list{display:flex;flex-direction:column;gap:2px;}
+.ch-item{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:var(--rs);cursor:pointer;transition:background .15s;}
+.ch-item:hover{background:var(--bg3);}
+.ch-item.active{background:var(--blue-bg);}
+.ch-time{font-size:11px;font-family:var(--mono);color:var(--blue);min-width:34px;}
+.ch-text{font-size:12.5px;color:var(--text2);}
+.ch-item.active .ch-text{color:var(--text);font-weight:500;}
+.feedback-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;}
+.star-row{display:flex;gap:6px;margin-bottom:14px;}
+.star-btn{background:transparent;border:none;cursor:pointer;font-size:22px;color:var(--bg4);transition:color .1s;padding:2px;line-height:1;}
+.star-btn.lit{color:var(--amber);}
+.fb-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-family:var(--font);font-size:13px;padding:10px 12px;resize:vertical;min-height:80px;outline:none;transition:border-color .15s;margin-bottom:10px;}
+.fb-input:focus{border-color:var(--blue);}
+.fb-input::placeholder{color:var(--text3);}
+.fb-submit{background:var(--blue);color:#fff;border:none;border-radius:var(--rs);padding:9px 18px;font-size:13px;font-weight:500;font-family:var(--font);cursor:pointer;width:100%;transition:background .15s;}
+.fb-submit:hover{background:var(--blue2);}
+.fb-success{background:var(--teal-bg);border:1px solid rgba(13,158,117,.25);border-radius:var(--rs);padding:10px 12px;font-size:12.5px;color:var(--teal);display:none;margin-bottom:10px;}
+.comment-list{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
+.comment{background:var(--bg3);border-radius:var(--rs);padding:10px 12px;}
+.comment-hdr{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.c-name{font-size:12px;font-weight:500;color:var(--text);}
+.c-time{font-size:11px;color:var(--text3);margin-left:auto;}
+.c-stars{font-size:12px;color:var(--amber);}
+.c-creator{font-size:11px;color:var(--teal);background:var(--teal-bg);padding:1px 7px;border-radius:3px;}
+.c-text{font-size:12.5px;color:var(--text2);line-height:1.55;}
+.playlist-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.pl-header{padding:12px 14px;border-bottom:1px solid var(--border);}
+.pl-hdr-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);}
+.pl-item{display:flex;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;}
+.pl-item:last-child{border-bottom:none;}
+.pl-item:hover{background:var(--bg3);}
+.pl-item.pl-active{background:var(--blue-bg);}
+.pl-thumb{width:52px;height:32px;border-radius:4px;background:var(--navy);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pl-tri{width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid rgba(255,255,255,0.65);margin-left:2px;}
+.pl-info{flex:1;min-width:0;}
+.pl-title{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pl-meta{font-size:11px;color:var(--text3);}
+.pl-dur{font-size:11px;font-family:var(--mono);color:var(--text3);flex-shrink:0;}
+.pl-done{width:16px;height:16px;border-radius:50%;background:var(--teal-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pl-done-tick{width:7px;height:7px;border-right:1.5px solid var(--teal);border-bottom:1.5px solid var(--teal);transform:rotate(45deg) translate(-1px,-2px);}
+.pl-empty{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;}
+.tut-prog-wrap{margin-top:6px;}
+
+</style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-logo">
+      <div class="gate-eyebrow">Proicere Digital</div>
+      <div class="gate-title">AI <span>Academy</span></div>
+    </div>
+    <p class="gate-sub">Internal access only. Enter the team passphrase to continue.</p>
+    <div class="gate-field">
+      <label class="gate-label">Passphrase</label>
+      <input class="gate-input" id="gate-pw" type="password" placeholder="Enter passphrase..." onkeydown="if(event.key==='Enter')unlock()">
+    </div>
+    <div class="gate-error hidden" id="gate-err">Incorrect passphrase — try again</div>
+    <button class="gate-btn" onclick="unlock()">Enter Academy</button>
+    <div class="gate-footer">Contact your Academy Lead if you don't have the passphrase.</div>
+  </div>
+</div>
+
+<!-- APP (hidden until unlocked) -->
+<div id="app">
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<nav class="sidebar">
+  <div class="s-logo">
+    <div class="s-eyebrow">Proicere Digital</div>
+    <div class="s-title">AI <span>Academy</span></div>
+    <div class="s-cycle">
+      <span class="s-cycle-txt">Cycle 1 · Month 1</span>
+      <div class="cycle-bar"><div class="cycle-fill"></div></div>
+    </div>
+  </div>
+
+  <div class="s-sec">
+    <div class="s-label">Overview</div>
+    <div class="nav active" onclick="go('home',this)">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 6.5L8 2l6 4.5V14H10v-3H6v3H2V6.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+      Home
+    </div>
+    <div class="nav" onclick="go('modules',this)">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
+      The curriculum
+      <span class="nav-count">6</span>
+    </div>
+  </div>
+
+  <div class="s-sec">
+    <div class="s-label">My pod</div>
+    <div class="nav" onclick="go('log',this)">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 2h10v12H3z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M5.5 5.5h5M5.5 8h5M5.5 10.5h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Learning log
+    </div>
+    <div class="nav" onclick="go('usecases',this)">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Use case library
+      <span class="nav-count">7</span>
+    </div>
+    <div class="nav" onclick="go('prompts',this)">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 3h12v8H9l-3 2v-2H2V3z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+      Prompt packs
+      <span class="nav-count">4</span>
+    </div>
+  </div>
+
+  <div class="s-sec">
+    <div class="s-label">Pods</div>
+    <div class="nav" onclick="go('leaderboard',this)">
+      <div class="nav-dot" style="background:var(--gold)"></div>
+      Leaderboard
+    </div>
+    <div class="nav" onclick="go('pod1',this)">
+      <div class="nav-dot" style="background:var(--teal)"></div>
+      Pod 1 — Controls
+      <span class="nav-count">3</span>
+    </div>
+    <div class="nav" onclick="go('pod1',this)">
+      <div class="nav-dot" style="background:var(--teal)"></div>
+      Pod 2 — IM & Digital
+      <span class="nav-count">3</span>
+    </div>
+    <div class="nav" onclick="go('pod1',this)">
+      <div class="nav-dot" style="background:var(--amber)"></div>
+      Pod 3 — Reporting
+      <span class="nav-count">3</span>
+    </div>
+    <div class="nav" onclick="go('pod1',this)">
+      <div class="nav-dot" style="background:var(--amber)"></div>
+      Pod 4 — Delivery
+      <span class="nav-count">3</span>
+    </div>
+  </div>
+
+  <div class="s-sec">
+    <div class="s-label">Recognition</div>
+    <div class="nav" onclick="go('challenges',this)">
+      <div class="nav-dot" style="background:var(--blue)"></div>
+      AI challenges
+      <span class="nav-live">live</span>
+    </div>
+    <div class="nav" onclick="go('honours',this)">
+      <div class="nav-dot" style="background:var(--purple)"></div>
+      Wall of fame
+    </div>
+    <div class="nav" onclick="go('showcase',this)">
+      <div class="nav-dot" style="background:var(--teal)"></div>
+      Success stories
+    </div>
+  </div>
+
+  <div class="s-sec">
+    <div class="s-label">Watch &amp; learn</div>
+    <div class="nav" onclick="go('tutorials',this)">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M6 5.5l5 2.5-5 2.5V5.5z" fill="currentColor"/></svg>
+      Tutorial videos
+      <span class="nav-count">6</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<main class="main">
+
+<!-- ── HOME ── -->
+<div class="page active" id="page-home">
+  <div class="crumb">proicere-academy / home</div>
+  <h1 class="ptitle">Proicere <span class="hl">AI Academy</span></h1>
+  <p class="psub">Your internal hub for AI learning, shared knowledge, and practical toolkits — built by the team, for the team.</p>
+
+  <div class="mission-card">
+    <div class="mission-label">Our mission</div>
+    <div class="mission-text">"To make every person in the business confident, capable, and responsible in using AI to improve delivery, decision-making, and innovation."</div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat"><div class="stat-n" style="color:var(--blue)">4</div><div class="stat-l">Active pods</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--teal)">19</div><div class="stat-l">Use cases logged</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--purple)">11</div><div class="stat-l">Prompts shared</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--amber)">47 hrs</div><div class="stat-l">Time saved est.</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sec-label">This fortnight — active challenge</div>
+  <div style="background:var(--bg2);border:1px solid rgba(26,107,255,.22);border-radius:var(--r);padding:16px 20px;margin-bottom:28px;display:flex;align-items:flex-start;gap:16px;">
+    <div style="background:rgba(26,107,255,.1);border-radius:8px;padding:8px;flex-shrink:0;">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2l1.6 3.2 3.4.5-2.5 2.4.6 3.4L9 9.8l-3.1 1.7.6-3.4L4 5.7l3.4-.5L9 2z" stroke="#4f8ef7" stroke-width="1.2" stroke-linejoin="round"/></svg>
+    </div>
+    <div style="flex:1;">
+      <div style="font-size:11px;font-family:var(--mono);color:var(--blue);margin-bottom:4px">FORTNIGHT 2 · ACTIVE NOW</div>
+      <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px">Find one task you did manually last week that AI could have helped with</div>
+      <div style="font-size:12.5px;color:var(--text2);margin-bottom:10px">Think back to last week. Pick one task that took longer than it should — writing, formatting, summarising. Try it with AI and report back.</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:120px;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;"><div style="width:50%;height:100%;background:var(--blue);border-radius:2px;"></div></div>
+        <span style="font-size:11px;font-family:var(--mono);color:var(--text3)">6/12 submitted</span>
+        <button onclick="go('challenges',document.querySelector('.nav[onclick*=challenges]'))" style="background:transparent;border:1px solid var(--border2);border-radius:var(--rs);color:var(--text2);font-size:12px;font-family:var(--font);padding:4px 12px;cursor:pointer;margin-left:auto;">View challenge →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-label">This month — honours spotlight</div>
+  <div class="highlights" style="margin-bottom:28px">
+    <div class="hl-card">
+      <div class="hl-icon" style="background:rgba(245,200,66,.1);">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.5l1.5 3 3.5.5-2.5 2.5.6 3.5L8 9.5l-3.1 1.5.6-3.5L3 5l3.5-.5L8 1.5z" fill="#f5c842"/></svg>
+      </div>
+      <div class="hl-body">
+        <div class="hl-title">Use case of the month</div>
+        <div class="hl-sub">Risk register from transcript — 1.5 hrs saved per use</div>
+        <div class="hl-meta">Jamie M. · Pod 1 — Controls</div>
+      </div>
+    </div>
+    <div class="hl-card">
+      <div class="hl-icon" style="background:var(--green-bg);">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 9l3.5 3.5L13 5" stroke="#5ac87a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="hl-body">
+        <div class="hl-title">Most improved</div>
+        <div class="hl-sub">Confidence level 1 → 3 in three weeks</div>
+        <div class="hl-meta">Tom K. · Pod 1 — Controls</div>
+      </div>
+    </div>
+    <div class="hl-card">
+      <div class="hl-icon" style="background:var(--purple-bg);">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 3h12v7H8.5l-2.5 2V10H2V3z" stroke="#9b7ff4" stroke-width="1.3" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="hl-body">
+        <div class="hl-title">Best prompt</div>
+        <div class="hl-sub">Power BI DAX generator — used by 4 people across 2 pods</div>
+        <div class="hl-meta">Alex M. · Pod 2 — IM & Digital</div>
+      </div>
+    </div>
+    <div class="hl-card">
+      <div class="hl-icon" style="background:var(--coral-bg);">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v5M8 11v1" stroke="#f07060" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="8" r="6" stroke="#f07060" stroke-width="1.3"/></svg>
+      </div>
+      <div class="hl-body">
+        <div class="hl-title">Bravest experiment</div>
+        <div class="hl-sub">P6 CSV auto-formatter — failed cleanly, documented for all</div>
+        <div class="hl-meta">Sarah R. · Pod 1 — Controls</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="sec-label">The curriculum — cycle 1</div>
+  <div class="module-grid">
+    <div class="module-card">
+      <div class="module-num">MODULE 01</div>
+      <div class="module-name">AI Foundations</div>
+      <div class="module-desc">What AI is and isn't. How LLMs work. Responsible use principles.</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--teal)"></div></div>
+      <div style="font-size:11px;color:var(--teal);margin-top:4px">Complete</div>
+    </div>
+    <div class="module-card">
+      <div class="module-num">MODULE 02</div>
+      <div class="module-name">Prompting Basics</div>
+      <div class="module-desc">Writing prompts that actually work. Context, constraints, clarity.</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:75%"></div></div>
+      <div style="font-size:11px;color:var(--blue);margin-top:4px">In progress — 75%</div>
+    </div>
+    <div class="module-card">
+      <div class="module-num">MODULE 03</div>
+      <div class="module-name">AI for Documents</div>
+      <div class="module-desc">Summarising, drafting, and formatting reports and comms.</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%;background:var(--text3)"></div></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">Starts week 5</div>
+    </div>
+    <div class="module-card">
+      <div class="module-num">MODULE 04</div>
+      <div class="module-name">AI for Data & Analysis</div>
+      <div class="module-desc">Interpreting outputs, assisting Power BI, structuring queries.</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%;background:var(--text3)"></div></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">Starts week 7</div>
+    </div>
+    <div class="module-card">
+      <div class="module-num">MODULE 05</div>
+      <div class="module-name">AI in Project Delivery</div>
+      <div class="module-desc">Planning, risk, and programme controls use cases from real projects.</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%;background:var(--text3)"></div></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">Starts week 9</div>
+    </div>
+    <div class="module-card">
+      <div class="module-num">MODULE 06</div>
+      <div class="module-name">Building a Workflow</div>
+      <div class="module-desc">Turning one-off AI uses into repeatable, shareable processes.</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%;background:var(--text3)"></div></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">Starts week 11</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="sec-label">Pod leaderboard — top 4</div>
+  <div id="home-lb"></div>
+</div>
+
+<!-- ── MODULES ── -->
+<div class="page" id="page-modules">
+  <div class="crumb">proicere-academy / the-curriculum</div>
+  <h1 class="ptitle">The <span class="hl">Curriculum</span></h1>
+  <p class="psub" style="margin-bottom:28px">Six modules, one per fortnight. All pods work through the same curriculum and test in their weekly pod sessions.</p>
+  <div style="display:flex;flex-direction:column;gap:12px;">
+    <div class="module-card" style="padding:20px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:10px;"><span class="badge b-teal">Complete</span><span class="module-num" style="margin:0">MODULE 01</span></div>
+        <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Weeks 1–2</span>
+      </div>
+      <div class="module-name" style="font-size:15px;">AI Foundations</div>
+      <div class="module-desc" style="margin-top:6px;">What AI is and isn't. How LLMs work. Where the boundaries are. Responsible use principles for a professional consultancy context.</div>
+      <div style="margin-top:12px;display:flex;gap:6px;"><span class="badge b-teal">All pods</span><span class="badge b-blue">Discussion guide</span><span class="badge b-purple">15 min Loom</span></div>
+    </div>
+    <div class="module-card" style="padding:20px;border-color:rgba(79,142,247,.3);">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:10px;"><span class="badge b-blue">In progress</span><span class="module-num" style="margin:0">MODULE 02</span></div>
+        <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">Weeks 3–4</span>
+      </div>
+      <div class="module-name" style="font-size:15px;">Prompting Basics</div>
+      <div class="module-desc" style="margin-top:6px;">Writing prompts that get useful results. Context, constraints, and clarity. Practical exercises using real Proicere work scenarios.</div>
+      <div style="margin-top:12px;display:flex;gap:6px;"><span class="badge b-teal">All pods</span><span class="badge b-blue">Prompt exercises</span><span class="badge b-purple">20 min Loom</span></div>
+      <div class="progress-bar" style="margin-top:14px;"><div class="progress-fill" style="width:75%"></div></div>
+      <div style="font-size:11px;color:var(--blue);margin-top:4px;">Pods 1 & 2 complete · Pods 3 & 4 in progress</div>
+    </div>
+    <div style="padding:14px 18px;background:var(--amber-bg);border:1px solid rgba(245,166,35,.2);border-radius:var(--r);font-size:13px;color:var(--text2);">
+      <span style="color:var(--amber);font-weight:500;">Modules 3–6 unlock fortnightly.</span> Each module is recorded by an employee with domain expertise. Module leads are assigned at the start of each cycle.
+    </div>
+  </div>
+</div>
+
+<!-- ── LEARNING LOG ── -->
+<div class="page" id="page-log">
+  <div class="crumb">proicere-academy / pod-1 / learning-log</div>
+  <h1 class="ptitle">Pod Learning <span class="hl">Log</span></h1>
+  <p class="psub" style="margin-bottom:28px;">Record what each pod member learned, tested, and discovered this week.</p>
+  <div class="log-form">
+    <div class="log-form-header">
+      <div class="log-form-title">New entry — Pod 1</div>
+      <div class="week-selector">
+        <button class="week-btn" onclick="selWeek(this)">Wk 1</button>
+        <button class="week-btn" onclick="selWeek(this)">Wk 2</button>
+        <button class="week-btn active" onclick="selWeek(this)">Wk 3</button>
+        <button class="week-btn" onclick="selWeek(this)">Wk 4</button>
+      </div>
+    </div>
+    <div class="log-body">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Your name</label>
+          <select class="form-select"><option>Jamie M. — Digital Lead</option><option>Sarah R. — Domain Specialist</option><option>Tom K. — Willing Learner</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">AI tool used</label>
+          <select class="form-select"><option>Claude (Anthropic)</option><option>ChatGPT</option><option>Copilot / Microsoft 365</option><option>Gemini</option><option>Other</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full"><label class="form-label">What use case did you test?</label>
+          <input class="form-input" type="text" placeholder="e.g. Drafting a project risk register from a meeting transcript">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full"><label class="form-label">What happened? What worked or didn't?</label>
+          <textarea class="form-textarea" placeholder="Describe the result honestly — what worked, what didn't, any surprises..."></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Time saved (estimate)</label>
+          <select class="form-select"><option>Less than 15 mins</option><option>15–30 mins</option><option>30–60 mins</option><option>1–2 hours</option><option>2+ hours</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Worth sharing with wider group?</label>
+          <select class="form-select"><option>Yes — add to use case library</option><option>Not yet — needs more testing</option><option>No — was a failed experiment</option></select>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:16px;">
+        <label class="form-label">Confidence after this experiment</label>
+        <div class="rating-row">
+          <button class="rating-btn" onclick="selRating(this)">1 — Confused</button>
+          <button class="rating-btn" onclick="selRating(this)">2 — Uncertain</button>
+          <button class="rating-btn selected" onclick="selRating(this)">3 — Getting it</button>
+          <button class="rating-btn" onclick="selRating(this)">4 — Confident</button>
+          <button class="rating-btn" onclick="selRating(this)">5 — Can teach it</button>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:16px;"><label class="form-label">Paste the prompt you used (optional)</label>
+        <textarea class="form-textarea" placeholder="Optional — paste the prompt here so others can reuse it"></textarea>
+      </div>
+      <button class="submit-btn" onclick="showToast('Entry saved to Pod 1 log')">Save entry</button>
+    </div>
+  </div>
+  <div class="sec-label">Recent entries — Pod 1, Week 3</div>
+  <div class="log-entries">
+    <div class="log-entry">
+      <div class="entry-meta"><div class="avatar" style="width:18px;height:18px;font-size:8px;background:var(--blue-bg);color:var(--blue)">JM</div>Jamie M. · Week 3 · Claude · <span class="badge b-teal" style="font-size:10px">Saved 1–2 hrs</span><span class="badge b-blue" style="font-size:10px">→ Library</span></div>
+      <div class="entry-text">Used Claude to generate a first draft risk register from a 45-minute Zoom transcript. Output was about 70% usable — saved at least 90 minutes of manual formatting.</div>
+    </div>
+    <div class="log-entry">
+      <div class="entry-meta"><div class="avatar" style="width:18px;height:18px;font-size:8px;background:var(--teal-bg);color:var(--teal)">SR</div>Sarah R. · Week 3 · Copilot · <span class="badge b-amber" style="font-size:10px">Saved 15–30 mins</span><span class="badge b-red" style="font-size:10px">Failed experiment</span></div>
+      <div class="entry-text">Tried to use Copilot to auto-build a programme baseline from P6 export CSV. Struggled badly with date formatting and P6 column names. Learned: AI needs clean, standard data.</div>
+    </div>
+    <div class="log-entry">
+      <div class="entry-meta"><div class="avatar" style="width:18px;height:18px;font-size:8px;background:var(--amber-bg);color:var(--amber)">TK</div>Tom K. · Week 3 · Claude · <span class="badge b-teal" style="font-size:10px">Saved 30–60 mins</span><span class="badge b-blue" style="font-size:10px">→ Library</span></div>
+      <div class="entry-text">First time using AI for work. Jamie walked me through prompting and I used Claude to draft a project update email from bullet points. Surprisingly good — had to tweak the tone but saved real time.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── USE CASE LIBRARY ── -->
+<div class="page" id="page-usecases">
+  <div class="crumb">proicere-academy / use-case-library</div>
+  <h1 class="ptitle">Use Case <span class="hl">Library</span></h1>
+  <p class="psub" style="margin-bottom:28px;">Every proven AI use case submitted by pods. Filter by domain or tool.</p>
+  <div class="filter-bar">
+    <button class="filter-pill active" onclick="filterPill(this)">All</button>
+    <button class="filter-pill" onclick="filterPill(this)">Controls</button>
+    <button class="filter-pill" onclick="filterPill(this)">Reporting</button>
+    <button class="filter-pill" onclick="filterPill(this)">Comms</button>
+    <button class="filter-pill" onclick="filterPill(this)">Data</button>
+    <input class="search-input" type="text" placeholder="Search use cases...">
+  </div>
+  <table class="uc-table">
+    <thead><tr><th style="width:38%">Use case</th><th style="width:12%">Domain</th><th style="width:12%">Tool</th><th style="width:13%">Time saved</th><th style="width:10%">Pod</th><th style="width:15%">Status</th></tr></thead>
+    <tbody>
+      <tr><td><div class="uc-name">Risk register from meeting transcript</div><div class="uc-detail">Paste transcript → categorised risk log with mitigation notes</div></td><td><span class="badge b-blue">Controls</span></td><td><span style="font-family:var(--mono);font-size:11.5px;">Claude</span></td><td><span class="time-saved">1–2 hrs</span></td><td><span class="badge b-teal">Pod 1</span></td><td><span class="badge b-green">Verified</span></td></tr>
+      <tr><td><div class="uc-name">Draft client update email from bullet notes</div><div class="uc-detail">Paste notes → full structured email, adjust tone to match client</div></td><td><span class="badge b-purple">Comms</span></td><td><span style="font-family:var(--mono);font-size:11.5px;">Claude</span></td><td><span class="time-saved">30–60 mins</span></td><td><span class="badge b-teal">Pod 1</span></td><td><span class="badge b-green">Verified</span></td></tr>
+      <tr><td><div class="uc-name">Summarise a 40-page report into exec summary</div><div class="uc-detail">Upload PDF → pull key findings, recommendations, and data points</div></td><td><span class="badge b-purple">Comms</span></td><td><span style="font-family:var(--mono);font-size:11.5px;">Claude</span></td><td><span class="time-saved">1–2 hrs</span></td><td><span class="badge b-amber">Pod 2</span></td><td><span class="badge b-green">Verified</span></td></tr>
+      <tr><td><div class="uc-name">Translate P6 logic into plain English</div><div class="uc-detail">Describe schedule logic → AI explains relationships for client</div></td><td><span class="badge b-blue">Controls</span></td><td><span style="font-family:var(--mono);font-size:11.5px;">Claude</span></td><td><span class="time-saved">30–60 mins</span></td><td><span class="badge b-teal">Pod 1</span></td><td><span class="badge b-amber">Testing</span></td></tr>
+      <tr><td><div class="uc-name">Generate Power BI DAX measure from plain description</div><div class="uc-detail">Describe what you need → get DAX formula with explanation</div></td><td><span class="badge b-red">Data</span></td><td><span style="font-family:var(--mono);font-size:11.5px;">Claude</span></td><td><span class="time-saved">2+ hrs</span></td><td><span class="badge b-amber">Pod 2</span></td><td><span class="badge b-green">Verified</span></td></tr>
+      <tr><td><div class="uc-name">Build meeting agenda from scattered notes</div><div class="uc-detail">Paste rough notes → structured agenda with time allocations</div></td><td><span class="badge b-purple">Comms</span></td><td><span style="font-family:var(--mono);font-size:11.5px;">Claude</span></td><td><span class="time-saved">15–30 mins</span></td><td><span class="badge b-amber">Pod 3</span></td><td><span class="badge b-amber">Testing</span></td></tr>
+      <tr><td><div class="uc-name">Auto-format P6 CSV export for Excel baseline</div><div class="uc-detail">Failed experiment — Copilot struggled with P6 column names</div></td><td><span class="badge b-blue">Controls</span></td><td><span style="font-family:var(--mono);font-size:11.5px;">Copilot</span></td><td><span class="time-saved" style="color:var(--red)">Didn't work</span></td><td><span class="badge b-teal">Pod 1</span></td><td><span class="badge b-red">Failed</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ── PROMPT PACKS ── -->
+<div class="page" id="page-prompts">
+  <div class="crumb">proicere-academy / prompt-packs</div>
+  <h1 class="ptitle">Prompt <span class="hl">Packs</span></h1>
+  <p class="psub" style="margin-bottom:28px;">Reusable, tested prompts from across the pods. Copy any prompt and adapt it to your context.</p>
+  <div class="filter-bar">
+    <button class="filter-pill active" onclick="filterPill(this)">All packs</button>
+    <button class="filter-pill" onclick="filterPill(this)">Controls</button>
+    <button class="filter-pill" onclick="filterPill(this)">Reporting</button>
+    <button class="filter-pill" onclick="filterPill(this)">Comms</button>
+    <button class="filter-pill" onclick="filterPill(this)">Data</button>
+  </div>
+  <div class="prompt-grid">
+    <div class="prompt-card open">
+      <div class="prompt-header" onclick="togglePrompt(this)"><span class="badge b-blue">Controls</span><div class="prompt-title">Risk register from meeting transcript</div><span class="prompt-expand">▼</span></div>
+      <div class="prompt-body">
+        <div class="prompt-meta"><span class="badge b-teal">Verified</span><span class="badge b-amber">1–2 hrs saved</span><span style="font-size:11px;color:var(--text3);margin-left:4px">Jamie M. · Pod 1</span></div>
+        <div class="prompt-code">You are a project controls specialist. I will paste a meeting transcript below.
+
+Your task:
+1. Extract all mentioned risks, issues, and concerns
+2. Categorise each as: Cost / Schedule / Scope / Resource / Quality / External
+3. Assign an initial likelihood (Low / Medium / High) based on context
+4. Suggest a brief mitigation action for each
+5. Output as a structured table: ID | Risk | Category | Likelihood | Mitigation
+
+Only include items explicitly mentioned or strongly implied. Do not invent risks.
+
+[PASTE TRANSCRIPT BELOW]
+<button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="prompt-note">Works best with transcripts over ~20 minutes. Always verify cost/budget figures manually.</div>
+      </div>
+    </div>
+    <div class="prompt-card">
+      <div class="prompt-header" onclick="togglePrompt(this)"><span class="badge b-purple">Comms</span><div class="prompt-title">Client update email from bullet notes</div><span class="prompt-expand">▼</span></div>
+      <div class="prompt-body">
+        <div class="prompt-meta"><span class="badge b-teal">Verified</span><span class="badge b-amber">30–60 mins saved</span><span style="font-size:11px;color:var(--text3);margin-left:4px">Tom K. · Pod 1</span></div>
+        <div class="prompt-code">Write a professional project update email using the notes below.
+
+Client name: [CLIENT NAME]
+Project: [PROJECT NAME]
+Tone: [formal / friendly-professional / technical]
+Send from: [YOUR NAME], [YOUR ROLE]
+
+Key points:
+[PASTE YOUR BULLET NOTES]
+
+Requirements:
+- Keep to under 250 words
+- Lead with progress, then issues, then next steps
+- Do not invent any information not in the notes
+- End with a clear call to action
+<button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="prompt-note">Adjust the tone instruction carefully — "formal" and "friendly-professional" produce very different results.</div>
+      </div>
+    </div>
+    <div class="prompt-card">
+      <div class="prompt-header" onclick="togglePrompt(this)"><span class="badge b-red">Data</span><div class="prompt-title">Power BI DAX measure generator</div><span class="prompt-expand">▼</span></div>
+      <div class="prompt-body">
+        <div class="prompt-meta"><span class="badge b-teal">Verified</span><span class="badge b-amber">2+ hrs saved</span><span style="font-size:11px;color:var(--text3);margin-left:4px">Alex M. · Pod 2</span></div>
+        <div class="prompt-code">You are a Power BI expert. Write a DAX measure for the following:
+
+What I want it to calculate: [DESCRIBE IN PLAIN ENGLISH]
+My table name: [TABLE NAME]
+Relevant columns: [LIST COLUMNS]
+Any filters or conditions: [e.g. only rows where Status = "Active"]
+
+Please:
+1. Write the full DAX measure with correct syntax
+2. Explain in plain English what each part does
+3. Flag any assumptions you've made
+4. Suggest how to test it is working correctly
+<button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="prompt-note">Always test in Power BI Desktop before deploying to a live report.</div>
+      </div>
+    </div>
+    <div class="prompt-card">
+      <div class="prompt-header" onclick="togglePrompt(this)"><span class="badge b-purple">Comms</span><div class="prompt-title">Executive summary from long report</div><span class="prompt-expand">▼</span></div>
+      <div class="prompt-body">
+        <div class="prompt-meta"><span class="badge b-teal">Verified</span><span class="badge b-amber">1–2 hrs saved</span><span style="font-size:11px;color:var(--text3);margin-left:4px">Chloe P. · Pod 2</span></div>
+        <div class="prompt-code">Summarise the following report into a concise executive summary.
+
+Audience: [senior leadership / client board / project sponsor]
+Max length: [1 page / 300 words / 5 bullet points]
+
+Structure:
+1. Purpose of the report (1 sentence)
+2. Key findings (3–5 bullet points)
+3. Risks or issues flagged (if any)
+4. Recommended actions or decisions required
+5. Next steps / timeline
+
+Do not add information not present in the report. Use plain, non-jargon language.
+
+[PASTE REPORT TEXT OR UPLOAD PDF]
+<button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="prompt-note">For very long reports (+50 pages), split into sections and summarise each, then summarise the summaries.</div>
+      </div>
+    </div>
+    <div class="add-prompt-card" onclick="showToast('In your Notion workspace, this opens a submission form for pod leads to review')">+ Submit a new prompt to the pack</div>
+  </div>
+</div>
+
+<!-- ── LEADERBOARD ── -->
+<div class="page" id="page-leaderboard">
+  <div class="crumb">momentum-hub / pod-leaderboard</div>
+  <h1 class="ptitle">Pod <span class="hl">Leaderboard</span></h1>
+  <p class="psub" style="margin-bottom:28px;">Updated monthly. Scored on use cases verified, prompts shared, time saved, and modules completed.</p>
+  <div class="stats-grid">
+    <div class="stat"><div class="stat-n" style="color:var(--teal)">47 hrs</div><div class="stat-l">Total time saved</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--blue)">19</div><div class="stat-l">Use cases verified</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--purple)">11</div><div class="stat-l">Prompts published</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--amber)">5</div><div class="stat-l">Failed experiments</div></div>
+  </div>
+  <div class="tab-row">
+    <button class="tab active" onclick="switchLbTab(this,'score')">Overall</button>
+    <button class="tab" onclick="switchLbTab(this,'time')">Time saved</button>
+    <button class="tab" onclick="switchLbTab(this,'uc')">Use cases</button>
+    <button class="tab" onclick="switchLbTab(this,'prompts')">Prompts</button>
+  </div>
+  <table class="lb-table">
+    <thead><tr><th style="width:40px">#</th><th>Pod</th><th>Score</th><th style="width:110px">Bar</th><th>Use cases</th><th>Time saved</th><th>Prompts</th><th>Modules</th><th>Medals</th><th>Change</th></tr></thead>
+    <tbody id="lb-body"></tbody>
+  </table>
+  <div class="divider"></div>
+  <div class="sec-label">How scoring works</div>
+  <div class="score-grid">
+    <div class="score-card"><div class="score-pts" style="color:var(--teal)">+5</div><div class="score-desc">Per verified use case submitted</div></div>
+    <div class="score-card"><div class="score-pts" style="color:var(--purple)">+3</div><div class="score-desc">Per prompt added to the pack</div></div>
+    <div class="score-card"><div class="score-pts" style="color:var(--blue)">+4</div><div class="score-desc">Per module completed by all members</div></div>
+    <div class="score-card"><div class="score-pts" style="color:var(--amber)">+2</div><div class="score-desc">Per documented failed experiment</div></div>
+  </div>
+</div>
+
+<!-- ── POD PAGE (shared template) ── -->
+<div class="page" id="page-pod1">
+  <div class="crumb">proicere-academy / pod-1</div>
+  <h1 class="ptitle">Pod 1 — <span class="hl">Controls</span></h1>
+  <p class="psub" style="margin-bottom:28px;">Pod home page. Meeting log, use cases, and outputs all in one place.</p>
+  <div class="pod-grid" style="grid-template-columns:1fr;">
+    <div class="pod-card" style="cursor:default;">
+      <div class="pod-header"><div class="pod-name">Members</div><div class="pod-tag tag-active">Active</div></div>
+      <div class="member-list">
+        <div class="member-item"><div class="avatar" style="background:var(--blue-bg);color:var(--blue)">JM</div>Jamie M.<div class="role-tag badge b-blue">Digital Lead</div></div>
+        <div class="member-item"><div class="avatar" style="background:var(--teal-bg);color:var(--teal)">SR</div>Sarah R.<div class="role-tag badge b-teal">Domain Specialist</div></div>
+        <div class="member-item"><div class="avatar" style="background:var(--amber-bg);color:var(--amber)">TK</div>Tom K.<div class="role-tag badge b-amber">Willing Learner</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
+    <div class="stat"><div class="stat-n" style="color:var(--teal)">7</div><div class="stat-l">Use cases</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--purple)">4</div><div class="stat-l">Prompts shared</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--amber)">18 hrs</div><div class="stat-l">Time saved</div></div>
+  </div>
+  <div style="padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);font-size:13px;color:var(--text2);">This pod page is a template. In your live Notion workspace, each pod gets its own page with their log entries, use case submissions, prompt contributions, and monthly outputs.</div>
+</div>
+
+<!-- ── CHALLENGES ── -->
+<div class="page" id="page-challenges">
+  <div class="crumb">momentum-hub / ai-challenges</div>
+  <h1 class="ptitle">AI <span class="hl">Challenges</span></h1>
+  <p class="psub" style="margin-bottom:28px;">One new challenge every fortnight. Try it, log it, share what happened — good or bad. All submissions feed the use case library.</p>
+  <div class="tab-row">
+    <button class="tab active" onclick="filterChal(this,'all')">All</button>
+    <button class="tab" onclick="filterChal(this,'active')">Active now</button>
+    <button class="tab" onclick="filterChal(this,'upcoming')">Upcoming</button>
+    <button class="tab" onclick="filterChal(this,'done')">Completed</button>
+  </div>
+  <div class="chal-grid" id="chal-list"></div>
+</div>
+
+<!-- ── HONOURS ── -->
+<div class="page" id="page-honours">
+  <div class="crumb">proicere-academy / wall-of-fame</div>
+  <h1 class="ptitle">Wall of <span class="hl">Fame</span></h1>
+  <p class="psub" style="margin-bottom:28px;">Four awards every month. Posted in #ai-academy and on this page. Every pod can win every cycle.</p>
+  <div class="sec-label">March 2026 — month 1 winners</div>
+  <div class="honour-grid">
+    <div class="honour-card" style="border-color:rgba(245,200,66,.25)">
+      <div class="honour-icon" style="background:rgba(245,200,66,.1)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2l1.5 3 3.5.5-2.5 2.5.6 3.5L9 9.5l-3.1 1.5.6-3.5L4 5l3.5-.5L9 2z" fill="#f5c842"/></svg></div>
+      <div class="honour-award">Use case of the month</div>
+      <div class="honour-winner">Risk register from transcript</div>
+      <div class="honour-sub">Turned a 45-min Zoom call into a categorised risk register in under 10 minutes. 1.5 hours saved per use.</div>
+      <div class="honour-pod">Jamie M. · Pod 1 — Controls</div>
+    </div>
+    <div class="honour-card" style="border-color:rgba(155,127,244,.25)">
+      <div class="honour-icon" style="background:var(--purple-bg)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 4h12v9H10l-3 2V13H3V4z" stroke="#9b7ff4" stroke-width="1.3" stroke-linejoin="round"/></svg></div>
+      <div class="honour-award">Best prompt</div>
+      <div class="honour-winner">Power BI DAX generator</div>
+      <div class="honour-sub">A reusable prompt that generates DAX measures from plain English — already used by 4 people across 2 pods.</div>
+      <div class="honour-pod">Alex M. · Pod 2 — IM & Digital</div>
+    </div>
+    <div class="honour-card" style="border-color:rgba(240,112,96,.25)">
+      <div class="honour-icon" style="background:var(--coral-bg)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6.5" stroke="#f07060" stroke-width="1.3"/><path d="M9 5.5v4M9 12v.5" stroke="#f07060" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <div class="honour-award">Bravest experiment</div>
+      <div class="honour-winner">P6 CSV auto-formatter</div>
+      <div class="honour-sub">Tried, failed, and documented exactly why. Copilot couldn't handle P6 column naming — now everyone knows before wasting time.</div>
+      <div class="honour-pod">Sarah R. · Pod 1 — Controls</div>
+    </div>
+    <div class="honour-card" style="border-color:rgba(90,200,122,.25)">
+      <div class="honour-icon" style="background:var(--green-bg)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 10l3.5 3.5L14 6" stroke="#5ac87a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="honour-award">Most improved</div>
+      <div class="honour-winner">Tom K.</div>
+      <div class="honour-sub">Started Cycle 1 at confidence level 1. Three weeks in, self-reporting a 3 — already sharing prompts independently in #ai-academy.</div>
+      <div class="honour-pod">Pod 1 — Controls</div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec-label">All-time medal tally</div>
+  <table class="lb-table">
+    <thead><tr><th>Pod</th><th>Gold</th><th>Silver</th><th>Bronze</th><th>Total awards</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:500;color:var(--text)">Pod 1 — Controls</td><td style="color:var(--gold);font-family:var(--mono)">2</td><td style="color:var(--silver);font-family:var(--mono)">1</td><td style="color:var(--bronze);font-family:var(--mono)">0</td><td><span class="badge b-teal">3</span></td></tr>
+      <tr><td style="font-weight:500;color:var(--text)">Pod 2 — IM & Digital</td><td style="color:var(--gold);font-family:var(--mono)">1</td><td style="color:var(--silver);font-family:var(--mono)">0</td><td style="color:var(--bronze);font-family:var(--mono)">1</td><td><span class="badge b-blue">2</span></td></tr>
+      <tr><td style="font-weight:500;color:var(--text)">Pod 3 — Reporting</td><td style="color:var(--gold);font-family:var(--mono)">0</td><td style="color:var(--silver);font-family:var(--mono)">1</td><td style="color:var(--bronze);font-family:var(--mono)">0</td><td><span class="badge b-amber">1</span></td></tr>
+      <tr><td style="font-weight:500;color:var(--text)">Pod 4 — Delivery</td><td style="color:var(--gold);font-family:var(--mono)">0</td><td style="color:var(--silver);font-family:var(--mono)">0</td><td style="color:var(--bronze);font-family:var(--mono)">1</td><td><span class="badge b-purple">1</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ── SHOWCASE ── -->
+<div class="page" id="page-showcase">
+  <div class="crumb">proicere-academy / success-stories</div>
+  <h1 class="ptitle">Success <span class="hl">Stories</span></h1>
+  <p class="psub" style="margin-bottom:28px;">Real workflows from the team — presented monthly, saved here permanently. These are the moments that actually changed how we work.</p>
+  <div class="showcase-item">
+    <div class="showcase-month">MAR 26</div>
+    <div style="flex:1;">
+      <div class="showcase-title">From transcript to risk register in 10 minutes</div>
+      <div class="showcase-desc">Pod 1 walked through the full before/after: previously 90 minutes to manually write up a risk log post-meeting. Now: record the call, paste transcript into Claude with a structured prompt, get a 70–80% complete risk register in seconds. Demo included a live prompt walkthrough and two real (anonymised) outputs side by side.</div>
+      <div class="showcase-meta"><span class="badge b-teal">1.5 hrs saved per use</span><span class="badge b-blue">Pod 1 — Controls</span><span class="badge b-purple">Prompt in pack</span></div>
+    </div>
+  </div>
+  <div class="showcase-item" style="opacity:.45;">
+    <div class="showcase-month">APR 26</div>
+    <div style="flex:1;">
+      <div class="showcase-title" style="color:var(--text3)">Presentation slot open — Pod 2</div>
+      <div class="showcase-desc" style="color:var(--text3)">Each pod presents one workflow end-to-end per month. Pod 2 is up in April.</div>
+      <div class="showcase-meta"><span class="badge" style="background:var(--bg4);color:var(--text3)">Upcoming</span></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ── TUTORIALS ── -->
+<div class="page" id="page-tutorials">
+  <div class="crumb">proicere-academy / tutorial-videos</div>
+  <h1 class="ptitle">Tutorial <span class="hl">Videos</span></h1>
+  <p class="psub" style="margin-bottom:24px;">Watch, follow along, and leave feedback. All tutorials are recorded by Proicere employees using real project examples.</p>
+
+  <div class="tut-layout">
+    <div>
+      <div class="video-card">
+        <div class="video-frame" onclick="tutPlay(this)">
+          <div class="v-label" id="tut-module-badge">Module 02</div>
+          <div class="v-play-btn"><div class="v-play-icon"></div></div>
+          <div class="v-duration" id="tut-duration">18:42</div>
+        </div>
+        <div class="video-info">
+          <div class="video-title" id="tut-video-title">Prompting basics — writing prompts that actually work</div>
+          <div class="video-meta-row">
+            <span class="badge b-blue" id="tut-mod-tag">Module 02</span>
+            <span class="badge b-teal">All pods</span>
+            <span style="margin-left:auto;display:flex;gap:12px;">
+              <span style="display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M2 14c0-3.31 2.69-6 6-6s6 2.69 6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span id="tut-author">Jamie M.</span></span>
+              <span id="tut-views">47 views</span>
+            </span>
+          </div>
+        </div>
+        <div class="divider" style="margin:0 16px;"></div>
+        <div class="ch-section">
+          <div class="ch-label">Chapters — click to jump to section</div>
+          <div class="ch-list" id="tut-chapters">
+            <div class="ch-item active" onclick="tutChapter(this)"><span class="ch-time">0:00</span><span class="ch-text">Introduction — what makes a good prompt</span></div>
+            <div class="ch-item" onclick="tutChapter(this)"><span class="ch-time">3:20</span><span class="ch-text">The context-task-format structure</span></div>
+            <div class="ch-item" onclick="tutChapter(this)"><span class="ch-time">7:45</span><span class="ch-text">Live demo — risk register from meeting notes</span></div>
+            <div class="ch-item" onclick="tutChapter(this)"><span class="ch-time">12:10</span><span class="ch-text">Common mistakes and how to fix them</span></div>
+            <div class="ch-item" onclick="tutChapter(this)"><span class="ch-time">16:00</span><span class="ch-text">Your challenge for this fortnight</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feedback-panel">
+        <div class="sec-label">Leave feedback on this video</div>
+        <div class="fb-success" id="fb-success">Thanks — your feedback has been saved and shared with the tutorial creator.</div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">How useful was this tutorial?</div>
+        <div class="star-row" id="tut-stars">
+          <button class="star-btn" onclick="tutRate(1)">&#9733;</button>
+          <button class="star-btn" onclick="tutRate(2)">&#9733;</button>
+          <button class="star-btn" onclick="tutRate(3)">&#9733;</button>
+          <button class="star-btn" onclick="tutRate(4)">&#9733;</button>
+          <button class="star-btn" onclick="tutRate(5)">&#9733;</button>
+        </div>
+        <textarea class="fb-input" id="fb-text" placeholder="What was helpful? What could be clearer? Any questions this raised?"></textarea>
+        <button class="fb-submit" onclick="tutSubmit()">Submit feedback</button>
+
+        <div class="divider"></div>
+        <div class="sec-label">Comments from the team</div>
+        <div class="comment-list" id="tut-comments">
+          <div class="comment">
+            <div class="comment-hdr">
+              <div class="avatar" style="width:22px;height:22px;font-size:8px;background:var(--teal);">SR</div>
+              <span class="c-name">Sarah R.</span>
+              <span class="c-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+              <span class="c-time">2 days ago</span>
+            </div>
+            <div class="c-text">The context-task-format breakdown at 3:20 was really useful. I'd been writing prompts as one big sentence — breaking it into sections made the output much better. The risk register demo is worth watching twice.</div>
+          </div>
+          <div class="comment">
+            <div class="comment-hdr">
+              <div class="avatar" style="width:22px;height:22px;font-size:8px;background:var(--amber);">TK</div>
+              <span class="c-name">Tom K.</span>
+              <span class="c-stars">&#9733;&#9733;&#9733;&#9733;</span>
+              <span class="c-time">1 day ago</span>
+            </div>
+            <div class="c-text">Really clear for someone who's never done this before. I tried the challenge straight after watching and it actually worked. One question — does it matter which AI tool you use, or are the techniques the same across Claude / ChatGPT / Copilot?</div>
+          </div>
+          <div class="comment">
+            <div class="comment-hdr">
+              <div class="avatar" style="width:22px;height:22px;font-size:8px;background:var(--blue);">JM</div>
+              <span class="c-name">Jamie M.</span>
+              <span class="c-creator">Creator</span>
+              <span class="c-time">1 day ago</span>
+            </div>
+            <div class="c-text">Great question Tom — the structure applies to all of them. The main difference is Claude handles longer context better, so for big documents it's usually the stronger choice. I'll add a note on this in the next module.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="playlist-card">
+        <div class="pl-header">
+          <div class="pl-hdr-title">All tutorials — cycle 1</div>
+          <div class="tut-prog-wrap">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:4px;"><span>2 of 6 complete</span><span>33%</span></div>
+            <div style="height:3px;background:var(--bg4);border-radius:2px;overflow:hidden;"><div style="width:33%;height:100%;background:var(--blue);border-radius:2px;"></div></div>
+          </div>
+        </div>
+
+        <div class="pl-item" onclick="tutSwitch(this,'AI foundations','Module 01','14:55','Jamie M.','62 views',
+          [{t:'0:00',l:'Introduction — what is AI really?'},{t:'4:10',l:'How LLMs work (plain English)'},{t:'9:30',l:'Responsible use at Proicere'},{t:'12:00',l:'What to expect from this course'}])">
+          <div class="pl-thumb"><div class="pl-tri"></div></div>
+          <div class="pl-info"><div class="pl-title">AI foundations</div><div class="pl-meta">Module 01 · Jamie M.</div></div>
+          <div class="pl-dur">14:55</div>
+          <div class="pl-done"><div class="pl-done-tick"></div></div>
+        </div>
+
+        <div class="pl-item pl-active" onclick="tutSwitch(this,'Prompting basics — writing prompts that actually work','Module 02','18:42','Jamie M.','47 views',
+          [{t:'0:00',l:'Introduction — what makes a good prompt'},{t:'3:20',l:'The context-task-format structure'},{t:'7:45',l:'Live demo — risk register from meeting notes'},{t:'12:10',l:'Common mistakes and how to fix them'},{t:'16:00',l:'Your challenge for this fortnight'}])">
+          <div class="pl-thumb" style="background:var(--blue);"><div class="pl-tri"></div></div>
+          <div class="pl-info"><div class="pl-title" style="color:var(--blue);">Prompting basics</div><div class="pl-meta">Module 02 · Jamie M.</div></div>
+          <div class="pl-dur" style="color:var(--blue);">18:42</div>
+          <div class="pl-done"><div class="pl-done-tick"></div></div>
+        </div>
+
+        <div class="pl-item" onclick="tutSwitch(this,'AI for documents & reporting','Module 03','22:10','Chloe P.','31 views',
+          [{t:'0:00',l:'Summarising long reports'},{t:'6:00',l:'Drafting emails and updates'},{t:'13:20',l:'Formatting and structuring output'},{t:'18:00',l:'Real example — exec summary live'}])">
+          <div class="pl-thumb"><div class="pl-tri"></div></div>
+          <div class="pl-info"><div class="pl-title">AI for documents</div><div class="pl-meta">Module 03 · Chloe P.</div></div>
+          <div class="pl-dur">22:10</div>
+          <div class="pl-empty"></div>
+        </div>
+
+        <div class="pl-item" onclick="tutSwitch(this,'AI for data & analysis','Module 04','19:30','Alex M.','28 views',
+          [{t:'0:00',l:'Interpreting data outputs'},{t:'5:15',l:'Generating DAX measures in plain English'},{t:'11:00',l:'Structuring queries for Power BI'},{t:'16:30',l:'Validation — checking AI maths'}])">
+          <div class="pl-thumb"><div class="pl-tri"></div></div>
+          <div class="pl-info"><div class="pl-title">AI for data & analysis</div><div class="pl-meta">Module 04 · Alex M.</div></div>
+          <div class="pl-dur">19:30</div>
+          <div class="pl-empty"></div>
+        </div>
+
+        <div class="pl-item" style="opacity:.5;cursor:default;">
+          <div class="pl-thumb" style="background:var(--bg4);"><div class="pl-tri" style="border-left-color:#8c97ad;"></div></div>
+          <div class="pl-info"><div class="pl-title" style="color:var(--text3);">AI in project delivery</div><div class="pl-meta">Module 05 · unlocks week 9</div></div>
+          <div class="pl-dur">—</div>
+          <div style="width:16px;"></div>
+        </div>
+
+        <div class="pl-item" style="opacity:.5;cursor:default;">
+          <div class="pl-thumb" style="background:var(--bg4);"><div class="pl-tri" style="border-left-color:#8c97ad;"></div></div>
+          <div class="pl-info"><div class="pl-title" style="color:var(--text3);">Building a workflow</div><div class="pl-meta">Module 06 · unlocks week 11</div></div>
+          <div class="pl-dur">—</div>
+          <div style="width:16px;"></div>
+        </div>
+
+      </div>
+
+      <div style="margin-top:12px;padding:12px 14px;background:var(--amber-bg);border:1px solid rgba(212,130,10,.2);border-radius:var(--r);font-size:12.5px;color:var(--text2);">
+        <span style="color:var(--amber);font-weight:500;">Recording a tutorial?</span> Use Loom (free) or Microsoft Stream. Keep videos under 25 minutes. Send the embed link to the Academy Lead to add it here.
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+<div class="toast" id="toast"><span class="t-dot">●</span><span id="tmsg">Done</span></div>
+
+<script>
+const pods=[
+  {name:"Pod 1 — Controls",members:"Jamie M, Sarah R, Tom K",score:62,time:"18 hrs",timeN:18,uc:7,prompts:4,modules:2,medals:{g:2,s:1,b:0},prev:1},
+  {name:"Pod 2 — IM & Digital",members:"Alex M, Chloe P, Ryan W",score:54,time:"16 hrs",timeN:16,uc:6,prompts:4,modules:2,medals:{g:1,s:0,b:1},prev:2},
+  {name:"Pod 3 — Reporting",members:"Laura H, Dan G, Emma F",score:31,time:"8 hrs",timeN:8,uc:4,prompts:2,modules:1,medals:{g:0,s:1,b:0},prev:4},
+  {name:"Pod 4 — Delivery",members:"Mark B, Nadia K, Owen T",score:28,time:"5 hrs",timeN:5,uc:2,prompts:1,modules:1,medals:{g:0,s:0,b:1},prev:3}
+];
+
+function renderLB(sorted){
+  const max=Math.max(...sorted.map(p=>p.score));
+  document.getElementById('lb-body').innerHTML=sorted.map((p,i)=>{
+    const r=i+1,rc=r===1?'rank-1':r===2?'rank-2':r===3?'rank-3':'rank-n',rl='#'+r;
+    const pct=Math.round(p.score/max*100);
+    const bc=r===1?'var(--gold)':r===2?'var(--silver)':r===3?'var(--bronze)':'var(--blue)';
+    const orig=pods.indexOf(p)+1,mv=orig-r;
+    const ds=mv>0?`+${mv} ▲`:mv<0?`${mv} ▼`:'—',dc=mv>0?'up':mv<0?'':'same';
+    return `<tr><td><span class="rank ${rc}">${rl}</span></td>
+      <td><div style="font-weight:500;color:var(--text);font-size:13.5px">${p.name}</div><div style="font-size:11px;color:var(--text3)">${p.members}</div></td>
+      <td><span style="font-family:var(--mono);font-size:13px">${p.score} pts</span></td>
+      <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${bc}"></div></div></div></td>
+      <td><span class="badge b-teal">${p.uc}</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--teal)">${p.time}</td>
+      <td><span class="badge b-purple">${p.prompts}</span></td>
+      <td><span class="badge b-blue">${p.modules}/6</span></td>
+      <td><div class="medal-row"><div class="medal m-gold">${p.medals.g}</div><div class="medal m-silver">${p.medals.s}</div><div class="medal m-bronze">${p.medals.b}</div></div></td>
+      <td><span class="delta ${dc}">${ds}</span></td></tr>`;
+  }).join('');
+}
+
+function renderHomeLB(){
+  const sorted=[...pods].sort((a,b)=>b.score-a.score);
+  const max=Math.max(...sorted.map(p=>p.score));
+  document.getElementById('home-lb').innerHTML=`<table class="lb-table"><thead><tr><th style="width:40px">#</th><th>Pod</th><th>Score</th><th style="width:110px">Bar</th><th>Time saved</th><th>Medals</th></tr></thead><tbody>`+
+  sorted.map((p,i)=>{
+    const r=i+1,rc=r===1?'rank-1':r===2?'rank-2':r===3?'rank-3':'rank-n';
+    const pct=Math.round(p.score/max*100);
+    const bc=r===1?'var(--gold)':r===2?'var(--silver)':r===3?'var(--bronze)':'var(--blue)';
+    return `<tr><td><span class="rank ${rc}">#${r}</span></td>
+      <td><div style="font-weight:500;color:var(--text)">${p.name}</div></td>
+      <td><span style="font-family:var(--mono);font-size:13px">${p.score} pts</span></td>
+      <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${bc}"></div></div></div></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--teal)">${p.time}</td>
+      <td><div class="medal-row"><div class="medal m-gold">${p.medals.g}</div><div class="medal m-silver">${p.medals.s}</div><div class="medal m-bronze">${p.medals.b}</div></div></td></tr>`;
+  }).join('')+'</tbody></table>';
+}
+
+renderLB([...pods].sort((a,b)=>b.score-a.score));
+renderHomeLB();
+
+function switchLbTab(btn,key){
+  document.querySelectorAll('#page-leaderboard .tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  let s;
+  if(key==='time') s=[...pods].sort((a,b)=>b.timeN-a.timeN);
+  else if(key==='uc') s=[...pods].sort((a,b)=>b.uc-a.uc);
+  else if(key==='prompts') s=[...pods].sort((a,b)=>b.prompts-a.prompts);
+  else s=[...pods].sort((a,b)=>b.score-a.score);
+  renderLB(s);
+}
+
+const challenges=[
+  {id:1,status:'done',fort:'Fortnight 1',tag:'b-teal',tagLabel:'Completed',domain:'Comms',domainClass:'b-purple',
+   title:'Summarise a real meeting you had this week',
+   desc:"Take any meeting you attended — use your notes, a transcript, or your memory — and ask Claude to turn it into a structured summary with key decisions, actions, and owners.",
+   prompt:`I attended a meeting. Here are my notes / transcript:
+
+[PASTE NOTES OR TRANSCRIPT]
+
+Please produce a structured meeting summary with:
+1. Meeting purpose (1 sentence)
+2. Key decisions made (bullet list)
+3. Actions agreed (owner | action | due date if mentioned)
+4. Any open questions or risks flagged
+5. Suggested subject line for follow-up email
+
+Keep language concise and professional.`,
+   tip:"Don't worry if your notes are messy — that's the point. Post your result (anonymised) in #ai-academy.",
+   subs:11,target:12},
+  {id:2,status:'active',fort:'Fortnight 2',tag:'b-blue',tagLabel:'Active now',domain:'Any',domainClass:'b-blue',
+   title:'Find one task you did manually last week that AI could have helped with',
+   desc:"Think back to last week. Pick one task that took longer than it should — writing, formatting, summarising, calculating. Try doing it with AI now. Report back with what happened.",
+   prompt:`I need help with this task: [DESCRIBE THE TASK]
+
+Context: [brief context about the project / client / situation]
+
+My current approach is: [describe how you do it manually]
+
+Please help me complete this task. Where relevant, show me your working or explain your logic so I can verify the output is correct.`,
+   tip:"The goal isn't to find a perfect use case — it's to build the habit of asking 'could AI do this?' Pick something real, even if it seems too simple.",
+   subs:6,target:12},
+  {id:3,status:'upcoming',fort:'Fortnight 3',tag:'b-amber',tagLabel:'Upcoming',domain:'Reporting',domainClass:'b-coral',
+   title:'Turn a data table into a plain-English insight for a client',
+   desc:"Take any project data — cost variance, schedule performance, risk scores — and ask AI to explain what it means in language a non-technical project sponsor would understand.",
+   prompt:`Here is a data table from our project:
+
+[PASTE TABLE OR DESCRIBE THE DATA]
+
+The audience is: [project sponsor / client director / non-technical stakeholder]
+
+Please:
+1. Describe in 2–3 plain sentences what this data is showing
+2. Highlight the most important finding or trend
+3. Flag anything that might need attention or explanation
+4. Suggest one question the audience is likely to ask
+
+Avoid technical jargon. Write as if explaining to someone smart but not a data specialist.`,
+   tip:"This is particularly valuable for Proicere because we regularly translate complex programme data for non-technical clients.",
+   subs:0,target:12},
+  {id:4,status:'upcoming',fort:'Fortnight 4',tag:'b-amber',tagLabel:'Upcoming',domain:'Controls',domainClass:'b-green',
+   title:'Draft a project risk or issue for a formal register',
+   desc:"Pick a real risk or issue on a current project. Describe it verbally to Claude — as if telling a colleague — and ask it to format it as a proper risk register entry.",
+   prompt:`I need to log a risk or issue in our project register. Here's my verbal description:
+
+[DESCRIBE THE RISK OR ISSUE IN YOUR OWN WORDS]
+
+Project: [project name or type]
+Audience: [internal PM / client / PMO]
+
+Please format this as a formal risk register entry with:
+- Risk/Issue title (concise)
+- Description (2–3 sentences)
+- Category: Cost / Schedule / Scope / Resource / Quality / External
+- Likelihood: Low / Medium / High
+- Impact: Low / Medium / High
+- Suggested mitigation or response action
+- Owner (suggest a role if not specified)
+
+Flag if you've made any assumptions I should verify.`,
+   tip:"The key test: could you copy this straight into your register with minor edits? If yes, that's a verified use case. Log it.",
+   subs:0,target:12}
+];
+
+function renderChals(filter){
+  const list=document.getElementById('chal-list');
+  const filtered=filter==='all'?challenges:challenges.filter(c=>c.status===filter);
+  list.innerHTML=filtered.map(c=>{
+    const pct=Math.round(c.subs/c.target*100),isOpen=c.status==='active';
+    return `<div class="chal-card${isOpen?' open':''}" id="cc-${c.id}">
+      <div class="chal-top">
+        <div class="chal-fort">${c.fort}</div>
+        <div class="chal-info"><div class="chal-title">${c.title}</div><div class="chal-desc">${c.desc}</div></div>
+        <button class="expand-btn" onclick="toggleChal(${c.id})">▼</button>
+      </div>
+      <div class="chal-foot">
+        <span class="badge ${c.tag}">${c.tagLabel}</span>
+        <span class="badge ${c.domainClass}">${c.domain}</span>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+          <span class="prog-txt">${c.subs}/${c.target}</span>
+          <div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div>
+        </div>
+      </div>
+      <div class="chal-body${isOpen?'':' hidden'}" id="cb-${c.id}">
+        <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Starter prompt</div>
+        <div class="prompt-code" style="font-size:12px;">${c.prompt}<button class="copy-btn" onclick="copyChal(${c.id})">Copy</button></div>
+        <div class="tip-box"><div class="tip-label">Tip</div>${c.tip}</div>
+        ${c.status==='active'?`<div class="sub-area"><input class="sub-input" type="text" placeholder="Paste a quick note about your result (anonymised is fine)..."><button class="sub-btn" onclick="submitChal(${c.id})">Submit result</button></div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+renderChals('all');
+
+function toggleChal(id){
+  const card=document.getElementById('cc-'+id),body=document.getElementById('cb-'+id);
+  card.classList.toggle('open');
+  body.classList.toggle('hidden');
+}
+function filterChal(btn,key){
+  document.querySelectorAll('#page-challenges .tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderChals(key);
+}
+function copyChal(id){
+  const c=challenges.find(x=>x.id===id);
+  navigator.clipboard.writeText(c.prompt).then(()=>showToast('Prompt copied to clipboard'));
+}
+function submitChal(id){
+  const c=challenges.find(x=>x.id===id);
+  c.subs=Math.min(c.subs+1,c.target);
+  showToast('Result submitted — thanks!');
+  renderChals('all');
+}
+
+function go(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+}
+function selWeek(btn){
+  btn.closest('.week-selector').querySelectorAll('.week-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function selRating(btn){
+  btn.closest('.rating-row').querySelectorAll('.rating-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+function togglePrompt(hdr){hdr.closest('.prompt-card').classList.toggle('open');}
+function copyPrompt(btn){
+  const code=btn.closest('.prompt-code').innerText.replace('Copy','').trim();
+  navigator.clipboard.writeText(code).then(()=>showToast('Prompt copied to clipboard'));
+}
+function filterPill(btn){
+  btn.closest('.filter-bar').querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('tmsg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+
+var tutRating = 0;
+function tutPlay(el) {
+  var btn = el.querySelector('.v-play-btn');
+  btn.style.background = 'rgba(26,107,255,0.7)';
+  btn.style.borderColor = 'var(--blue)';
+  setTimeout(function(){ btn.style.background='rgba(255,255,255,0.12)'; btn.style.borderColor='rgba(255,255,255,0.35)'; }, 400);
+}
+function tutChapter(el) {
+  document.querySelectorAll('.ch-item').forEach(function(i){ i.classList.remove('active'); });
+  el.classList.add('active');
+}
+function tutRate(n) {
+  tutRating = n;
+  document.querySelectorAll('.star-btn').forEach(function(btn, i){ btn.classList.toggle('lit', i < n); });
+}
+function tutSubmit() {
+  var txt = document.getElementById('fb-text').value.trim();
+  if(!txt && tutRating === 0) return;
+  var suc = document.getElementById('fb-success');
+  suc.style.display = 'block';
+  document.getElementById('fb-text').value = '';
+  document.querySelectorAll('.star-btn').forEach(function(b){ b.classList.remove('lit'); });
+  tutRating = 0;
+  setTimeout(function(){ suc.style.display='none'; }, 4000);
+}
+function tutSwitch(el, title, mod, dur, author, views, chapters) {
+  document.querySelectorAll('.pl-item').forEach(function(i){
+    i.classList.remove('pl-active');
+    var th = i.querySelector('.pl-thumb');
+    var ti = i.querySelector('.pl-title');
+    var d = i.querySelector('.pl-dur');
+    if(th && i.style.opacity !== '0.5') th.style.background = '';
+    if(ti) ti.style.color = '';
+    if(d) d.style.color = '';
+  });
+  el.classList.add('pl-active');
+  var th = el.querySelector('.pl-thumb');
+  var ti = el.querySelector('.pl-title');
+  var d = el.querySelector('.pl-dur');
+  if(th) th.style.background = 'var(--blue)';
+  if(ti) ti.style.color = 'var(--blue)';
+  if(d) d.style.color = 'var(--blue)';
+  document.getElementById('tut-video-title').textContent = title;
+  document.getElementById('tut-module-badge').textContent = mod;
+  document.getElementById('tut-mod-tag').textContent = mod;
+  document.getElementById('tut-duration').textContent = dur;
+  document.getElementById('tut-author').textContent = author;
+  document.getElementById('tut-views').textContent = views;
+  var cl = document.getElementById('tut-chapters');
+  cl.innerHTML = chapters.map(function(c){
+    return '<div class="ch-item" onclick="tutChapter(this)"><span class="ch-time">'+c.t+'</span><span class="ch-text">'+c.l+'</span></div>';
+  }).join('');
+  if(cl.firstChild) cl.firstChild.classList.add('active');
+}
+
+const PASS='proicere2026';
+function unlock(){
+  const val=document.getElementById('gate-pw').value.trim().toLowerCase();
+  const err=document.getElementById('gate-err');
+  if(val===PASS){
+    document.getElementById('gate').classList.add('hidden');
+    const app=document.getElementById('app');
+    app.style.display='flex';app.style.width='100%';
+    sessionStorage.setItem('pa_auth','1');
+  } else {
+    err.classList.remove('hidden');
+    document.getElementById('gate-pw').value='';
+    document.getElementById('gate-pw').focus();
+    setTimeout(()=>err.classList.add('hidden'),3000);
+  }
+}
+(function(){
+  if(sessionStorage.getItem('pa_auth')==='1'){
+    document.getElementById('gate').classList.add('hidden');
+    const app=document.getElementById('app');
+    app.style.display='flex';app.style.width='100%';
+  }
+})();
+</script>
+</div>
+</body>
+</html>
