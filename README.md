@@ -1,0 +1,1 @@
+# proicere-ai-academy
