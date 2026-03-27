@@ -772,9 +772,10 @@ async function signIn(){
   const email=document.getElementById('si-email').value.trim(),pw=document.getElementById('si-pw').value;
   if(!email||!pw){setAuthErr('Please enter your email and password.');return;}
   const btn=document.getElementById('si-btn');btn.disabled=true;btn.textContent='Signing in…';
-  const {error}=await sb.auth.signInWithPassword({email,password:pw});
-  btn.disabled=false;btn.textContent='Sign in';
-  if(error)setAuthErr(error.message);
+  const {data,error}=await sb.auth.signInWithPassword({email,password:pw});
+  if(error){btn.disabled=false;btn.textContent='Sign in';setAuthErr(error.message);return;}
+  // onAuthStateChange will fire and call tryLoadAndShow — button stays disabled intentionally
+  btn.textContent='Loading your profile…';
 }
 
 async function signUp(){
@@ -837,30 +838,42 @@ async function signOut(){
 sb.auth.onAuthStateChange(async(event,session)=>{
   if(session?.user){
     currentUser=session.user;
-    // Load profile — with email fallback for admin
-    const {data}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
-    currentProfile=data;
-    // If no profile found, wait briefly and try once more
-    if(!currentProfile){
-      await new Promise(r=>setTimeout(r,1000));
-      const {data:d2}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
-      currentProfile=d2;
-    }
-    if(currentProfile){
-      // Email-based admin override — ensures admin access even if DB role is wrong
-      if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((currentProfile.email||'').toLowerCase())){
-        currentProfile.role='admin';
-      }
-      showApp();
-    } else {
-      showToast('Profile not found. Please sign out and sign up again.');
-      await sb.auth.signOut();
-    }
+    await tryLoadAndShow();
   } else {
     document.getElementById('auth-wrap').classList.remove('hidden');
     document.getElementById('app').style.display='none';
   }
 });
+
+async function tryLoadAndShow(){
+  // Try up to 3 times with increasing delays
+  for(let attempt=0;attempt<3;attempt++){
+    try{
+      const {data,error}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
+      if(data&&!error){
+        currentProfile=data;
+        // Email-based admin override
+        if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((currentProfile.email||currentUser.email||'').toLowerCase())){
+          currentProfile.role='admin';
+        }
+        showApp();
+        return;
+      }
+    } catch(e){console.warn('Profile load attempt',attempt+1,'failed:',e);}
+    if(attempt<2)await new Promise(r=>setTimeout(r,800*(attempt+1)));
+  }
+  // Last resort — build a minimal profile from auth data so user isn't locked out
+  currentProfile={
+    id:currentUser.id,
+    full_name:currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'User',
+    email:currentUser.email||'',
+    pod_id:null,
+    role:ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((currentUser.email||'').toLowerCase())?'admin':'member',
+    ai_role:'Member'
+  };
+  showToast('Profile loaded in offline mode — some features may be limited');
+  showApp();
+}
 
 // ── SHOW APP ──
 async function showApp(){
