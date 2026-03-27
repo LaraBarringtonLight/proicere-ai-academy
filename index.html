@@ -621,8 +621,8 @@ Do not add information not present in the report. Use plain, non-jargon language
 <div class="page" id="page-showcase">
   <div class="crumb">proicere-academy / success-stories</div>
   <h1 class="ptitle">Success <span class="hl">Stories</span></h1>
-  <p class="psub" style="margin-bottom:28px">Real workflows from the team — presented monthly, archived here permanently.</p>
-  <div class="empty-state">First success story presentation slot: end of month 1.<br>Each pod presents one workflow end-to-end per month.</div>
+  <p class="psub" style="margin-bottom:28px">Standout use cases selected by pod leads — added automatically when approving a learning log entry.</p>
+  <div id="showcase-content"><div class="loading"><div class="spinner"></div>Loading…</div></div>
 </div>
 
 <!-- TUTORIAL VIDEOS -->
@@ -1296,13 +1296,93 @@ function approvalCard(e,showActions){
     </div>
     ${e.prompt_used?`<div style="background:var(--bg3);border-radius:var(--rs);padding:8px 12px;font-size:12px;color:var(--text2);border-left:3px solid var(--blue);margin-bottom:8px"><strong>Prompt:</strong> ${e.prompt_used}</div>`:''}
     <div style="font-size:11.5px;color:var(--text2);margin-bottom:${showActions?'10':'0'}px"><strong>Worth sharing?</strong> ${e.worth_sharing}</div>
-    ${showActions?`<div style="display:flex;gap:8px"><button class="btn-approve" onclick="reviewLog('${e.id}','approved')">✓ Approve (+5 pts to pod)</button><button class="btn-reject" onclick="reviewLog('${e.id}','rejected')">✗ Don't approve</button></div>`:''}
+    ${showActions?`
+    <div style="background:var(--bg3);border-radius:var(--rs);padding:12px 14px;margin-top:10px;border:1px solid var(--border2);">
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:10px">Approval options — tick what applies</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
+        <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text2);cursor:pointer">
+          <input type="checkbox" id="opt-uc-${e.id}" checked style="width:auto;accent-color:var(--blue);margin-top:2px">
+          <span><strong>Use Case Library</strong> — appears in the searchable use case library for everyone</span>
+        </label>
+        <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text2);cursor:pointer">
+          <input type="checkbox" id="opt-story-${e.id}" style="width:auto;accent-color:var(--purple);margin-top:2px">
+          <span><strong>Success Stories</strong> — featured as a polished success story (use for standout entries)</span>
+        </label>
+        ${e.prompt_used?`<label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text2);cursor:pointer">
+          <input type="checkbox" id="opt-prompt-${e.id}" onchange="togglePromptDomain('${e.id}')" style="width:auto;accent-color:var(--teal);margin-top:2px">
+          <span><strong>Prompt Pack</strong> — adds the prompt to the shared prompt packs library</span>
+        </label>
+        <div id="prompt-domain-${e.id}" style="display:none;margin-left:26px">
+          <label style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em">Prompt domain</label>
+          <select id="prompt-domain-sel-${e.id}" style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-family:var(--font);font-size:13px;padding:6px 10px;outline:none;width:200px;margin-top:4px">
+            <option>Controls</option><option>Comms</option><option>Data</option><option>Reporting</option><option>General</option>
+          </select>
+        </div>`:''}
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-approve" onclick="reviewLog('${e.id}','approved','${e.use_case?.replace(/'/g,"\\'")||''}','${e.pod_id}','${e.tool_used||''}','${e.time_saved||''}','${e.video_url||''}')">✓ Approve (+5 pts to pod)</button>
+        <button class="btn-reject" onclick="reviewLog('${e.id}','rejected')">✗ Don't approve</button>
+      </div>
+    </div>`:''}
   </div>`;
 }
-async function reviewLog(id,status){
-  const {error}=await sb.from('learning_log').update({status,reviewed_by:currentUser.id,reviewed_at:new Date().toISOString()}).eq('id',id);
+// Show/hide prompt domain selector when checkbox ticked
+function togglePromptDomain(entryId){
+  const cb=document.getElementById('opt-prompt-'+entryId);
+  const domain=document.getElementById('prompt-domain-'+entryId);
+  if(cb&&domain)domain.style.display=cb.checked?'':'none';
+}
+
+async function reviewLog(id,status,title='',podId='',tool='',timeSaved='',videoUrl=''){
+  const {error}=await sb.from('learning_log').update({
+    status,reviewed_by:currentUser.id,reviewed_at:new Date().toISOString()
+  }).eq('id',id);
   if(error){showToast('Error: '+error.message);return;}
-  showToast(status==='approved'?'Entry approved — +5 points added to pod':'Entry not approved');
+  if(status==='approved'){
+    const destinations=[];
+    // Always use case library (checked by default)
+    const ucChecked=document.getElementById('opt-uc-'+id);
+    if(!ucChecked||ucChecked.checked)destinations.push('use case library');
+    // Success stories
+    const storyChecked=document.getElementById('opt-story-'+id);
+    if(storyChecked?.checked){
+      destinations.push('success stories');
+      const month=new Date().toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+      await sb.from('success_stories').insert({
+        log_entry_id:id,
+        pod_id:podId?parseInt(podId):null,
+        title:title||'Use case',
+        tool_used:tool,
+        time_saved:timeSaved,
+        video_url:videoUrl||null,
+        presented_month:month
+      });
+    }
+    // Prompt pack
+    const promptChecked=document.getElementById('opt-prompt-'+id);
+    if(promptChecked?.checked){
+      destinations.push('prompt pack');
+      const domain=document.getElementById('prompt-domain-sel-'+id)?.value||'General';
+      // Get full entry for prompt text
+      const {data:entry}=await sb.from('learning_log').select('*').eq('id',id).single();
+      if(entry?.prompt_used){
+        await sb.from('community_prompts').insert({
+          log_entry_id:id,
+          submitted_by:entry.user_id,
+          pod_id:podId?parseInt(podId):null,
+          domain,
+          title:title||entry.use_case||'Prompt',
+          prompt_text:entry.prompt_used,
+          notes:entry.what_happened,
+          time_saved:timeSaved,
+          approved_by:currentUser.id
+        });
+      }
+    }
+    showToast('Approved — added to: '+destinations.join(', ')+' · +5 pts to pod');
+  } else {
+    showToast('Entry not approved');
+  }
   loadApprovals();loadPendingCount();loadLeaderboard();initUCLibrary();loadTeamVideos();loadHomeStats();
 }
 
@@ -1516,6 +1596,73 @@ function go(id,el){
   if(id==='tutorials')loadTeamVideos();
   if(id==='challenges')renderChalAdminPanel();
 }
+// ── SUCCESS STORIES ──
+async function loadSuccessStories(){
+  const el=document.getElementById('showcase-content');
+  if(!el)return;
+  try{
+    const {data}=await sb.from('success_stories').select('*').order('created_at',{ascending:false});
+    if(!data?.length){
+      el.innerHTML='<div class="empty-state">No success stories yet. When approving a learning log entry, tick "Success Stories" to feature it here.</div>';
+      return;
+    }
+    el.innerHTML=data.map(s=>`
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px;display:flex;gap:16px">
+        <div style="font-size:10px;color:var(--text3);writing-mode:vertical-rl;transform:rotate(180deg);min-width:20px;font-family:var(--mono)">${s.presented_month||'—'}</div>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px">${s.title}</div>
+          ${s.description?`<div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px">${s.description}</div>`:''}
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            ${s.time_saved&&s.time_saved!=='N/A'?`<span class="badge b-teal">${s.time_saved} saved</span>`:''}
+            ${s.pod_id?`<span class="badge b-blue">Pod ${s.pod_id}</span>`:''}
+            ${s.tool_used?`<span class="badge b-amber">${s.tool_used}</span>`:''}
+            ${s.video_url?`<a href="${s.video_url}" target="_blank" style="font-size:11px;padding:2px 8px;border-radius:4px;background:var(--purple-bg);color:var(--purple);text-decoration:none">▶ Watch</a>`:''}
+          </div>
+        </div>
+      </div>`).join('');
+  }catch(e){
+    el.innerHTML=`<div class="empty-state">Error loading: ${e.message}</div>`;
+  }
+}
+
+// ── COMMUNITY PROMPTS — load from DB and merge with static prompts ──
+async function loadCommunityPrompts(){
+  try{
+    const {data}=await sb.from('community_prompts').select('*').order('created_at',{ascending:false});
+    if(!data?.length)return;
+    const grid=document.getElementById('prompt-grid');
+    if(!grid)return;
+    // Add community prompts before the "add" card
+    const addCard=grid.querySelector('.add-prompt-card');
+    data.forEach(p=>{
+      // Don't add duplicates
+      if(document.getElementById('cp-'+p.id))return;
+      const card=document.createElement('div');
+      card.className='prompt-card';
+      card.id='cp-'+p.id;
+      card.dataset.domain=p.domain||'General';
+      const domainBadge={Controls:'b-blue',Comms:'b-purple',Data:'b-red',Reporting:'b-amber',General:'b-teal'}[p.domain]||'b-blue';
+      card.innerHTML=`
+        <div class="prompt-header" onclick="togglePrompt(this)">
+          <span class="badge ${domainBadge}">${p.domain||'General'}</span>
+          <div class="prompt-title">${p.title}</div>
+          <span class="prompt-expand">▼</span>
+        </div>
+        <div class="prompt-body">
+          <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+            <span class="badge b-teal">From team</span>
+            ${p.time_saved&&p.time_saved!=='N/A'?`<span class="badge b-amber">${p.time_saved} saved</span>`:''}
+            ${p.pod_id?`<span style="font-size:11px;color:var(--text3)">Pod ${p.pod_id}</span>`:''}
+          </div>
+          <div class="prompt-code">${p.prompt_text}<button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+          ${p.notes?`<div class="prompt-note">${p.notes}</div>`:''}
+        </div>`;
+      if(addCard)grid.insertBefore(card,addCard);
+      else grid.appendChild(card);
+    });
+  }catch(e){console.warn('Could not load community prompts',e);}
+}
+
 function showToast(msg){const t=document.getElementById('toast');document.getElementById('tmsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 </script>
 </div>
