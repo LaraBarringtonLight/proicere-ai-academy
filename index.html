@@ -1600,10 +1600,24 @@ function go(id,el){
 async function loadSuccessStories(){
   const el=document.getElementById('showcase-content');
   if(!el)return;
+  el.innerHTML='<div class="loading"><div class="spinner"></div>Loading…</div>';
   try{
-    const {data}=await sb.from('success_stories').select('*').order('created_at',{ascending:false});
-    if(!data?.length){
-      el.innerHTML='<div class="empty-state">No success stories yet. When approving a learning log entry, tick "Success Stories" to feature it here.</div>';
+    const {data,error}=await Promise.race([
+      sb.from('success_stories').select('*').order('created_at',{ascending:false}),
+      new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),4000))
+    ]);
+    if(error||!data?.length){
+      el.innerHTML=`
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:32px;margin-bottom:16px">
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px">How Success Stories work</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:16px">When approving a learning log entry, tick <strong>"Success Stories"</strong> to feature it here. Use this for standout entries — the ones worth sharing with the whole company.</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2)"><span style="width:22px;height:22px;border-radius:50%;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">1</span>Someone submits a learning log entry</div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2)"><span style="width:22px;height:22px;border-radius:50%;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">2</span>Pod lead opens Approvals and ticks "Success Stories"</div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2)"><span style="width:22px;height:22px;border-radius:50%;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">3</span>Entry appears here automatically</div>
+          </div>
+        </div>
+        <div class="empty-state">No success stories yet — the first one will appear here as soon as a pod lead approves an entry with "Success Stories" ticked.</div>`;
       return;
     }
     el.innerHTML=data.map(s=>`
@@ -1621,7 +1635,18 @@ async function loadSuccessStories(){
         </div>
       </div>`).join('');
   }catch(e){
-    el.innerHTML=`<div class="empty-state">Error loading: ${e.message}</div>`;
+    // Table doesn't exist yet or timed out — show empty state instead of error
+    document.getElementById('showcase-content').innerHTML=`
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:32px;margin-bottom:16px">
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px">How Success Stories work</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:16px">When approving a learning log entry, tick <strong>"Success Stories"</strong> to feature it here.</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2)"><span style="width:22px;height:22px;border-radius:50%;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">1</span>Someone submits a learning log entry</div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2)"><span style="width:22px;height:22px;border-radius:50%;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">2</span>Pod lead opens Approvals and ticks "Success Stories"</div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2)"><span style="width:22px;height:22px;border-radius:50%;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">3</span>Entry appears here automatically</div>
+        </div>
+      </div>
+      <div class="empty-state">No success stories yet — the first one will appear here as soon as a pod lead approves an entry with "Success Stories" ticked.<br><br><small style="color:var(--text3)">Note: run the success_stories SQL in Supabase if you haven't already.</small></div>`;
   }
 }
 
