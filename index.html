@@ -627,11 +627,11 @@ Do not add information not present in the report. Use plain, non-jargon language
   <h1 class="ptitle">Tutorial <span class="hl">Videos</span></h1>
   <p class="psub" style="margin-bottom:24px">Academy walkthroughs and team recordings. Videos from approved learning log entries appear here automatically.</p>
   <div class="filter-bar">
-    <button class="filter-pill active" onclick="filterVids(this)">All</button>
-    <button class="filter-pill" onclick="filterVids(this)">Foundations</button>
-    <button class="filter-pill" onclick="filterVids(this)">Controls</button>
-    <button class="filter-pill" onclick="filterVids(this)">Comms</button>
-    <button class="filter-pill" onclick="filterVids(this)">Data</button>
+    <button class="filter-pill active" onclick="filterVids(this,'all')">All</button>
+    <button class="filter-pill" onclick="filterVids(this,'Foundations')">Foundations</button>
+    <button class="filter-pill" onclick="filterVids(this,'Controls')">Controls</button>
+    <button class="filter-pill" onclick="filterVids(this,'Comms')">Comms</button>
+    <button class="filter-pill" onclick="filterVids(this,'Data')">Data</button>
   </div>
   <div class="sec-label">Academy starter videos</div>
   <div class="vid-grid">
@@ -1515,7 +1515,24 @@ async function loadTeamVideos(){
   if(grid)grid.style.display='';if(empty)empty.style.display='none';
   if(grid)grid.innerHTML=vids.map(v=>`<div class="vid-card"><div class="vid-thumb" onclick="openVideo('${v.video_url}')"><div class="vid-tag">Pod ${v.pod_id}</div><div class="vid-play"><div class="vid-tri"></div></div></div><div class="vid-info"><div class="vid-title">${v.use_case}</div><div class="vid-meta"><span class="badge b-teal">${v.time_saved}</span><span>${v.tool_used}</span><a href="${v.video_url}" target="_blank" style="margin-left:auto;font-size:11px;color:var(--blue);text-decoration:none">Open ↗</a></div></div></div>`).join('');
 }
-function filterVids(btn){document.querySelectorAll('#page-tutorials .filter-pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');}
+function filterVids(btn,cat){
+  document.querySelectorAll('#page-tutorials .filter-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  // Filter the static academy cards
+  document.querySelectorAll('#page-tutorials .vid-card').forEach(card=>{
+    const tag=card.querySelector('.vid-tag, .badge')?.textContent?.trim()||'';
+    const meta=card.querySelector('.vid-meta')?.textContent||'';
+    if(cat==='all'){card.style.display='';return;}
+    const match=meta.toLowerCase().includes(cat.toLowerCase())||tag.toLowerCase().includes(cat.toLowerCase());
+    card.style.display=match?'':'none';
+  });
+  // Filter team video cards
+  document.querySelectorAll('#team-vids-grid .vid-card').forEach(card=>{
+    if(cat==='all'){card.style.display='';return;}
+    const meta=card.querySelector('.vid-meta')?.textContent||'';
+    card.style.display=meta.toLowerCase().includes(cat.toLowerCase())?'':'none';
+  });
+}
 async function submitVideo(){
   const title=document.getElementById('vid-title').value.trim(),cat=document.getElementById('vid-cat').value,url=document.getElementById('vid-url').value.trim(),desc=document.getElementById('vid-desc').value.trim();
   if(!title||!cat||!url){showToast('Please fill in title, category, and video link.');return;}
