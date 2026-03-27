@@ -238,12 +238,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .vid-info{padding:12px 14px;}
 .vid-title{font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:4px;}
 .vid-meta{font-size:11.5px;color:var(--text3);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-/* HONOUR CARDS */
 .honour-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:28px;}
 .honour-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px;position:relative;}
 .honour-edit-btn{position:absolute;top:12px;right:12px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text3);font-size:11px;padding:3px 8px;cursor:pointer;font-family:var(--font);}
 .honour-edit-btn:hover{background:var(--blue-bg);color:var(--blue);border-color:var(--blue);}
-/* ADMIN PANEL */
 .admin-panel{background:rgba(245,200,66,.06);border:1px solid rgba(245,200,66,.2);border-radius:var(--r);padding:20px;margin-bottom:20px;}
 .admin-panel-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:4px;}
 .admin-panel-sub{font-size:12.5px;color:var(--text2);margin-bottom:16px;}
@@ -253,7 +251,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .status-btn.active-btn{background:var(--blue-bg);border-color:var(--blue);color:var(--blue);}
 .status-btn.done-btn{background:var(--teal-bg);border-color:var(--teal);color:var(--teal);}
 .status-btn.upcoming-btn{background:var(--amber-bg);border-color:var(--amber);color:var(--amber);}
-/* MODAL */
 .modal-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9990;align-items:center;justify-content:center;padding:20px;}
 .modal-wrap.open{display:flex;}
 .modal-card{background:#fff;border-radius:14px;padding:28px;width:100%;max-width:480px;display:flex;flex-direction:column;gap:14px;}
@@ -598,7 +595,6 @@ Do not add information not present in the report. Use plain, non-jargon language
   <div class="crumb">proicere-academy / ai-challenges</div>
   <h1 class="ptitle">AI <span class="hl">Challenges</span></h1>
   <p class="psub" style="margin-bottom:28px">One challenge every fortnight. Submit to earn your pod <strong>+3 points instantly</strong>.</p>
-  <!-- ADMIN: challenge status panel (only visible to leads/admins) -->
   <div id="chal-admin-panel" style="display:none"></div>
   <div class="tab-row" id="chal-tabs">
     <button class="tab active" data-filter="all" onclick="filterChal(this,'all')">All</button>
@@ -694,8 +690,6 @@ Do not add information not present in the report. Use plain, non-jargon language
 </div>
 
 <script>
-// ── CONFIG ──
-// Add your email here to get admin access automatically on sign-up
 const ADMIN_EMAILS=['lara.barringtonlight@proiceredigital.com'];
 
 const {createClient}=supabase;
@@ -718,7 +712,6 @@ const podAssignments={
   'Pod 6':{lead:['Matthew Seddon'],members:['Matthew Seddon','Dimitrios Savvopoulos','Canice Murray']}
 };
 
-// Base challenge data — statuses are overridden by Supabase challenge_status table
 const challengesBase=[
   {id:1,fort:'Fortnight 1',domain:'Comms',domainClass:'b-purple',
    title:'Summarise a real meeting you had this week',
@@ -749,11 +742,9 @@ const awardTypes=[
   {type:'improved',label:'Most improved',icon:'📈',borderColor:'rgba(90,200,122,.25)',iconBg:'var(--green-bg)'}
 ];
 
-// ── AUTH ──
 function isAdmin(){
   if(!currentProfile)return false;
   if(currentProfile.role==='admin'||currentProfile.role==='lead')return true;
-  // Email fallback in case Supabase role not set
   return ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((currentProfile.email||'').toLowerCase());
 }
 
@@ -774,7 +765,6 @@ async function signIn(){
   const btn=document.getElementById('si-btn');btn.disabled=true;btn.textContent='Signing in…';
   const {data,error}=await sb.auth.signInWithPassword({email,password:pw});
   if(error){btn.disabled=false;btn.textContent='Sign in';setAuthErr(error.message);return;}
-  // onAuthStateChange will fire and call tryLoadAndShow — button stays disabled intentionally
   btn.textContent='Loading your profile…';
 }
 
@@ -834,7 +824,6 @@ async function signOut(){
   switchAuthTab('signin');
 }
 
-// ── AUTH STATE CHANGE ──
 sb.auth.onAuthStateChange(async(event,session)=>{
   if(session?.user){
     currentUser=session.user;
@@ -847,23 +836,19 @@ sb.auth.onAuthStateChange(async(event,session)=>{
 
 async function tryLoadAndShow(){
   const btn=document.getElementById('si-btn');
-  // Try up to 3 times with increasing delays
   for(let attempt=0;attempt<3;attempt++){
     try{
       if(btn)btn.textContent=`Loading profile… (attempt ${attempt+1}/3)`;
       const {data,error}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
       if(data&&!error){
         currentProfile=data;
-        // Email-based admin override
         if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((currentProfile.email||currentUser.email||'').toLowerCase())){
           currentProfile.role='admin';
         }
         showApp();
         return;
       }
-      // Profile doesn't exist yet — create it now from auth metadata
       if(error?.code==='PGRST116'){
-        // No row found — auto-create a basic profile so user isn't locked out
         if(btn)btn.textContent='Creating your profile…';
         const isAdminEmail=ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((currentUser.email||'').toLowerCase());
         const {data:newProfile,error:insertError}=await sb.from('profiles').insert({
@@ -884,7 +869,6 @@ async function tryLoadAndShow(){
     } catch(e){console.warn('Profile load attempt',attempt+1,'failed:',e);}
     if(attempt<2)await new Promise(r=>setTimeout(r,1000*(attempt+1)));
   }
-  // All attempts failed — use fallback profile so user can still get in
   if(btn){btn.disabled=false;btn.textContent='Sign in';}
   currentProfile={
     id:currentUser.id,
@@ -898,11 +882,9 @@ async function tryLoadAndShow(){
   showToast('Signed in — profile sync limited. Check Supabase profiles table.');
 }
 
-// ── SHOW APP ──
 async function showApp(){
   document.getElementById('auth-wrap').classList.add('hidden');
   document.getElementById('app').style.display='flex';
-  // Sidebar — populated synchronously
   const parts=currentProfile.full_name.trim().split(' ');
   const initials=((parts[0]||'?')[0]+(parts[parts.length-1]||'?')[0]).toUpperCase();
   document.getElementById('s-av').textContent=initials;
@@ -916,7 +898,6 @@ async function showApp(){
     document.getElementById('wof-admin-hint').style.display='';
     loadPendingCount();
   }
-  // Load data
   await Promise.all([loadModuleProgress(),loadChalSubmissions(),loadHomeStats(),loadChallengeStatuses()]);
   renderHomeModules();
   renderModules();
@@ -928,7 +909,6 @@ async function showApp(){
   if(isAdmin())renderChalAdminPanel();
 }
 
-// ── DATA ──
 async function loadModuleProgress(){
   const {data}=await sb.from('module_progress').select('*').eq('user_id',currentUser.id);
   userModuleProgress={};(data||[]).forEach(r=>userModuleProgress[r.module_number]=r);
@@ -954,12 +934,10 @@ async function loadPendingCount(){
   if(count>0){badge.style.display='';badge.textContent=count;}else badge.style.display='none';
 }
 
-// ── CHALLENGE STATUSES ──
 async function loadChallengeStatuses(){
   const {data}=await sb.from('challenge_status').select('*');
   challengeStatuses={};
   (data||[]).forEach(r=>challengeStatuses[r.challenge_id]=r.status);
-  // Defaults for any not yet in DB
   challengesBase.forEach(c=>{if(!challengeStatuses[c.id])challengeStatuses[c.id]=c.defaultStatus;});
 }
 function getChallengeStatus(id){return challengeStatuses[id]||'upcoming';}
@@ -991,10 +969,8 @@ function renderChalAdminPanel(){
   </div>`;
 }
 
-// ── WALL OF FAME ──
 async function loadWallOfFame(){
   const {data}=await sb.from('wall_of_fame').select('*').order('created_at',{ascending:false});
-  // Latest entry per award type per month
   wofEntries={};
   (data||[]).forEach(e=>{
     const key=e.month_label+'|'+e.award_type;
@@ -1025,7 +1001,6 @@ function renderWallOfFame(){
         </div>`;
       }).join('')}
     </div>`).join('');
-  // Add new month button for admins
   if(isAdmin()){
     el.innerHTML+=`<button onclick="openHonourModal('use_case','')" style="background:transparent;border:1px dashed var(--border2);border-radius:var(--r);padding:14px 20px;color:var(--text3);font-size:13px;cursor:pointer;width:100%;font-family:var(--font)">+ Add awards for a new month</button>`;
   }
@@ -1033,8 +1008,8 @@ function renderWallOfFame(){
 
 function openHonourModal(awardType,month){
   const a=awardTypes.find(x=>x.type===awardType);
-  document.getElementById('hm-title').textContent='Edit — '+( a?.label||'Award');
-  document.getElementById('hm-sub').textContent='Update the winner for '+( month||'this month')+'.';
+  document.getElementById('hm-title').textContent='Edit — '+(a?.label||'Award');
+  document.getElementById('hm-sub').textContent='Update the winner for '+(month||'this month')+'.';
   document.getElementById('hm-award-type').value=awardType;
   document.getElementById('hm-month').value=month||'April 2026';
   const existing=wofEntries[month+'|'+awardType];
@@ -1058,7 +1033,6 @@ async function saveHonour(){
   loadWallOfFame();
 }
 
-// ── MODULES ──
 const modulesData=[
   {n:1,name:'AI Foundations',desc:'What AI is and isn\'t. How LLMs work. Responsible use principles.',weeks:'Weeks 1–2',status:'active',
    intro:'What AI actually is — and what it isn\'t. This module builds a clear mental model of how large language models work, where they are reliable, where they fall short, and how to use them responsibly in a professional consultancy context.',
@@ -1195,7 +1169,6 @@ async function checkQuizComplete(modN){
   }
 }
 
-// ── LEARNING LOG ──
 function renderWeekSelector(){
   document.getElementById('week-sel').innerHTML=[1,2,3,4].map(w=>`<button class="week-btn${w===selectedWeekNum?' active':''}" onclick="selWeek(this,${w})">Wk ${w}</button>`).join('');
   document.getElementById('log-form-title').textContent=`New entry — ${currentProfile?.full_name||''} · ${currentProfile?.pod_id?'Pod '+currentProfile.pod_id:'Admin'}`;
@@ -1241,7 +1214,6 @@ async function loadMyLogEntries(){
   </div>`).join('');
 }
 
-// ── USE CASE LIBRARY ──
 async function initUCLibrary(){
   const {data}=await sb.from('learning_log').select('*').eq('status','approved').order('created_at',{ascending:false});
   allUCData=data||[];renderUCTable();
@@ -1260,7 +1232,6 @@ function renderUCTable(){
 function filterUC(btn,domain){document.querySelectorAll('#page-usecases .filter-pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');ucFilter=domain;renderUCTable();}
 function searchUC(v){ucSearch=v;renderUCTable();}
 
-// ── APPROVALS ──
 async function loadApprovals(){
   const el=document.getElementById('approvals-content');
   el.innerHTML='<div class="loading"><div class="spinner"></div>Loading…</div>';
@@ -1326,7 +1297,6 @@ function approvalCard(e,showActions){
     </div>`:''}
   </div>`;
 }
-// Show/hide prompt domain selector when checkbox ticked
 function togglePromptDomain(entryId){
   const cb=document.getElementById('opt-prompt-'+entryId);
   const domain=document.getElementById('prompt-domain-'+entryId);
@@ -1340,10 +1310,8 @@ async function reviewLog(id,status,title='',podId='',tool='',timeSaved='',videoU
   if(error){showToast('Error: '+error.message);return;}
   if(status==='approved'){
     const destinations=[];
-    // Always use case library (checked by default)
     const ucChecked=document.getElementById('opt-uc-'+id);
     if(!ucChecked||ucChecked.checked)destinations.push('use case library');
-    // Success stories
     const storyChecked=document.getElementById('opt-story-'+id);
     if(storyChecked?.checked){
       destinations.push('success stories');
@@ -1358,12 +1326,10 @@ async function reviewLog(id,status,title='',podId='',tool='',timeSaved='',videoU
         presented_month:month
       });
     }
-    // Prompt pack
     const promptChecked=document.getElementById('opt-prompt-'+id);
     if(promptChecked?.checked){
       destinations.push('prompt pack');
       const domain=document.getElementById('prompt-domain-sel-'+id)?.value||'General';
-      // Get full entry for prompt text
       const {data:entry}=await sb.from('learning_log').select('*').eq('id',id).single();
       if(entry?.prompt_used){
         await sb.from('community_prompts').insert({
@@ -1386,9 +1352,6 @@ async function reviewLog(id,status,title='',podId='',tool='',timeSaved='',videoU
   loadApprovals();loadPendingCount();loadLeaderboard();initUCLibrary();loadTeamVideos();loadHomeStats();
 }
 
-function getChallengeStatus(id){return challengeStatuses[id]||'upcoming';}
-
-// ── CHALLENGES ──
 async function renderChallenges(filter){
   currentChalFilter=filter;
   document.querySelectorAll('#chal-tabs .tab').forEach(t=>t.classList.toggle('active',t.dataset.filter===filter));
@@ -1457,29 +1420,20 @@ async function submitChallenge(id){
   renderChallenges(currentChalFilter);loadLeaderboard();loadHomeStats();
 }
 
-// ── LEADERBOARD — includes module points ──
 async function loadLeaderboard(){
   const [{data:allLogs},{data:allChals},{data:allMods}]=await Promise.all([
     sb.from('learning_log').select('pod_id').eq('status','approved'),
     sb.from('challenge_submissions').select('pod_id'),
     sb.from('module_progress').select('user_id').eq('quiz_passed',true)
   ]);
-  // Build user→pod map from static data
-  const userPodMap={};
-  Object.entries(podAssignments).forEach(([podName,data])=>{
-    const podNum=parseInt(podName.replace('Pod ',''));
-    data.members.forEach(name=>userPodMap[name]=podNum);
-  });
   podData=[];
   for(let i=1;i<=6;i++){
     const members=podAssignments['Pod '+i]?.members||[];
     const logs=(allLogs||[]).filter(l=>l.pod_id===i).length;
     const chals=(allChals||[]).filter(c=>c.pod_id===i).length;
-    // Module points — we count all quiz passes (can't map user_id to pod without DB query, so track per-pod from challenge/log pod_id)
     const score=logs*5+chals*3;
     podData.push({name:'Pod '+i,members:members.join(', '),score,uc:logs,chals,mods:0});
   }
-  // Add module points from current user's pod
   const {data:myMods}=await sb.from('module_progress').select('*').eq('user_id',currentUser.id).eq('quiz_passed',true);
   if(myMods?.length&&currentProfile?.pod_id){
     const myPodIdx=podData.findIndex(p=>p.name==='Pod '+currentProfile.pod_id);
@@ -1506,7 +1460,6 @@ function renderHomeLB(){
 }
 function switchLbTab(btn,key){document.querySelectorAll('#page-leaderboard .tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');lbSortKey=key;renderLB();}
 
-// ── MY POD — fixed with better error handling ──
 async function loadMyPod(){
   const podNum=currentProfile.pod_id;
   if(!podNum){
@@ -1522,7 +1475,6 @@ async function loadMyPod(){
   const colours=['var(--blue)','var(--teal)','var(--amber)','var(--purple)','var(--coral)','var(--green)'];
   const col=colours[(podNum-1)%colours.length];
   const roles=['Digital Lead','Specialist','Willing Learner'];
-  // Render members immediately from static data — don't wait for DB
   document.getElementById('mypod-content').innerHTML=`
     <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:20px">
       <div class="sec-label" style="margin-bottom:12px">Members</div>
@@ -1538,7 +1490,6 @@ async function loadMyPod(){
       <div class="stat"><div class="stat-n" style="color:var(--purple)">${members.length}</div><div class="stat-l">Members</div></div>
     </div>
     <div id="pod-usecases"><div class="loading"><div class="spinner"></div>Loading use cases…</div></div>`;
-  // Then load stats async
   try{
     const [{data:logs},{data:chals}]=await Promise.all([
       sb.from('learning_log').select('*').eq('pod_id',podNum).eq('status','approved'),
@@ -1556,7 +1507,6 @@ async function loadMyPod(){
   }
 }
 
-// ── TUTORIALS ──
 async function loadTeamVideos(){
   const {data}=await sb.from('learning_log').select('*').eq('status','approved').not('video_url','is',null).order('created_at',{ascending:false});
   const vids=data||[];
@@ -1577,26 +1527,10 @@ async function submitVideo(){
 function openVideo(url){if(!url)return;document.getElementById('vid-iframe').src=url;document.getElementById('vid-modal').classList.add('open');}
 function closeVideo(){document.getElementById('vid-modal').classList.remove('open');document.getElementById('vid-iframe').src='';}
 
-// ── PROMPTS ──
 function filterPrompts(btn,domain){document.querySelectorAll('#page-prompts .filter-pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('#prompt-grid .prompt-card[data-domain]').forEach(card=>{card.classList.toggle('hidden-filter',domain!=='all'&&card.dataset.domain!==domain);});}
 function togglePrompt(hdr){hdr.closest('.prompt-card').classList.toggle('open');}
 function copyPrompt(btn){const code=btn.closest('.prompt-code').innerText.replace('Copy','').trim();navigator.clipboard.writeText(code).then(()=>showToast('Prompt copied to clipboard'));}
 
-// ── NAVIGATION ──
-function go(id,el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));
-  const page=document.getElementById('page-'+id);if(page)page.classList.add('active');
-  if(el)el.classList.add('active');
-  if(id==='log')loadMyLogEntries();
-  if(id==='usecases')initUCLibrary();
-  if(id==='approvals'&&isAdmin())loadApprovals();
-  if(id==='mypod')loadMyPod();
-  if(id==='leaderboard')loadLeaderboard();
-  if(id==='tutorials')loadTeamVideos();
-  if(id==='challenges')renderChalAdminPanel();
-}
-// ── SUCCESS STORIES ──
 async function loadSuccessStories(){
   const el=document.getElementById('showcase-content');
   if(!el)return;
@@ -1635,8 +1569,7 @@ async function loadSuccessStories(){
         </div>
       </div>`).join('');
   }catch(e){
-    // Table doesn't exist yet or timed out — show empty state instead of error
-    document.getElementById('showcase-content').innerHTML=`
+    el.innerHTML=`
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:32px;margin-bottom:16px">
         <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px">How Success Stories work</div>
         <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:16px">When approving a learning log entry, tick <strong>"Success Stories"</strong> to feature it here.</div>
@@ -1646,21 +1579,18 @@ async function loadSuccessStories(){
           <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2)"><span style="width:22px;height:22px;border-radius:50%;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">3</span>Entry appears here automatically</div>
         </div>
       </div>
-      <div class="empty-state">No success stories yet — the first one will appear here as soon as a pod lead approves an entry with "Success Stories" ticked.<br><br><small style="color:var(--text3)">Note: run the success_stories SQL in Supabase if you haven't already.</small></div>`;
+      <div class="empty-state">No success stories yet.<br><br><small style="color:var(--text3)">Note: run the success_stories SQL in Supabase if you haven't already.</small></div>`;
   }
 }
 
-// ── COMMUNITY PROMPTS — load from DB and merge with static prompts ──
 async function loadCommunityPrompts(){
   try{
     const {data}=await sb.from('community_prompts').select('*').order('created_at',{ascending:false});
     if(!data?.length)return;
     const grid=document.getElementById('prompt-grid');
     if(!grid)return;
-    // Add community prompts before the "add" card
     const addCard=grid.querySelector('.add-prompt-card');
     data.forEach(p=>{
-      // Don't add duplicates
       if(document.getElementById('cp-'+p.id))return;
       const card=document.createElement('div');
       card.className='prompt-card';
@@ -1686,6 +1616,22 @@ async function loadCommunityPrompts(){
       else grid.appendChild(card);
     });
   }catch(e){console.warn('Could not load community prompts',e);}
+}
+
+// ── NAVIGATION — fixed with showcase ──
+function go(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));
+  const page=document.getElementById('page-'+id);if(page)page.classList.add('active');
+  if(el)el.classList.add('active');
+  if(id==='log')loadMyLogEntries();
+  if(id==='usecases')initUCLibrary();
+  if(id==='approvals'&&isAdmin())loadApprovals();
+  if(id==='mypod')loadMyPod();
+  if(id==='leaderboard')loadLeaderboard();
+  if(id==='tutorials')loadTeamVideos();
+  if(id==='challenges')renderChalAdminPanel();
+  if(id==='showcase')loadSuccessStories();
 }
 
 function showToast(msg){const t=document.getElementById('toast');document.getElementById('tmsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
