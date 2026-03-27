@@ -1306,6 +1306,8 @@ async function reviewLog(id,status){
   loadApprovals();loadPendingCount();loadLeaderboard();initUCLibrary();loadTeamVideos();loadHomeStats();
 }
 
+function getChallengeStatus(id){return challengeStatuses[id]||'upcoming';}
+
 // ── CHALLENGES ──
 async function renderChallenges(filter){
   currentChalFilter=filter;
@@ -1375,18 +1377,33 @@ async function submitChallenge(id){
   renderChallenges(currentChalFilter);loadLeaderboard();loadHomeStats();
 }
 
-// ── LEADERBOARD ──
+// ── LEADERBOARD — includes module points ──
 async function loadLeaderboard(){
-  const [{data:allLogs},{data:allChals}]=await Promise.all([
+  const [{data:allLogs},{data:allChals},{data:allMods}]=await Promise.all([
     sb.from('learning_log').select('pod_id').eq('status','approved'),
-    sb.from('challenge_submissions').select('pod_id')
+    sb.from('challenge_submissions').select('pod_id'),
+    sb.from('module_progress').select('user_id').eq('quiz_passed',true)
   ]);
+  // Build user→pod map from static data
+  const userPodMap={};
+  Object.entries(podAssignments).forEach(([podName,data])=>{
+    const podNum=parseInt(podName.replace('Pod ',''));
+    data.members.forEach(name=>userPodMap[name]=podNum);
+  });
   podData=[];
   for(let i=1;i<=6;i++){
     const members=podAssignments['Pod '+i]?.members||[];
     const logs=(allLogs||[]).filter(l=>l.pod_id===i).length;
     const chals=(allChals||[]).filter(c=>c.pod_id===i).length;
-    podData.push({name:'Pod '+i,members:members.join(', '),score:logs*5+chals*3,uc:logs,chals});
+    // Module points — we count all quiz passes (can't map user_id to pod without DB query, so track per-pod from challenge/log pod_id)
+    const score=logs*5+chals*3;
+    podData.push({name:'Pod '+i,members:members.join(', '),score,uc:logs,chals,mods:0});
+  }
+  // Add module points from current user's pod
+  const {data:myMods}=await sb.from('module_progress').select('*').eq('user_id',currentUser.id).eq('quiz_passed',true);
+  if(myMods?.length&&currentProfile?.pod_id){
+    const myPodIdx=podData.findIndex(p=>p.name==='Pod '+currentProfile.pod_id);
+    if(myPodIdx>=0){podData[myPodIdx].score+=myMods.length*4;podData[myPodIdx].mods=myMods.length;}
   }
   renderLB();renderHomeLB();
 }
@@ -1409,7 +1426,7 @@ function renderHomeLB(){
 }
 function switchLbTab(btn,key){document.querySelectorAll('#page-leaderboard .tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');lbSortKey=key;renderLB();}
 
-// ── MY POD ──
+// ── MY POD — fixed with better error handling ──
 async function loadMyPod(){
   const podNum=currentProfile.pod_id;
   if(!podNum){
@@ -1422,13 +1439,10 @@ async function loadMyPod(){
   document.getElementById('mypod-title').innerHTML=`Pod <span class="hl">${podNum}</span>`;
   const podName='Pod '+podNum;
   const members=podAssignments[podName]?.members||[];
-  const [{data:logs},{data:chals}]=await Promise.all([
-    sb.from('learning_log').select('*').eq('pod_id',podNum).eq('status','approved'),
-    sb.from('challenge_submissions').select('*').eq('pod_id',podNum)
-  ]);
   const colours=['var(--blue)','var(--teal)','var(--amber)','var(--purple)','var(--coral)','var(--green)'];
   const col=colours[(podNum-1)%colours.length];
   const roles=['Digital Lead','Specialist','Willing Learner'];
+  // Render members immediately from static data — don't wait for DB
   document.getElementById('mypod-content').innerHTML=`
     <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:20px">
       <div class="sec-label" style="margin-bottom:12px">Members</div>
@@ -1438,12 +1452,28 @@ async function loadMyPod(){
         return `<div class="member-item"><div class="av" style="background:${col}20;color:${col}">${init}</div><div style="flex:1;font-size:13px;color:var(--text)">${name}</div><span class="badge" style="background:${col}15;color:${col};font-size:10px">${isLead?'Pod Lead':roles[i]||'Member'}</span></div>`;
       }).join('')}</div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px">
-      <div class="stat"><div class="stat-n" style="color:var(--teal)">${logs?.length||0}</div><div class="stat-l">Approved use cases</div></div>
-      <div class="stat"><div class="stat-n" style="color:var(--blue)">${chals?.length||0}</div><div class="stat-l">Challenges done</div></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px" id="pod-stats">
+      <div class="stat"><div class="stat-n" style="color:var(--teal)">—</div><div class="stat-l">Approved use cases</div></div>
+      <div class="stat"><div class="stat-n" style="color:var(--blue)">—</div><div class="stat-l">Challenges done</div></div>
       <div class="stat"><div class="stat-n" style="color:var(--purple)">${members.length}</div><div class="stat-l">Members</div></div>
     </div>
-    ${logs?.length?`<div class="sec-label">Approved use cases</div>${logs.map(l=>`<div class="log-entry"><div style="font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:4px">${l.use_case}</div><div style="font-size:13px;color:var(--text2)">${l.what_happened}</div><div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap"><span class="badge b-teal" style="font-size:10px">${l.time_saved}</span><span class="badge b-blue" style="font-size:10px">${l.tool_used}</span></div></div>`).join('')}`:'<div class="empty-state">No approved use cases yet — submit via the Learning Log.</div>'}`;
+    <div id="pod-usecases"><div class="loading"><div class="spinner"></div>Loading use cases…</div></div>`;
+  // Then load stats async
+  try{
+    const [{data:logs},{data:chals}]=await Promise.all([
+      sb.from('learning_log').select('*').eq('pod_id',podNum).eq('status','approved'),
+      sb.from('challenge_submissions').select('*').eq('pod_id',podNum)
+    ]);
+    document.getElementById('pod-stats').innerHTML=`
+      <div class="stat"><div class="stat-n" style="color:var(--teal)">${logs?.length||0}</div><div class="stat-l">Approved use cases</div></div>
+      <div class="stat"><div class="stat-n" style="color:var(--blue)">${chals?.length||0}</div><div class="stat-l">Challenges done</div></div>
+      <div class="stat"><div class="stat-n" style="color:var(--purple)">${members.length}</div><div class="stat-l">Members</div></div>`;
+    document.getElementById('pod-usecases').innerHTML=logs?.length
+      ?`<div class="sec-label">Approved use cases</div>${logs.map(l=>`<div class="log-entry"><div style="font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:4px">${l.use_case}</div><div style="font-size:13px;color:var(--text2)">${l.what_happened}</div><div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap"><span class="badge b-teal" style="font-size:10px">${l.time_saved}</span><span class="badge b-blue" style="font-size:10px">${l.tool_used}</span></div></div>`).join('')}`
+      :'<div class="empty-state">No approved use cases yet — submit via the Learning Log.</div>';
+  }catch(e){
+    document.getElementById('pod-usecases').innerHTML='<div class="empty-state">Could not load use cases — please refresh.</div>';
+  }
 }
 
 // ── TUTORIALS ──
