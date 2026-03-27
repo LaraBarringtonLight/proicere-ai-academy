@@ -846,9 +846,11 @@ sb.auth.onAuthStateChange(async(event,session)=>{
 });
 
 async function tryLoadAndShow(){
+  const btn=document.getElementById('si-btn');
   // Try up to 3 times with increasing delays
   for(let attempt=0;attempt<3;attempt++){
     try{
+      if(btn)btn.textContent=`Loading profile… (attempt ${attempt+1}/3)`;
       const {data,error}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
       if(data&&!error){
         currentProfile=data;
@@ -859,20 +861,41 @@ async function tryLoadAndShow(){
         showApp();
         return;
       }
+      // Profile doesn't exist yet — create it now from auth metadata
+      if(error?.code==='PGRST116'){
+        // No row found — auto-create a basic profile so user isn't locked out
+        if(btn)btn.textContent='Creating your profile…';
+        const isAdminEmail=ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((currentUser.email||'').toLowerCase());
+        const {data:newProfile,error:insertError}=await sb.from('profiles').insert({
+          id:currentUser.id,
+          full_name:currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'User',
+          email:currentUser.email||'',
+          pod_id:null,
+          role:isAdminEmail?'admin':'member',
+          ai_role:'Member'
+        }).select().single();
+        if(newProfile&&!insertError){
+          currentProfile=newProfile;
+          showApp();
+          showToast('Profile created — please update your pod in Supabase');
+          return;
+        }
+      }
     } catch(e){console.warn('Profile load attempt',attempt+1,'failed:',e);}
-    if(attempt<2)await new Promise(r=>setTimeout(r,800*(attempt+1)));
+    if(attempt<2)await new Promise(r=>setTimeout(r,1000*(attempt+1)));
   }
-  // Last resort — build a minimal profile from auth data so user isn't locked out
+  // All attempts failed — use fallback profile so user can still get in
+  if(btn){btn.disabled=false;btn.textContent='Sign in';}
   currentProfile={
     id:currentUser.id,
-    full_name:currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'User',
+    full_name:currentUser.email?.split('@')[0]||'User',
     email:currentUser.email||'',
     pod_id:null,
     role:ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((currentUser.email||'').toLowerCase())?'admin':'member',
     ai_role:'Member'
   };
-  showToast('Profile loaded in offline mode — some features may be limited');
   showApp();
+  showToast('Signed in — profile sync limited. Check Supabase profiles table.');
 }
 
 // ── SHOW APP ──
