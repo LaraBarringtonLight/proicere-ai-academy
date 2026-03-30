@@ -1429,13 +1429,29 @@ async function loadAdminDash(){
     ]);
     const avgConf=logs?.length?((logs.reduce((a,l)=>a+(l.confidence_level||0),0)/logs.length)).toFixed(1):'—';
     const podEngagement=[];
+    // Max possible points per pod:
+    // +5 per use case (assume max 3 per member = 3 members × 3 = 9 use cases = 45pts)
+    // +4 per module completion per member (3 members × unlocked modules)
+    // +3 per challenge (one per member per active challenge)
+    // +2 per failed experiment (assume max 1 per member)
+    const unlockedMods=getUnlockedModules().length;
+    const activeChallenges=challengesBase.filter(c=>getChallengeStatus(c.id)==='active'||getChallengeStatus(c.id)==='done').length;
+    const membersPerPod=3;
+    const maxPts=Math.max(
+      (membersPerPod*3*5)+ // use cases
+      (membersPerPod*unlockedMods*4)+ // modules
+      (membersPerPod*activeChallenges*3)+ // challenges
+      (membersPerPod*2), // failed experiments
+      1
+    );
     for(let i=1;i<=6;i++){
-      const podLogs=(logs||[]).filter(l=>l.pod_id===i&&!l.is_failed_experiment).length;
-      const podChals=(chals||[]).filter(c=>c.pod_id===i).length;
       const podProfiles=(profiles||[]).filter(p=>p.pod_id===i);
-      const podModUsers=new Set((mods||[]).filter(m=>podProfiles.some(p=>p.id===m.user_id)).map(m=>m.user_id)).size;
-      const maxActivities=Math.max(podProfiles.length*(3+challengesBase.length+getUnlockedModules().length),1);
-      podEngagement.push({name:'Pod '+i,actual:podLogs+podChals+podModUsers,max:maxActivities,logs:podLogs,chals:podChals,modUsers:podModUsers});
+      const podLogs=(logs||[]).filter(l=>l.pod_id===i&&!l.is_failed_experiment).length;
+      const podFailed=(logs||[]).filter(l=>l.pod_id===i&&l.is_failed_experiment).length;
+      const podChals=(chals||[]).filter(c=>c.pod_id===i).length;
+      const podMods=(mods||[]).filter(m=>podProfiles.some(p=>p.id===m.user_id)).length;
+      const actualPts=podLogs*5+podMods*4+podChals*3+podFailed*2;
+      podEngagement.push({name:'Pod '+i,actual:actualPts,max:maxPts,logs:podLogs,chals:podChals,mods:podMods,failed:podFailed});
     }
     const thisMonth=new Date().toLocaleDateString('en-GB',{month:'long',year:'numeric'});
     const monthStart=new Date();monthStart.setDate(1);monthStart.setHours(0,0,0,0);
