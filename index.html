@@ -312,7 +312,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .pod-progress-name{width:44px;color:var(--text2);flex-shrink:0;}
 .pod-progress-bar{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;}
 .pod-progress-fill{height:100%;border-radius:3px;background:var(--blue);}
-.pod-progress-val{width:32px;text-align:right;color:var(--text3);font-size:11px;}
+.pod-progress-val{width:120px;text-align:right;color:var(--text3);font-size:11px;white-space:nowrap;flex-shrink:0;}
 .suggest-card{background:var(--amber-bg);border:1px solid rgba(212,130,10,.2);border-radius:var(--rs);padding:12px 14px;margin-bottom:8px;}
 .suggest-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);margin-bottom:4px;}
 .suggest-name{font-size:14px;font-weight:500;color:var(--text);}
@@ -1450,7 +1450,7 @@ async function loadAdminDash(){
     el.innerHTML=`
       <div class="stats-grid"><div class="stat"><div class="stat-n" style="color:var(--blue)">${(logs||[]).filter(l=>!l.is_failed_experiment).length}</div><div class="stat-l">Approved use cases</div></div><div class="stat"><div class="stat-n" style="color:var(--amber)">${pendingCount||0}</div><div class="stat-l">Pending review</div></div><div class="stat"><div class="stat-n" style="color:var(--teal)">${avgConf}</div><div class="stat-l">Avg confidence</div></div><div class="stat"><div class="stat-n" style="color:var(--purple)">${(mods||[]).length}</div><div class="stat-l">Module completions</div></div></div>
       <div class="sec-label">Pod engagement</div>
-      <div class="dash-grid"><div class="dash-card" style="grid-column:1/-1"><div class="dash-card-title">Activity across all pods</div>${podEngagement.map(p=>`<div class="pod-progress-row"><div class="pod-progress-name">${p.name}</div><div class="pod-progress-bar"><div class="pod-progress-fill" style="width:${Math.round(p.actual/p.max*100)}%"></div></div><div class="pod-progress-val">${p.logs}UC · ${p.chals}CH · ${p.modUsers}M</div></div>`).join('')}</div></div>
+      <div class="dash-grid"><div class="dash-card" style="grid-column:1/-1"><div class="dash-card-title">Activity across all pods</div>${podEngagement.map(p=>`<div class="pod-progress-row"><div class="pod-progress-name">${p.name}</div><div class="pod-progress-bar"><div class="pod-progress-fill" style="width:${Math.round(p.actual/p.max*100)}%"></div></div><div class="pod-progress-val">${p.logs} use cases · ${p.chals} challenges · ${p.modUsers} mods</div></div>`).join('')}</div></div>
       <div class="sec-label">Wall of fame suggestions — ${thisMonth}</div>
       <div class="dash-grid">
         <div class="dash-card"><div class="dash-card-title">🏆 Use case of the month</div>${topUCPod?`<div class="suggest-card"><div class="suggest-label">Auto-suggested</div><div class="suggest-name">Pod ${topUCPod[0]}</div><div class="suggest-reason">${topUCPod[1]} use case${topUCPod[1]>1?'s':''} this month</div><button class="suggest-use-btn" onclick="openHonourModal('use_case','${thisMonth}');document.getElementById('hm-pod').value='Pod ${topUCPod[0]}'">Use this →</button></div>`:'<div style="font-size:12.5px;color:var(--text3)">No data yet.</div>'}</div>
