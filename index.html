@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Proicere AI Academy</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%231a6bff'/><text x='50%' y='54%' dominant-baseline='middle' text-anchor='middle' font-size='20' font-family='sans-serif'>🤖</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
   --bg:#f4f6f9;--bg2:#fff;--bg3:#f0f3f7;--bg4:#e2e7ef;
   --border:rgba(10,25,60,.08);--border2:rgba(10,25,60,.15);
   --text:#0a1a3c;--text2:#4a5872;--text3:#8c97ad;
-  --blue:#1a6bff;--blue2:#0f52d4;--blue-bg:rgba(26,107,255,.08);
+  --blue:#1a6bff;--blue-bg:rgba(26,107,255,.08);
   --navy:#0a1a3c;--navy2:#122050;
   --navy-border:rgba(255,255,255,.1);
   --navy-text:rgba(255,255,255,.9);--navy-text2:rgba(255,255,255,.5);--navy-text3:rgba(255,255,255,.28);
@@ -23,14 +23,10 @@
   --purple:#6b4fd4;--purple-bg:rgba(107,79,212,.09);
   --coral:#d44f3f;--coral-bg:rgba(212,79,63,.09);
   --gold:#b8860b;--silver:#6b7f96;--bronze:#8b5a2b;
-  --r:10px;--rs:6px;
-  --font:'DM Sans',sans-serif;
-  --sidebar-w:232px;
+  --r:10px;--rs:6px;--font:'DM Sans',sans-serif;--sidebar-w:232px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;font-size:14px;line-height:1.6;}
-
-/* ── SPLASH ── */
 #splash{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:99999;transition:opacity .4s;}
 #splash.hidden{opacity:0;pointer-events:none;}
 .splash-inner{text-align:center;}
@@ -38,8 +34,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .splash-logo span{color:#5b9bff;}
 .splash-sub{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:28px;}
 .splash-spinner{width:24px;height:24px;border:2px solid rgba(255,255,255,.15);border-top-color:#5b9bff;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto;}
-
-/* ── AUTH ── */
 .auth-wrap{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:9999;}
 .auth-wrap.hidden{display:none;}
 .auth-card{background:#fff;border-radius:14px;padding:36px 40px;width:100%;max-width:400px;display:flex;flex-direction:column;gap:16px;}
@@ -59,9 +53,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .auth-ok{font-size:12.5px;color:var(--teal);text-align:center;display:none;}
 .auth-switch{font-size:12px;color:var(--text3);text-align:center;}
 .auth-switch a{color:var(--blue);cursor:pointer;text-decoration:underline;}
-#app{display:none;width:100%;}
-
-/* ── SIDEBAR ── */
+#app{display:none;width:100%;flex-direction:column;}
 .sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--navy);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;padding:20px 0;transition:transform .25s;}
 .s-logo{padding:0 16px 16px;border-bottom:1px solid var(--navy-border);margin-bottom:10px;}
 .s-eyebrow{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--navy-text3);margin-bottom:2px;}
@@ -87,16 +79,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .nav-count{margin-left:auto;background:rgba(255,255,255,.1);color:var(--navy-text2);font-size:10px;padding:1px 6px;border-radius:4px;}
 .nav-live{margin-left:auto;background:rgba(13,158,117,.25);color:#4dd9a8;font-size:10px;padding:1px 6px;border-radius:4px;}
 .nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;min-width:16px;text-align:center;}
-
-/* ── MOBILE HEADER ── */
 .mobile-header{display:none;position:sticky;top:0;z-index:100;background:var(--navy);padding:12px 16px;align-items:center;gap:12px;border-bottom:1px solid var(--navy-border);}
 .mobile-menu-btn{background:transparent;border:none;color:#fff;font-size:22px;cursor:pointer;padding:2px;line-height:1;}
 .mobile-title{font-size:14px;font-weight:600;color:#fff;flex:1;}
 .mobile-title span{color:#5b9bff;}
 .mobile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;}
 .mobile-overlay.open{display:block;}
-
-/* ── MAIN ── */
 .main{flex:1;overflow-y:auto;overflow-x:hidden;min-width:0;}
 .page{display:none;padding:40px 48px 80px;}
 .page.active{display:block;}
@@ -308,19 +296,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .dash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
 .dash-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;}
 .dash-card-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:12px;}
-.pod-progress-row{display:flex;flex-direction:column;gap:4px;margin-bottom:14px;}
-.pod-progress-header{display:flex;align-items:center;justify-content:space-between;font-size:12px;}
-.pod-progress-name{color:var(--text2);font-weight:500;}
-.pod-progress-val{color:var(--text3);font-size:11px;}
-.pod-progress-bar{width:100%;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;}
-.pod-progress-fill{height:100%;border-radius:3px;background:var(--blue);}
 .suggest-card{background:var(--amber-bg);border:1px solid rgba(212,130,10,.2);border-radius:var(--rs);padding:12px 14px;margin-bottom:8px;}
 .suggest-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);margin-bottom:4px;}
 .suggest-name{font-size:14px;font-weight:500;color:var(--text);}
 .suggest-reason{font-size:12px;color:var(--text2);margin-top:2px;}
 .suggest-use-btn{margin-top:8px;background:var(--amber);color:#fff;border:none;border-radius:var(--rs);padding:5px 12px;font-size:11.5px;font-family:var(--font);cursor:pointer;}
-
-/* ── MOBILE RESPONSIVE ── */
 @media(max-width:768px){
   body{flex-direction:column;}
   .sidebar{display:none;position:fixed;left:0;top:0;bottom:0;z-index:300;transform:translateX(-100%);width:260px;min-width:260px;height:100vh;}
@@ -337,12 +317,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   .dash-grid{grid-template-columns:1fr;}
   .search-input{width:100%;margin-left:0;}
   .filter-bar{flex-direction:column;align-items:stretch;}
-  .lb-table th:nth-child(4),.lb-table td:nth-child(4),
-  .lb-table th:nth-child(5),.lb-table td:nth-child(5),
-  .lb-table th:nth-child(6),.lb-table td:nth-child(6),
-  .lb-table th:nth-child(7),.lb-table td:nth-child(7){display:none;}
-  .uc-table th:nth-child(3),.uc-table td:nth-child(3),
-  .uc-table th:nth-child(5),.uc-table td:nth-child(5){display:none;}
   .rating-row{flex-direction:column;}
   .ptitle{font-size:22px;}
   .auth-card{padding:24px 20px;}
@@ -353,16 +327,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 </head>
 <body>
 
-<!-- SPLASH -->
-<div id="splash">
-  <div class="splash-inner">
-    <div class="splash-logo">Proicere <span>AI Academy</span></div>
-    <div class="splash-sub">Loading your workspace…</div>
-    <div class="splash-spinner"></div>
-  </div>
-</div>
+<div id="splash"><div class="splash-inner"><div class="splash-logo">Proicere <span>AI Academy</span></div><div class="splash-sub">Loading your workspace…</div><div class="splash-spinner"></div></div></div>
 
-<!-- AUTH -->
 <div class="auth-wrap hidden" id="auth-wrap">
   <div class="auth-card">
     <div class="auth-eyebrow">Proicere Digital</div>
@@ -375,23 +341,15 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div id="signin-form">
       <div class="fld"><label>Email</label><input type="email" id="si-email" placeholder="you@proiceredigital.com" onkeydown="if(event.key==='Enter')signIn()"></div>
       <div class="fld" style="margin-top:12px"><label>Password</label><input type="password" id="si-pw" placeholder="Password" onkeydown="if(event.key==='Enter')signIn()"></div>
-      <div style="margin-top:10px">
-        <a onclick="switchAuthTab('forgot')" style="font-size:12px;color:var(--blue);cursor:pointer;text-decoration:underline">Forgot password?</a>
-      </div>
+      <div style="margin-top:10px"><a onclick="switchAuthTab('forgot')" style="font-size:12px;color:var(--blue);cursor:pointer;text-decoration:underline">Forgot password?</a></div>
       <button class="auth-btn" style="margin-top:16px" onclick="signIn()" id="si-btn">Sign in</button>
     </div>
     <div id="signup-form" style="display:none">
       <div class="fld"><label>Full name</label><input type="text" id="su-name" placeholder="e.g. Dan Harland — must match exactly"></div>
       <div class="fld" style="margin-top:12px"><label>Email</label><input type="email" id="su-email" placeholder="you@proiceredigital.com"></div>
       <div class="fld" style="margin-top:12px"><label>Password</label><input type="password" id="su-pw" placeholder="At least 8 characters"></div>
-      <div class="fld" style="margin-top:12px">
-        <label>Your pod</label>
-        <select id="su-pod">
-          <option value="">— Select your pod —</option>
-          <option value="1">Pod 1</option><option value="2">Pod 2</option><option value="3">Pod 3</option>
-          <option value="4">Pod 4</option><option value="5">Pod 5</option><option value="6">Pod 6</option>
-          <option value="none">No pod (admin / observer)</option>
-        </select>
+      <div class="fld" style="margin-top:12px"><label>Your pod</label>
+        <select id="su-pod"><option value="">— Select your pod —</option><option value="1">Pod 1</option><option value="2">Pod 2</option><option value="3">Pod 3</option><option value="4">Pod 4</option><option value="5">Pod 5</option><option value="6">Pod 6</option><option value="none">No pod (admin / observer)</option></select>
       </div>
       <button class="auth-btn" style="margin-top:16px" onclick="signUp()" id="su-btn">Create account</button>
     </div>
@@ -407,80 +365,45 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   </div>
 </div>
 
-<!-- HONOUR EDIT MODAL -->
-<div class="modal-wrap" id="honour-modal">
-  <div class="modal-card">
-    <div class="modal-title" id="hm-title">Edit award</div>
-    <div class="modal-sub" id="hm-sub">Update the winner for this month's award.</div>
-    <input type="hidden" id="hm-award-type">
-    <div class="fld"><label>Month (e.g. April 2026)</label><input type="text" id="hm-month" class="form-input" placeholder="April 2026"></div>
-    <div class="fld"><label>Winner name</label><input type="text" id="hm-winner" class="form-input" placeholder="Full name"></div>
-    <div class="fld"><label>Winner's pod</label><input type="text" id="hm-pod" class="form-input" placeholder="e.g. Pod 1"></div>
-    <div class="fld"><label>Description</label><textarea id="hm-desc" class="form-textarea" placeholder="Brief description of what they did and why they won"></textarea></div>
-    <div class="modal-actions">
-      <button class="btn-secondary" onclick="closeHonourModal()">Cancel</button>
-      <button class="submit-btn" style="margin:0" onclick="saveHonour()">Save award</button>
-    </div>
-  </div>
-</div>
+<!-- MODALS -->
+<div class="modal-wrap" id="honour-modal"><div class="modal-card">
+  <div class="modal-title" id="hm-title">Edit award</div>
+  <div class="modal-sub" id="hm-sub"></div>
+  <input type="hidden" id="hm-award-type">
+  <div class="fld"><label>Month</label><input type="text" id="hm-month" class="form-input" placeholder="April 2026"></div>
+  <div class="fld"><label>Winner name</label><input type="text" id="hm-winner" class="form-input"></div>
+  <div class="fld"><label>Winner's pod</label><input type="text" id="hm-pod" class="form-input" placeholder="e.g. Pod 1"></div>
+  <div class="fld"><label>Description</label><textarea id="hm-desc" class="form-textarea"></textarea></div>
+  <div class="modal-actions"><button class="btn-secondary" onclick="closeHonourModal()">Cancel</button><button class="submit-btn" style="margin:0" onclick="saveHonour()">Save award</button></div>
+</div></div>
 
-<!-- EDIT LOG ENTRY MODAL -->
-<div class="modal-wrap" id="edit-log-modal">
-  <div class="modal-card" style="max-width:560px">
-    <div class="modal-title">Edit log entry</div>
-    <div class="modal-sub">Only pending entries can be edited.</div>
-    <input type="hidden" id="edit-log-id">
-    <div class="fld"><label>What use case did you test?</label><input type="text" id="edit-usecase" class="form-input"></div>
-    <div class="fld"><label>What happened?</label><textarea id="edit-what" class="form-textarea"></textarea></div>
-    <div class="fld"><label>AI tool used</label>
-      <select id="edit-tool" class="form-select">
-        <option>Claude (Anthropic)</option><option>ChatGPT</option><option>Copilot / Microsoft 365</option><option>Gemini</option><option>Other</option>
-      </select>
-    </div>
-    <div class="fld"><label>Time saved</label>
-      <select id="edit-time" class="form-select">
-        <option>Less than 15 mins</option><option>15–30 mins</option><option>30–60 mins</option><option>1–2 hours</option><option>2+ hours</option>
-      </select>
-    </div>
-    <div class="fld"><label>Prompt used (optional)</label><textarea id="edit-prompt" class="form-textarea"></textarea></div>
-    <div class="fld"><label>Video link (optional)</label><input type="url" id="edit-video" class="form-input"></div>
-    <div class="modal-actions">
-      <button class="btn-secondary" onclick="closeEditModal()">Cancel</button>
-      <button class="submit-btn" style="margin:0" onclick="saveEditedLog()">Save changes</button>
-    </div>
-  </div>
-</div>
+<div class="modal-wrap" id="edit-log-modal"><div class="modal-card" style="max-width:560px">
+  <div class="modal-title">Edit log entry</div>
+  <div class="modal-sub">Only pending entries can be edited.</div>
+  <input type="hidden" id="edit-log-id">
+  <div class="fld"><label>Use case</label><input type="text" id="edit-usecase" class="form-input"></div>
+  <div class="fld"><label>What happened?</label><textarea id="edit-what" class="form-textarea"></textarea></div>
+  <div class="fld"><label>Tool used</label><select id="edit-tool" class="form-select"><option>Claude (Anthropic)</option><option>ChatGPT</option><option>Copilot / Microsoft 365</option><option>Gemini</option><option>Other</option></select></div>
+  <div class="fld"><label>Time saved</label><select id="edit-time" class="form-select"><option>Less than 15 mins</option><option>15–30 mins</option><option>30–60 mins</option><option>1–2 hours</option><option>2+ hours</option></select></div>
+  <div class="fld"><label>Prompt used (optional)</label><textarea id="edit-prompt" class="form-textarea"></textarea></div>
+  <div class="fld"><label>Video link (optional)</label><input type="url" id="edit-video" class="form-input"></div>
+  <div class="modal-actions"><button class="btn-secondary" onclick="closeEditModal()">Cancel</button><button class="submit-btn" style="margin:0" onclick="saveEditedLog()">Save changes</button></div>
+</div></div>
 
-<!-- CHANGE POD MODAL -->
-<div class="modal-wrap" id="pod-modal">
-  <div class="modal-card" style="max-width:400px">
-    <div class="modal-title">Change your pod</div>
-    <div class="modal-sub">Contact your Academy Lead if you're unsure which pod you're in.</div>
-    <div class="fld"><label>Select your pod</label>
-      <select id="pod-select" class="form-select">
-        <option value="1">Pod 1</option><option value="2">Pod 2</option><option value="3">Pod 3</option>
-        <option value="4">Pod 4</option><option value="5">Pod 5</option><option value="6">Pod 6</option>
-      </select>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-secondary" onclick="closePodModal()">Cancel</button>
-      <button class="submit-btn" style="margin:0" onclick="savePod()">Save</button>
-    </div>
-  </div>
-</div>
+<div class="modal-wrap" id="pod-modal"><div class="modal-card" style="max-width:400px">
+  <div class="modal-title">Change your pod</div>
+  <div class="modal-sub">Contact your Academy Lead if you're unsure which pod you're in.</div>
+  <div class="fld"><label>Select your pod</label><select id="pod-select" class="form-select"><option value="1">Pod 1</option><option value="2">Pod 2</option><option value="3">Pod 3</option><option value="4">Pod 4</option><option value="5">Pod 5</option><option value="6">Pod 6</option></select></div>
+  <div class="modal-actions"><button class="btn-secondary" onclick="closePodModal()">Cancel</button><button class="submit-btn" style="margin:0" onclick="savePod()">Save</button></div>
+</div></div>
 
-<!-- MOBILE OVERLAY -->
 <div class="mobile-overlay" id="mobile-overlay" onclick="closeMobileMenu()"></div>
 
-<!-- APP -->
-<div id="app" style="width:100%;display:none;flex-direction:column">
-
-<!-- MOBILE HEADER -->
+<div id="app">
 <div class="mobile-header" id="mobile-header">
   <button class="mobile-menu-btn" onclick="openMobileMenu()">☰</button>
   <div class="mobile-title">Proicere <span>AI Academy</span></div>
 </div>
-
 <div style="display:flex;flex:1;min-height:0">
 <nav class="sidebar" id="sidebar">
   <div class="s-logo">
@@ -488,44 +411,23 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div class="s-title">AI <span>Academy</span></div>
     <div class="s-user">
       <div class="s-avatar" id="s-av">?</div>
-      <div class="s-userinfo">
-        <div class="s-username" id="s-name">—</div>
-        <div class="s-userrole" id="s-role">—</div>
-      </div>
+      <div class="s-userinfo"><div class="s-username" id="s-name">—</div><div class="s-userrole" id="s-role">—</div></div>
       <button class="s-logout" onclick="signOut()" title="Sign out">↩</button>
     </div>
-    <div class="s-cycle">
-      <span class="s-cycle-txt" id="s-pod-label">Cycle 1</span>
-      <div class="cycle-bar"><div class="cycle-fill" id="cycle-fill-bar" style="width:16%"></div></div>
-    </div>
-    <!-- Change pod link -->
-    <div style="margin-top:8px">
-      <a onclick="openPodModal()" style="font-size:11px;color:rgba(255,255,255,.35);cursor:pointer;text-decoration:underline">Change my pod</a>
-    </div>
+    <div class="s-cycle"><span class="s-cycle-txt" id="s-pod-label">Cycle 1</span><div class="cycle-bar"><div class="cycle-fill" id="cycle-fill-bar" style="width:16%"></div></div></div>
+    <div style="margin-top:8px"><a onclick="openPodModal()" style="font-size:11px;color:rgba(255,255,255,.35);cursor:pointer;text-decoration:underline">Change my pod</a></div>
   </div>
   <div class="s-sec">
     <div class="s-label">Overview</div>
-    <div class="nav active" onclick="go('home',this)">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 6.5L8 2l6 4.5V14H10v-3H6v3H2V6.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>Home
-    </div>
-    <div class="nav" onclick="go('modules',this)">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>The curriculum<span class="nav-count">6</span>
-    </div>
+    <div class="nav active" onclick="go('home',this)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 6.5L8 2l6 4.5V14H10v-3H6v3H2V6.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>Home</div>
+    <div class="nav" onclick="go('modules',this)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>The curriculum<span class="nav-count">6</span></div>
   </div>
   <div class="s-sec">
     <div class="s-label">My pod</div>
-    <div class="nav" onclick="go('log',this)">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 2h10v12H3z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M5.5 5.5h5M5.5 8h5M5.5 10.5h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Learning log
-    </div>
-    <div class="nav" onclick="go('usecases',this)">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Use case library
-    </div>
-    <div class="nav" onclick="go('prompts',this)">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 3h12v8H9l-3 2v-2H2V3z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>Prompt packs
-    </div>
-    <div class="nav" onclick="go('mypod',this)">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M1 13c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="12" cy="5" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M14 13c0-2.21-1.34-4-3-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span id="my-pod-nav-label">My pod</span>
-    </div>
+    <div class="nav" onclick="go('log',this)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 2h10v12H3z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M5.5 5.5h5M5.5 8h5M5.5 10.5h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Learning log</div>
+    <div class="nav" onclick="go('usecases',this)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Use case library</div>
+    <div class="nav" onclick="go('prompts',this)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 3h12v8H9l-3 2v-2H2V3z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>Prompt packs</div>
+    <div class="nav" onclick="go('mypod',this)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M1 13c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="12" cy="5" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M14 13c0-2.21-1.34-4-3-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span id="my-pod-nav-label">My pod</span></div>
   </div>
   <div class="s-sec">
     <div class="s-label">Recognition</div>
@@ -535,36 +437,25 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   </div>
   <div class="s-sec">
     <div class="s-label">Watch &amp; learn</div>
-    <div class="nav" onclick="go('tutorials',this)">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M6 5.5l5 2.5-5 2.5V5.5z" fill="currentColor"/></svg>Tutorial videos
-    </div>
+    <div class="nav" onclick="go('tutorials',this)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M6 5.5l5 2.5-5 2.5V5.5z" fill="currentColor"/></svg>Tutorial videos</div>
   </div>
   <div class="s-sec" id="lead-sec" style="display:none">
     <div class="s-label" style="color:#f5c842;opacity:.9">⚙ Admin / Pod lead</div>
-    <div class="nav" onclick="go('approvals',this)" style="border:1px solid rgba(245,200,66,.25);margin:0 2px 4px;">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 9l3.5 3.5L13 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Approvals<span class="nav-badge" id="pending-count" style="display:none">0</span>
-    </div>
-    <div class="nav" onclick="go('admindash',this)" style="border:1px solid rgba(245,200,66,.25);margin:0 2px 4px;">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="2" y="8" width="3" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="6.5" y="5" width="3" height="9" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="2" width="3" height="12" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>Admin dashboard
-    </div>
+    <div class="nav" onclick="go('approvals',this)" style="border:1px solid rgba(245,200,66,.25);margin:0 2px 4px;"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 9l3.5 3.5L13 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Approvals<span class="nav-badge" id="pending-count" style="display:none">0</span></div>
+    <div class="nav" onclick="go('admindash',this)" style="border:1px solid rgba(245,200,66,.25);margin:0 2px 4px;"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="2" y="8" width="3" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="6.5" y="5" width="3" height="9" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="2" width="3" height="12" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>Admin dashboard</div>
   </div>
   <div class="s-sec">
     <div class="s-label">Leaderboard</div>
     <div class="nav" onclick="go('leaderboard',this)"><div class="nav-dot" style="background:var(--gold)"></div>Pod leaderboard</div>
   </div>
 </nav>
-
 <main class="main">
 
-<!-- HOME -->
 <div class="page active" id="page-home">
   <div class="crumb">proicere-academy / home</div>
   <h1 class="ptitle">Proicere <span class="hl">AI Academy</span></h1>
   <p class="psub">Your internal hub for AI learning, shared knowledge, and practical toolkits — built by the team, for the team.</p>
-  <div class="mission-card">
-    <div class="mission-label">Our mission</div>
-    <div class="mission-text">"To make every person in the business confident, capable, and responsible in using AI to improve delivery, decision-making, and innovation."</div>
-  </div>
+  <div class="mission-card"><div class="mission-label">Our mission</div><div class="mission-text">"To make every person in the business confident, capable, and responsible in using AI to improve delivery, decision-making, and innovation."</div></div>
   <div class="stats-grid">
     <div class="stat"><div class="stat-n" style="color:var(--blue)">6</div><div class="stat-l">Active pods</div></div>
     <div class="stat"><div class="stat-n" style="color:var(--teal)" id="home-uc-count">0</div><div class="stat-l">Use cases logged</div></div>
@@ -579,7 +470,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   <div id="home-lb"></div>
 </div>
 
-<!-- MODULES -->
 <div class="page" id="page-modules">
   <div class="crumb">proicere-academy / the-curriculum</div>
   <h1 class="ptitle">The <span class="hl">Curriculum</span></h1>
@@ -588,16 +478,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   <div id="modules-list"></div>
 </div>
 
-<!-- LEARNING LOG -->
 <div class="page" id="page-log">
   <div class="crumb">proicere-academy / learning-log</div>
   <h1 class="ptitle">Learning <span class="hl">Log</span></h1>
   <p class="psub" style="margin-bottom:28px">Record what you tested. Approved entries earn your pod <strong>+5 points</strong>. Failed experiments earn <strong>+2 points</strong> automatically.</p>
   <div class="log-form">
-    <div class="log-form-header">
-      <div class="log-form-title" id="log-form-title">New entry</div>
-      <div class="week-selector" id="week-sel"></div>
-    </div>
+    <div class="log-form-header"><div class="log-form-title" id="log-form-title">New entry</div><div class="week-selector" id="week-sel"></div></div>
     <div class="log-body">
       <div class="form-row">
         <div class="form-group"><label class="form-label">AI tool used</label><select class="form-select" id="log-tool"><option value="">— Select —</option><option>Claude (Anthropic)</option><option>ChatGPT</option><option>Copilot / Microsoft 365</option><option>Gemini</option><option>Other</option></select></div>
@@ -625,7 +511,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   <div id="my-log-entries"></div>
 </div>
 
-<!-- USE CASE LIBRARY -->
 <div class="page" id="page-usecases">
   <div class="crumb">proicere-academy / use-case-library</div>
   <h1 class="ptitle">Use Case <span class="hl">Library</span></h1>
@@ -641,7 +526,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   <table class="uc-table"><thead><tr><th style="width:42%">Use case</th><th style="width:12%">Tool</th><th style="width:13%">Time saved</th><th style="width:10%">Pod</th><th style="width:10%">Video</th><th style="width:13%">Status</th></tr></thead><tbody id="uc-body"></tbody></table>
 </div>
 
-<!-- PROMPT PACKS -->
 <div class="page" id="page-prompts">
   <div class="crumb">proicere-academy / prompt-packs</div>
   <h1 class="ptitle">Prompt <span class="hl">Packs</span></h1>
@@ -717,14 +601,12 @@ Do not add information not present in the report. Use plain, non-jargon language
   </div>
 </div>
 
-<!-- MY POD -->
 <div class="page" id="page-mypod">
   <div class="crumb" id="mypod-crumb">proicere-academy / my-pod</div>
   <h1 class="ptitle" id="mypod-title">My <span class="hl">Pod</span></h1>
   <div id="mypod-content"></div>
 </div>
 
-<!-- APPROVALS -->
 <div class="page" id="page-approvals">
   <div class="crumb">proicere-academy / approvals</div>
   <h1 class="ptitle">Log <span class="hl">Approvals</span></h1>
@@ -732,7 +614,6 @@ Do not add information not present in the report. Use plain, non-jargon language
   <div id="approvals-content"></div>
 </div>
 
-<!-- ADMIN DASHBOARD -->
 <div class="page" id="page-admindash">
   <div class="crumb">proicere-academy / admin-dashboard</div>
   <h1 class="ptitle">Admin <span class="hl">Dashboard</span></h1>
@@ -740,7 +621,6 @@ Do not add information not present in the report. Use plain, non-jargon language
   <div id="admindash-content"><div class="loading"><div class="spinner"></div>Loading…</div></div>
 </div>
 
-<!-- CHALLENGES -->
 <div class="page" id="page-challenges">
   <div class="crumb">proicere-academy / ai-challenges</div>
   <h1 class="ptitle">AI <span class="hl">Challenges</span></h1>
@@ -755,7 +635,6 @@ Do not add information not present in the report. Use plain, non-jargon language
   <div id="chal-list"></div>
 </div>
 
-<!-- WALL OF FAME -->
 <div class="page" id="page-honours">
   <div class="crumb">proicere-academy / wall-of-fame</div>
   <h1 class="ptitle">Wall of <span class="hl">Fame</span></h1>
@@ -763,7 +642,6 @@ Do not add information not present in the report. Use plain, non-jargon language
   <div id="wof-content"></div>
 </div>
 
-<!-- SUCCESS STORIES -->
 <div class="page" id="page-showcase">
   <div class="crumb">proicere-academy / success-stories</div>
   <h1 class="ptitle">Success <span class="hl">Stories</span></h1>
@@ -771,7 +649,6 @@ Do not add information not present in the report. Use plain, non-jargon language
   <div id="showcase-content"><div class="loading"><div class="spinner"></div>Loading…</div></div>
 </div>
 
-<!-- TUTORIAL VIDEOS -->
 <div class="page" id="page-tutorials">
   <div class="crumb">proicere-academy / tutorial-videos</div>
   <h1 class="ptitle">Tutorial <span class="hl">Videos</span></h1>
@@ -807,7 +684,6 @@ Do not add information not present in the report. Use plain, non-jargon language
   </div>
 </div>
 
-<!-- LEADERBOARD -->
 <div class="page" id="page-leaderboard">
   <div class="crumb">proicere-academy / leaderboard</div>
   <h1 class="ptitle">Pod <span class="hl">Leaderboard</span></h1>
@@ -829,8 +705,8 @@ Do not add information not present in the report. Use plain, non-jargon language
 </div>
 
 </main>
-</div><!-- end flex row -->
-</div><!-- end app -->
+</div>
+</div>
 
 <div class="toast" id="toast"><span class="t-dot">●</span><span id="tmsg">Done</span></div>
 <div id="vid-modal" onclick="if(event.target===this)closeVideo()">
@@ -843,25 +719,14 @@ Do not add information not present in the report. Use plain, non-jargon language
 <script>
 const ADMIN_EMAILS=['lara.barringtonlight@proiceredigital.com'];
 const CYCLE_START=new Date('2026-04-01');
-const PAGE_TITLES={
-  home:'Home',modules:'The Curriculum',log:'Learning Log',usecases:'Use Case Library',
-  prompts:'Prompt Packs',mypod:'My Pod',approvals:'Approvals',admindash:'Admin Dashboard',
-  challenges:'AI Challenges',honours:'Wall of Fame',showcase:'Success Stories',
-  tutorials:'Tutorial Videos',leaderboard:'Pod Leaderboard'
-};
+const PAGE_TITLES={home:'Home',modules:'The Curriculum',log:'Learning Log',usecases:'Use Case Library',prompts:'Prompt Packs',mypod:'My Pod',approvals:'Approvals',admindash:'Admin Dashboard',challenges:'AI Challenges',honours:'Wall of Fame',showcase:'Success Stories',tutorials:'Tutorial Videos',leaderboard:'Pod Leaderboard'};
 
 const {createClient}=supabase;
-const sb=createClient(
-  'https://mfrlyfcogynuqmmmutdj.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mcmx5ZmNvZ3ludXFtbW11dGRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMTMwMzEsImV4cCI6MjA4OTU4OTAzMX0.r-hhrKGasBaR7vmqdU-8Vldq3_z64fEkLE35xXQv3a0'
-);
+const sb=createClient('https://mfrlyfcogynuqmmmutdj.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mcmx5ZmNvZ3ludXFtbW11dGRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMTMwMzEsImV4cCI6MjA4OTU4OTAzMX0.r-hhrKGasBaR7vmqdU-8Vldq3_z64fEkLE35xXQv3a0');
 
-let currentUser=null,currentProfile=null,selectedRating=0,selectedWeekNum=1,
-    currentChalFilter='all',ucFilter='all',ucSearch='',promptSearch='',lbSortKey='score',
-    userModuleProgress={},chalCompletedByUser={},podData=[],allUCData=[],quizState={},
-    challengeStatuses={},wofEntries={},lbPollInterval=null;
+let CU=null,CP=null,selRat=0,selWeek=1,chalFilter='all',ucFil='all',ucSrch='',promptSrch='',lbKey='score',modProg={},chalDone={},podData=[],allUC=[],quizSt={},chalStatus={},wofData={},lbTimer=null;
 
-const podAssignments={
+const pods={
   'Pod 1':{lead:['Dan Harland'],members:['Dan Harland','James Amankwaa','Zak Davies']},
   'Pod 2':{lead:['Adam Myers'],members:['Adam Myers','Lewis Yates','Lara Barrington-Light']},
   'Pod 3':{lead:['Felipe Flauzino'],members:['Felipe Flauzino','Noel Urbain','Matthew Hanks']},
@@ -870,77 +735,79 @@ const podAssignments={
   'Pod 6':{lead:['Matthew Seddon'],members:['Matthew Seddon','Dimitrios Savvopoulos','Canice Murray']}
 };
 
-const challengesBase=[
-  {id:1,fort:'Fortnight 1',domain:'Comms',domainClass:'b-purple',title:'Summarise a real meeting you had this week',desc:'Take any meeting you attended and ask Claude to produce a structured summary with key decisions, actions, and owners.',prompt:`I attended a meeting. Here are my notes / transcript:\n\n[PASTE NOTES OR TRANSCRIPT]\n\nPlease produce a structured meeting summary with:\n1. Meeting purpose (1 sentence)\n2. Key decisions made\n3. Actions agreed (owner | action | due date)\n4. Open questions or risks flagged\n5. Suggested subject line for follow-up email`,tip:"Don't worry if your notes are messy — that's the point.",target:18,defaultStatus:'active'},
-  {id:2,fort:'Fortnight 2',domain:'Any',domainClass:'b-blue',title:'Find one task you did manually last week that AI could have helped with',desc:'Think back to last week. Pick one task that took longer than it should. Try it with AI now and report back.',prompt:`I need help with this task: [DESCRIBE THE TASK]\n\nContext: [brief context about the project / situation]\n\nMy current approach is: [describe how you do it manually]\n\nPlease help me complete this task and show your working so I can verify the output.`,tip:'The goal isn\'t a perfect use case — it\'s building the habit of asking "could AI do this?"',target:18,defaultStatus:'upcoming'},
-  {id:3,fort:'Fortnight 3',domain:'Reporting',domainClass:'b-coral',title:'Turn a data table into a plain-English insight for a client',desc:'Take any project data and ask AI to explain what it means in language a non-technical project sponsor would understand.',prompt:`Here is a data table from our project:\n\n[PASTE TABLE OR DESCRIBE THE DATA]\n\nThe audience is: [project sponsor / client director]\n\nPlease:\n1. Describe in 2–3 plain sentences what this data is showing\n2. Highlight the most important finding\n3. Flag anything that might need attention\n4. Suggest one question the audience is likely to ask`,tip:'Particularly valuable for Proicere — we regularly translate complex programme data for non-technical clients.',target:18,defaultStatus:'upcoming'},
-  {id:4,fort:'Fortnight 4',domain:'Controls',domainClass:'b-green',title:'Draft a project risk or issue for a formal register',desc:'Pick a real risk or issue. Describe it verbally to Claude and ask it to format it as a proper risk register entry.',prompt:`I need to log a risk or issue. Here's my verbal description:\n\n[DESCRIBE THE RISK OR ISSUE IN YOUR OWN WORDS]\n\nProject type: [infrastructure / IT / transformation / other]\n\nPlease format as a formal risk register entry with:\n- Risk title\n- Description (2–3 sentences)\n- Category: Cost / Schedule / Scope / Resource / Quality / External\n- Likelihood: Low / Medium / High\n- Impact: Low / Medium / High\n- Suggested mitigation\n- Suggested owner role`,tip:'Key test: could you copy this straight into your register with minor edits? If yes — verified use case.',target:18,defaultStatus:'upcoming'}
+const challenges=[
+  {id:1,fort:'Fortnight 1',domain:'Comms',dc:'b-purple',title:'Summarise a real meeting you had this week',desc:'Take any meeting you attended and ask Claude to produce a structured summary with key decisions, actions, and owners.',prompt:`I attended a meeting. Here are my notes / transcript:\n\n[PASTE NOTES OR TRANSCRIPT]\n\nPlease produce a structured meeting summary with:\n1. Meeting purpose (1 sentence)\n2. Key decisions made\n3. Actions agreed (owner | action | due date)\n4. Open questions or risks flagged\n5. Suggested subject line for follow-up email`,tip:"Don't worry if your notes are messy — that's the point.",target:18,def:'active'},
+  {id:2,fort:'Fortnight 2',domain:'Any',dc:'b-blue',title:'Find one task you did manually last week that AI could have helped with',desc:'Think back to last week. Pick one task that took longer than it should. Try it with AI now and report back.',prompt:`I need help with this task: [DESCRIBE THE TASK]\n\nContext: [brief context]\n\nMy current approach is: [describe how you do it manually]\n\nPlease help me complete this task and show your working so I can verify the output.`,tip:'The goal isn\'t a perfect use case — it\'s building the habit of asking "could AI do this?"',target:18,def:'upcoming'},
+  {id:3,fort:'Fortnight 3',domain:'Reporting',dc:'b-coral',title:'Turn a data table into a plain-English insight for a client',desc:'Take any project data and ask AI to explain what it means in language a non-technical project sponsor would understand.',prompt:`Here is a data table from our project:\n\n[PASTE TABLE OR DESCRIBE THE DATA]\n\nThe audience is: [project sponsor / client director]\n\nPlease:\n1. Describe in 2–3 plain sentences what this data is showing\n2. Highlight the most important finding\n3. Flag anything that might need attention\n4. Suggest one question the audience is likely to ask`,tip:'Particularly valuable for Proicere — we regularly translate complex programme data for non-technical clients.',target:18,def:'upcoming'},
+  {id:4,fort:'Fortnight 4',domain:'Controls',dc:'b-green',title:'Draft a project risk or issue for a formal register',desc:'Pick a real risk or issue. Describe it verbally to Claude and ask it to format it as a proper risk register entry.',prompt:`I need to log a risk or issue. Here's my verbal description:\n\n[DESCRIBE THE RISK OR ISSUE IN YOUR OWN WORDS]\n\nProject type: [infrastructure / IT / transformation / other]\n\nPlease format as a formal risk register entry with:\n- Risk title\n- Description (2–3 sentences)\n- Category: Cost / Schedule / Scope / Resource / Quality / External\n- Likelihood: Low / Medium / High\n- Impact: Low / Medium / High\n- Suggested mitigation\n- Suggested owner role`,tip:'Key test: could you copy this straight into your register with minor edits?',target:18,def:'upcoming'}
 ];
 
-const awardTypes=[
-  {type:'use_case',label:'Use case of the month',icon:'🏆',borderColor:'rgba(245,200,66,.25)',iconBg:'rgba(245,200,66,.1)'},
-  {type:'prompt',label:'Best prompt',icon:'💬',borderColor:'rgba(155,127,244,.25)',iconBg:'var(--purple-bg)'},
-  {type:'experiment',label:'Bravest experiment',icon:'🔥',borderColor:'rgba(240,112,96,.25)',iconBg:'var(--coral-bg)'},
-  {type:'improved',label:'Most improved',icon:'📈',borderColor:'rgba(90,200,122,.25)',iconBg:'var(--green-bg)'}
+const awards=[
+  {type:'use_case',label:'Use case of the month',icon:'🏆',bc:'rgba(245,200,66,.25)',ib:'rgba(245,200,66,.1)'},
+  {type:'prompt',label:'Best prompt',icon:'💬',bc:'rgba(155,127,244,.25)',ib:'var(--purple-bg)'},
+  {type:'experiment',label:'Bravest experiment',icon:'🔥',bc:'rgba(240,112,96,.25)',ib:'var(--coral-bg)'},
+  {type:'improved',label:'Most improved',icon:'📈',bc:'rgba(90,200,122,.25)',ib:'var(--green-bg)'}
 ];
 
-// ── MODULE UNLOCK (DATE-BASED) ──
-function getUnlockedModules(){
-  const now=new Date(),elapsed=now-CYCLE_START,ms=14*24*60*60*1000;
-  if(elapsed<0)return[];
-  const fp=Math.floor(elapsed/ms);
-  return Array.from({length:Math.min(fp+1,6)},(_,i)=>i+1);
-}
-function isModuleUnlocked(n){return getUnlockedModules().includes(n);}
-function getUnlockDateForModule(n){
-  return new Date(CYCLE_START.getTime()+(n-1)*14*24*60*60*1000).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
-}
-function getNextUnlockDate(){
-  const u=getUnlockedModules(),next=u.length+1;
-  if(next>6)return null;
-  return new Date(CYCLE_START.getTime()+(next-1)*14*24*60*60*1000);
-}
+const mods=[
+  {n:1,name:'AI Foundations',desc:'What AI is and isn\'t. How LLMs work. Responsible use principles.',weeks:'Weeks 1–2',
+   intro:'What AI actually is — and what it isn\'t. This module builds a clear mental model of how large language models work.',
+   learns:['The difference between AI, machine learning, and large language models — in plain English','How an LLM generates a response — and why it sometimes gets things wrong','What AI is genuinely good at, and where you should never rely on it without checking','Responsible use principles for Proicere — client data, accuracy, and transparency'],
+   lesson:`<h4 class="mod-h4">What is AI, really?</h4><p>When people say "AI" today they almost always mean a <strong>large language model (LLM)</strong> — a system trained on enormous amounts of text that has learned to predict what a useful response looks like. It is not thinking. It is not searching the internet in real time. It is pattern matching at a very sophisticated level.</p><p>That distinction matters. An LLM will produce a confident-sounding answer whether it is right or wrong. This is called <strong>hallucination</strong>, and it is the single most important thing to understand about working with AI.</p><h4 class="mod-h4">Where AI is genuinely useful at Proicere</h4><p>AI is best at tasks that involve taking existing information and doing something structured with it — summarising, reformatting, drafting, explaining, comparing. The practical rule: <strong>AI works with what you give it.</strong> Vague inputs produce vague outputs.</p><h4 class="mod-h4">Responsible use at Proicere</h4><div class="mod-principle"><span class="mod-pnum" style="background:var(--blue-bg);color:var(--blue)">1</span><div><strong>Never share client-identifiable data</strong> with a public AI tool. Anonymise project names, client names, and sensitive figures before pasting anything in.</div></div><div class="mod-principle"><span class="mod-pnum" style="background:var(--teal-bg);color:var(--teal)">2</span><div><strong>Always verify outputs</strong> before using them in client-facing work. AI-generated content should be treated as a first draft, not a finished product.</div></div><div class="mod-principle"><span class="mod-pnum" style="background:var(--purple-bg);color:var(--purple)">3</span><div><strong>Be transparent</strong> about AI use where relevant. If a document was drafted with AI assistance, that should be known to whoever is reviewing it.</div></div>`,
+   quiz:[{q:'An LLM produces a confident answer to a question it has no reliable data on. What is this called?',opts:['A smart guess','Hallucination','A system bug'],c:1},{q:'Which is the best use of AI at Proicere?',opts:['Generating cost estimates without any source data','Summarising a meeting transcript into a structured action list','Replacing a domain specialist\'s judgement on a complex risk'],c:1},{q:'Before pasting project information into a public AI tool, you should always:',opts:['Ask your line manager first','Check the project is not live','Anonymise client names, project names, and sensitive figures'],c:2}]},
+  {n:2,name:'Prompting Basics',desc:'Writing prompts that actually work. Context, constraints, clarity.',weeks:'Weeks 3–4',
+   intro:'The quality of what AI gives you is almost entirely determined by the quality of what you ask it.',
+   learns:['The context-task-format structure that produces consistently good outputs','How to give AI the right amount of context without overloading it','Common prompting mistakes and exactly how to fix them','How to iterate — when your first prompt doesn\'t work, what to do next'],
+   lesson:`<h4 class="mod-h4">The context-task-format structure</h4><p>Most weak prompts fail for one of three reasons: not enough context, a vague task description, or no guidance on how the output should be structured.</p><div class="mod-principle"><span class="mod-pnum" style="background:var(--blue-bg);color:var(--blue)">C</span><div><strong>Context</strong> — tell the AI who you are and any relevant background.</div></div><div class="mod-principle"><span class="mod-pnum" style="background:var(--teal-bg);color:var(--teal)">T</span><div><strong>Task</strong> — be specific about what you want.</div></div><div class="mod-principle"><span class="mod-pnum" style="background:var(--purple-bg);color:var(--purple)">F</span><div><strong>Format</strong> — tell the AI how you want the output delivered.</div></div><h4 class="mod-h4">The most common mistake</h4><p>Asking too many things in one prompt. Separate tasks into separate prompts and you will get significantly better outputs for each.</p>`,
+   quiz:[{q:'What does "F" stand for in the context-task-format structure?',opts:['Feedback','File','Format'],c:2},{q:'Your first prompt produces output that is too long and too informal. What do you do?',opts:['Start a completely new conversation','Follow up with "shorten to 5 bullet points and use a more formal tone"','Accept the output and edit it manually'],c:1},{q:'You need a risk register, a meeting summary, and a client email. Best approach?',opts:['Ask for all three in one prompt','Write three separate prompts, one for each task','Ask for the most important one only'],c:1}]},
+  {n:3,name:'AI for Documents & Reporting',desc:'Summarising, drafting, and formatting reports and comms.',weeks:'Weeks 5–6',
+   intro:'Summarising long documents, drafting client communications, and formatting written outputs.',
+   learns:['Summarising a 40-page report into an executive summary in minutes','Drafting client-facing emails from bullet point notes','Converting messy meeting notes into structured action logs','Controlling tone — getting AI to match your client relationship style'],
+   lesson:`<h4 class="mod-h4">Summarising long documents</h4><p>The key is being specific about your audience and the format you need. "Summarise this for a project sponsor who wants the key risks and recommendations in under 200 words" produces something far more useful than "summarise this".</p><h4 class="mod-h4">Tone control</h4><p>The words "formal", "friendly-professional", and "technical" produce meaningfully different outputs. Adjusting tone is as simple as adding one instruction to your prompt.</p>`,
+   quiz:[{q:'You need to summarise a 60-page project report for a client board. Best approach?',opts:['Paste the whole report in one go','Split into sections, summarise each, then ask AI to combine','Write the summary yourself'],c:1},{q:'Which instruction gives AI the most useful guidance on a client email?',opts:['"Write a professional email"','"Write a friendly-professional update email to a project sponsor, under 200 words, leading with progress then flagging two risks"','"Write a good email about the project"'],c:1},{q:'AI produces a client email that is too formal for the relationship. What do you do?',opts:['Edit manually','Send it anyway','Follow up with "rewrite this in a friendly-professional tone — this client is informal"'],c:2}]},
+  {n:4,name:'AI for Data & Analysis',desc:'Interpreting outputs, assisting Power BI, structuring queries.',weeks:'Weeks 7–8',
+   intro:'Generating Power BI DAX measures, explaining data to non-technical audiences, and validating AI-generated outputs.',
+   learns:['Generating Power BI DAX measures from a plain English description','Explaining what a data table is showing in language for a non-technical client','Spotting patterns and anomalies in programme data','Validating AI-generated data outputs before using them'],
+   lesson:`<h4 class="mod-h4">DAX measures in plain English</h4><p>Describe what you want to calculate in plain English — including your table name, the relevant columns, and any filters — and AI will write the measure and explain each part. Always test in Power BI Desktop before deploying.</p><h4 class="mod-h4">The golden rule — always validate</h4><p>Never use AI-generated data outputs in client-facing work without independently checking at least one result.</p>`,
+   quiz:[{q:'What should you include when asking AI to generate a DAX measure?',opts:['Just the measure name','A plain English description, table name, relevant columns, and any filters','The Power BI version you are using'],c:1},{q:'AI produces a DAX measure and the results look slightly off. What should you do?',opts:['Trust it','Ask AI to review the DAX for errors and manually verify at least one result','Discard the output'],c:1},{q:'Before using an AI-generated data output in a client presentation:',opts:['Ask a colleague to check it looks professional','Check it was generated by the latest AI model','Independently verify at least one result against your source data'],c:2}]},
+  {n:5,name:'AI in Project Delivery',desc:'Planning, risk, and programme controls use cases from real projects.',weeks:'Weeks 9–10',
+   intro:'Focusing specifically on Proicere\'s core work — project controls, programme management, risk, and client delivery.',
+   learns:['Generating risk registers from meeting transcripts','Translating P6 schedule logic into plain English for clients','AI-assisted change control — drafting change requests from verbal descriptions','Where AI adds the most value in a programme controls environment'],
+   lesson:`<h4 class="mod-h4">Risk registers from transcripts</h4><p>Paste the transcript into Claude with a structured prompt and get a categorised risk register as a starting point. Expect 70–80% accuracy — always review and add domain knowledge.</p><h4 class="mod-h4">Where AI has limits</h4><p>AI cannot replace domain expertise on complex programme decisions. The most effective use is AI handling structured formatting work so expert time is freed for judgement calls.</p>`,
+   quiz:[{q:'After using AI to generate a risk register from a transcript, you should expect the output to be:',opts:['Complete and ready to submit','Around 70–80% accurate — needs your review and domain knowledge','Too unreliable to use'],c:1},{q:'What is AI NOT able to do in a project delivery context?',opts:['Generate a structured risk register','Translate schedule logic into plain English','Validate whether a programme schedule is actually achievable'],c:2},{q:'The best use of AI in project controls is to:',opts:['Handle structured formatting work so expert time is freed for judgement calls','Replace experienced project controls professionals','Automate all client reporting'],c:0}]},
+  {n:6,name:'Building a Workflow',desc:'Turning one-off AI uses into repeatable, shareable processes.',weeks:'Weeks 11–12',
+   intro:'Turning one-off experiments into repeatable, shareable workflows that become permanent improvements to how Proicere works.',
+   learns:['What makes a use case a workflow — the difference between a one-off and a repeatable process','How to document a workflow so anyone in the team can follow it','Building a prompt template that works consistently across different projects','How your pod\'s best workflow becomes a Success Story and a permanent company asset'],
+   lesson:`<h4 class="mod-h4">From use case to workflow</h4><p>A use case is something you tried once. A workflow is something anyone can repeat. A good workflow has three components: a clear trigger, a prompt template with placeholders, and a validation step.</p><h4 class="mod-h4">Becoming a company asset</h4><p>The best workflows your pod builds this cycle live in the Use Case Library and Prompt Pack permanently.</p>`,
+   quiz:[{q:'What is the key difference between a use case and a workflow?',opts:['A workflow uses a better AI tool','A workflow is documented so anyone can repeat it','A workflow saves more time'],c:1},{q:'Before publishing a prompt template to the Prompt Pack, you should:',opts:['Make sure it looks professional','Test it on at least three different inputs','Get sign-off from the Academy Lead first'],c:1},{q:'What happens to your pod\'s best workflows at the end of Cycle 1?',opts:['They are archived and replaced','They are deleted when pods rotate','They remain permanently in the Use Case Library and Prompt Pack'],c:2}]}
+];
 
-// ── MOBILE MENU ──
-function openMobileMenu(){
-  document.getElementById('sidebar').classList.add('mobile-open');
-  document.getElementById('mobile-overlay').classList.add('open');
-}
-function closeMobileMenu(){
-  document.getElementById('sidebar').classList.remove('mobile-open');
-  document.getElementById('mobile-overlay').classList.remove('open');
-}
+// ── UTILS ──
+function isAdmin(){if(!CP)return false;if(CP.role==='admin'||CP.role==='lead')return true;return ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((CP.email||'').toLowerCase());}
+function hideSplash(){const s=document.getElementById('splash');s.classList.add('hidden');setTimeout(()=>s.style.display='none',400);}
+function showToast(msg){const t=document.getElementById('toast');document.getElementById('tmsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);}
+function getUnlockedMods(){const now=new Date(),el=now-CYCLE_START,ms=14*24*60*60*1000;if(el<0)return[];const fp=Math.floor(el/ms);return Array.from({length:Math.min(fp+1,6)},(_,i)=>i+1);}
+function isModUnlocked(n){return getUnlockedMods().includes(n);}
+function unlockDate(n){return new Date(CYCLE_START.getTime()+(n-1)*14*24*60*60*1000).toLocaleDateString('en-GB',{day:'numeric',month:'short'});}
+function getChalStatus(id){return chalStatus[id]||'upcoming';}
 
-// ── CHANGE POD ──
-function openPodModal(){
-  if(currentProfile?.pod_id)document.getElementById('pod-select').value=currentProfile.pod_id;
-  document.getElementById('pod-modal').classList.add('open');
-}
+// ── MOBILE ──
+function openMobileMenu(){document.getElementById('sidebar').classList.add('mobile-open');document.getElementById('mobile-overlay').classList.add('open');}
+function closeMobileMenu(){document.getElementById('sidebar').classList.remove('mobile-open');document.getElementById('mobile-overlay').classList.remove('open');}
+
+// ── POD MODAL ──
+function openPodModal(){if(CP?.pod_id)document.getElementById('pod-select').value=CP.pod_id;document.getElementById('pod-modal').classList.add('open');}
 function closePodModal(){document.getElementById('pod-modal').classList.remove('open');}
 async function savePod(){
   const pod=parseInt(document.getElementById('pod-select').value);
   if(!pod){showToast('Please select a pod.');return;}
-  const{error}=await sb.from('profiles').update({pod_id:pod}).eq('id',currentUser.id);
+  const{error}=await sb.from('profiles').update({pod_id:pod}).eq('id',CU.id);
   if(error){showToast('Error: '+error.message);return;}
-  currentProfile.pod_id=pod;
-  closePodModal();
-  showToast('Pod updated — refreshing…');
+  CP.pod_id=pod;closePodModal();showToast('Pod updated — refreshing…');
   setTimeout(()=>location.reload(),1000);
 }
 
 // ── AUTH ──
-function isAdmin(){
-  if(!currentProfile)return false;
-  if(currentProfile.role==='admin'||currentProfile.role==='lead')return true;
-  return ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((currentProfile.email||'').toLowerCase());
-}
-
-function hideSplash(){
-  const s=document.getElementById('splash');
-  s.classList.add('hidden');
-  setTimeout(()=>s.style.display='none',400);
-}
-
 function switchAuthTab(tab){
   ['signin','signup','forgot'].forEach(t=>{const el=document.getElementById(t+'-form');if(el)el.style.display=t===tab?'':'none';});
   document.getElementById('tab-signin').classList.toggle('active',tab==='signin');
@@ -951,14 +818,14 @@ function switchAuthTab(tab){
   document.getElementById('auth-err').textContent='';
   document.getElementById('auth-ok').style.display='none';
 }
+function setAuthErr(msg){document.getElementById('auth-err').textContent=msg;}
 
 async function signIn(){
   const email=document.getElementById('si-email').value.trim(),pw=document.getElementById('si-pw').value;
   if(!email||!pw){setAuthErr('Please enter your email and password.');return;}
   const btn=document.getElementById('si-btn');btn.disabled=true;btn.textContent='Signing in…';
-  const{data,error}=await sb.auth.signInWithPassword({email,password:pw});
-  if(error){btn.disabled=false;btn.textContent='Sign in';setAuthErr(error.message);return;}
-  btn.textContent='Loading…';
+  const{error}=await sb.auth.signInWithPassword({email,password:pw});
+  if(error){btn.disabled=false;btn.textContent='Sign in';setAuthErr(error.message);}
 }
 
 async function signUp(){
@@ -966,34 +833,25 @@ async function signUp(){
   if(!name||!email||!pw||!pod){setAuthErr('Please fill in all fields.');return;}
   if(pw.length<8){setAuthErr('Password must be at least 8 characters.');return;}
   const btn=document.getElementById('su-btn');btn.disabled=true;btn.textContent='Creating account…';
-  const{data,error}=await sb.auth.signUp({email,password:pw,options:{emailRedirectTo:window.location.href}});
+  const{data,error}=await sb.auth.signUp({email,password:pw});
   if(error){btn.disabled=false;btn.textContent='Create account';setAuthErr(error.message);return;}
   if(data.user){
     const isAdminEmail=ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email.toLowerCase());
-    const isKarl=name==='Karl Dooner';
-    const podInt=(pod==='none'||isKarl)?null:parseInt(pod);
+    const podInt=pod==='none'?null:parseInt(pod);
     const podName='Pod '+pod;
-    const isLead=!isKarl&&pod!=='none'&&podAssignments[podName]?.lead.includes(name);
-    const role=isKarl||isAdminEmail?'admin':isLead?'lead':'member';
-    await sb.from('profiles').insert({id:data.user.id,full_name:name,email,pod_id:podInt,role,ai_role:getAIRole(name)});
+    const isLead=pod!=='none'&&pods[podName]?.lead.includes(name);
+    const role=isAdminEmail?'admin':isLead?'lead':'member';
+    const aiRole=getAIRole(name);
+    await sb.from('profiles').insert({id:data.user.id,full_name:name,email,pod_id:podInt,role,ai_role:aiRole});
   }
   btn.disabled=false;btn.textContent='Create account';
   document.getElementById('auth-ok').style.display='block';
-  // Show appropriate message based on whether email confirmation is required
-  document.getElementById('auth-ok').textContent=data.user?.confirmed_at
-    ?'Account created! Signing you in…'
-    :'Account created! Check your email to confirm your address, then sign in.';
-  setTimeout(()=>switchAuthTab('signin'),3000);
+  document.getElementById('auth-ok').textContent='Account created! Please sign in.';
+  setTimeout(()=>switchAuthTab('signin'),2500);
 }
 
 function getAIRole(name){
-  if(name==='Karl Dooner')return'CEO Observer';
-  for(const[pod,data]of Object.entries(podAssignments)){
-    if(data.lead.includes(name))return'Digital Lead';
-    const idx=data.members.indexOf(name);
-    if(idx===1)return'Specialist';
-    if(idx===2)return'Willing Learner';
-  }
+  for(const[p,d]of Object.entries(pods)){if(d.lead.includes(name))return'Digital Lead';const i=d.members.indexOf(name);if(i===1)return'Specialist';if(i===2)return'Willing Learner';}
   return'Member';
 }
 
@@ -1007,275 +865,204 @@ async function sendReset(){
   document.getElementById('auth-ok').style.display='block';
   document.getElementById('auth-ok').textContent='Reset link sent — check your email.';
 }
-function setAuthErr(msg){document.getElementById('auth-err').textContent=msg;}
 
 async function signOut(){
-  clearInterval(lbPollInterval);
+  clearInterval(lbTimer);
   await sb.auth.signOut();
-  currentUser=null;currentProfile=null;
+  CU=null;CP=null;
   document.getElementById('app').style.display='none';
   document.getElementById('auth-wrap').classList.remove('hidden');
   switchAuthTab('signin');
 }
 
-// ── SESSION RESTORE ──
-(async()=>{
-  try{
-    // Wipe every supabase-related key except our named one
-    const keep='proicere-academy-auth';
-    Object.keys(localStorage).forEach(k=>{
-      if(k===keep)return;
-      if(k.startsWith('sb-')||k.includes('supabase')||k.includes('auth-token')||k.includes('gotrue'))localStorage.removeItem(k);
-    });
-    // Also clear sessionStorage of any supabase keys
-    Object.keys(sessionStorage||{}).forEach(k=>{
-      if(k.startsWith('sb-')||k.includes('supabase')||k.includes('auth-token'))sessionStorage.removeItem(k);
-    });
-  }catch(e){}
-  try{
-    const{data:{session},error}=await sb.auth.getSession();
-    if(session?.user&&!error){currentUser=session.user;await tryLoadAndShow();}
-    else{await sb.auth.signOut().catch(()=>{});hideSplash();document.getElementById('auth-wrap').classList.remove('hidden');}
-  }catch(e){
-    await sb.auth.signOut().catch(()=>{});hideSplash();document.getElementById('auth-wrap').classList.remove('hidden');
-  }
-})();
-
+// ── SESSION ──
 sb.auth.onAuthStateChange(async(event,session)=>{
-  if((event==='SIGNED_IN'||event==='INITIAL_SESSION')&&session?.user&&!currentUser){
-    currentUser=session.user;
-    await tryLoadAndShow();
+  if((event==='INITIAL_SESSION'||event==='SIGNED_IN')&&session?.user&&!CU){
+    CU=session.user;
+    await loadProfile();
   }
-  if(event==='SIGNED_OUT'){
-    clearInterval(lbPollInterval);currentUser=null;currentProfile=null;
-    document.getElementById('app').style.display='none';
-    document.getElementById('auth-wrap').classList.remove('hidden');
-  }
-  if(event==='TOKEN_REFRESHED'&&session?.user)currentUser=session.user;
+  if(event==='SIGNED_OUT'){clearInterval(lbTimer);CU=null;CP=null;document.getElementById('app').style.display='none';document.getElementById('auth-wrap').classList.remove('hidden');}
+  if(event==='TOKEN_REFRESHED'&&session?.user)CU=session.user;
 });
 
-async function tryLoadAndShow(){
-  for(let attempt=0;attempt<3;attempt++){
+async function loadProfile(){
+  for(let i=0;i<3;i++){
     try{
-      const{data,error}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
+      const{data,error}=await sb.from('profiles').select('*').eq('id',CU.id).single();
       if(data&&!error){
-        currentProfile=data;
-        if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((currentProfile.email||currentUser.email||'').toLowerCase()))currentProfile.role='admin';
+        CP=data;
+        if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((CP.email||CU.email||'').toLowerCase()))CP.role='admin';
         showApp();return;
       }
       if(error?.code==='PGRST116'){
-        const isAdminEmail=ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((currentUser.email||'').toLowerCase());
-        const{data:newProfile,error:insertError}=await sb.from('profiles').insert({id:currentUser.id,full_name:currentUser.user_metadata?.full_name||currentUser.email?.split('@')[0]||'User',email:currentUser.email||'',pod_id:null,role:isAdminEmail?'admin':'member',ai_role:'Member'}).select().single();
-        if(newProfile&&!insertError){currentProfile=newProfile;showApp();showToast('Profile created — please set your pod using "Change my pod" in the sidebar');return;}
+        const isAdm=ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((CU.email||'').toLowerCase());
+        const{data:np}=await sb.from('profiles').insert({id:CU.id,full_name:CU.email?.split('@')[0]||'User',email:CU.email||'',pod_id:null,role:isAdm?'admin':'member',ai_role:'Member'}).select().single();
+        if(np){CP=np;showApp();showToast('Profile created — set your pod using "Change my pod"');return;}
       }
-    }catch(e){console.warn('Profile load attempt',attempt+1,'failed:',e);}
-    if(attempt<2)await new Promise(r=>setTimeout(r,1000*(attempt+1)));
+    }catch(e){console.warn('Profile attempt',i+1,e);}
+    if(i<2)await new Promise(r=>setTimeout(r,1000*(i+1)));
   }
-  currentProfile={id:currentUser.id,full_name:currentUser.email?.split('@')[0]||'User',email:currentUser.email||'',pod_id:null,role:ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((currentUser.email||'').toLowerCase())?'admin':'member',ai_role:'Member'};
-  showApp();showToast('Signed in — profile sync limited.');
+  CP={id:CU.id,full_name:CU.email?.split('@')[0]||'User',email:CU.email||'',pod_id:null,role:ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((CU.email||'').toLowerCase())?'admin':'member',ai_role:'Member'};
+  showApp();
 }
 
 async function showApp(){
   hideSplash();
   document.getElementById('auth-wrap').classList.add('hidden');
   document.getElementById('app').style.display='flex';
-  const parts=currentProfile.full_name.trim().split(' ');
-  const initials=((parts[0]||'?')[0]+(parts[parts.length-1]||'?')[0]).toUpperCase();
-  document.getElementById('s-av').textContent=initials;
-  document.getElementById('s-name').textContent=currentProfile.full_name;
-  const roleLabel=currentProfile.role==='admin'?'Admin / Observer':currentProfile.role==='lead'?`Pod ${currentProfile.pod_id} Lead`:`Pod ${currentProfile.pod_id} · ${currentProfile.ai_role||'Member'}`;
-  document.getElementById('s-role').textContent=roleLabel;
-  document.getElementById('s-pod-label').textContent=currentProfile.pod_id?`Pod ${currentProfile.pod_id} · Cycle 1`:'Admin · Cycle 1';
-  document.getElementById('my-pod-nav-label').textContent=currentProfile.pod_id?`Pod ${currentProfile.pod_id}`:'Overview';
-  const pct=Math.round((getUnlockedModules().length/6)*100);
-  document.getElementById('cycle-fill-bar').style.width=pct+'%';
+  const pts=CP.full_name.trim().split(' ');
+  document.getElementById('s-av').textContent=((pts[0]||'?')[0]+(pts[pts.length-1]||'?')[0]).toUpperCase();
+  document.getElementById('s-name').textContent=CP.full_name;
+  document.getElementById('s-role').textContent=CP.role==='admin'?'Admin / Observer':CP.role==='lead'?`Pod ${CP.pod_id} Lead`:`Pod ${CP.pod_id} · ${CP.ai_role||'Member'}`;
+  document.getElementById('s-pod-label').textContent=CP.pod_id?`Pod ${CP.pod_id} · Cycle 1`:'Admin · Cycle 1';
+  document.getElementById('my-pod-nav-label').textContent=CP.pod_id?`Pod ${CP.pod_id}`:'Overview';
+  document.getElementById('cycle-fill-bar').style.width=Math.round(getUnlockedMods().length/6*100)+'%';
   if(isAdmin()){document.getElementById('lead-sec').style.display='';document.getElementById('wof-admin-hint').style.display='';loadPendingCount();}
-  await Promise.all([loadModuleProgress(),loadChalSubmissions(),loadHomeStats(),loadChallengeStatuses()]);
-  renderHomeModules();renderModules();renderWeekSelector();
-  renderChallenges('all');loadWallOfFame();loadLeaderboard();loadTeamVideos();
-  if(isAdmin())renderChalAdminPanel();
-  // Start real-time leaderboard polling (every 60 seconds)
-  startLbPolling();
+  await Promise.all([loadModProg(),loadChalDone(),loadHomeStats(),loadChalStatuses()]);
+  renderHomeMods();renderModsList();renderWeekSel();
+  renderChallenges('all');loadWOF();loadLB();loadTeamVids();
+  if(isAdmin())renderChalAdmin();
+  lbTimer=setInterval(()=>{if(document.getElementById('page-leaderboard').classList.contains('active'))loadLB();},60000);
 }
 
-// ── REAL-TIME LEADERBOARD POLLING ──
-function startLbPolling(){
-  clearInterval(lbPollInterval);
-  lbPollInterval=setInterval(async()=>{
-    // Only poll if leaderboard page is active
-    if(document.getElementById('page-leaderboard').classList.contains('active')){
-      await loadLeaderboard();
-    }
-  },60000); // every 60 seconds
-}
-
-async function loadModuleProgress(){
-  const{data}=await sb.from('module_progress').select('*').eq('user_id',currentUser.id);
-  userModuleProgress={};(data||[]).forEach(r=>userModuleProgress[r.module_number]=r);
-}
-async function loadChalSubmissions(){
-  const{data}=await sb.from('challenge_submissions').select('*').eq('user_id',currentUser.id);
-  chalCompletedByUser={};(data||[]).forEach(r=>chalCompletedByUser[r.challenge_id]=true);
-}
+async function loadModProg(){const{data}=await sb.from('module_progress').select('*').eq('user_id',CU.id);modProg={};(data||[]).forEach(r=>modProg[r.module_number]=r);}
+async function loadChalDone(){const{data}=await sb.from('challenge_submissions').select('*').eq('user_id',CU.id);chalDone={};(data||[]).forEach(r=>chalDone[r.challenge_id]=true);}
 async function loadHomeStats(){
-  const[{count:uc},{count:mods}]=await Promise.all([
+  const[{count:uc},{count:m}]=await Promise.all([
     sb.from('learning_log').select('*',{count:'exact',head:true}).eq('status','approved'),
     sb.from('module_progress').select('*',{count:'exact',head:true}).eq('quiz_passed',true)
   ]);
   document.getElementById('home-uc-count').textContent=uc||0;
-  document.getElementById('home-mods-count').textContent=mods||0;
+  document.getElementById('home-mods-count').textContent=m||0;
 }
 async function loadPendingCount(){
-  const q=currentProfile.role==='admin'
-    ?sb.from('learning_log').select('*',{count:'exact',head:true}).eq('status','pending')
-    :sb.from('learning_log').select('*',{count:'exact',head:true}).eq('pod_id',currentProfile.pod_id).eq('status','pending');
+  const q=CP.role==='admin'?sb.from('learning_log').select('*',{count:'exact',head:true}).eq('status','pending'):sb.from('learning_log').select('*',{count:'exact',head:true}).eq('pod_id',CP.pod_id).eq('status','pending');
   const{count}=await q;
   const badge=document.getElementById('pending-count');
   if(count>0){badge.style.display='';badge.textContent=count;}else badge.style.display='none';
 }
-async function loadChallengeStatuses(){
+async function loadChalStatuses(){
   const{data}=await sb.from('challenge_status').select('*');
-  challengeStatuses={};
-  (data||[]).forEach(r=>challengeStatuses[r.challenge_id]=r.status);
-  challengesBase.forEach(c=>{if(!challengeStatuses[c.id])challengeStatuses[c.id]=c.defaultStatus;});
-}
-function getChallengeStatus(id){return challengeStatuses[id]||'upcoming';}
-async function setChallengeStatus(id,status){
-  challengeStatuses[id]=status;
-  await sb.from('challenge_status').upsert({challenge_id:id,status,updated_by:currentUser.id,updated_at:new Date().toISOString()},{onConflict:'challenge_id'});
-  renderChalAdminPanel();renderChallenges(currentChalFilter);
-  showToast('Challenge status updated to "'+status+'"');
-}
-function renderChalAdminPanel(){
-  const panel=document.getElementById('chal-admin-panel');
-  if(!panel||!isAdmin())return;
-  panel.style.display='';
-  panel.innerHTML=`<div class="admin-panel"><div class="admin-panel-title">⚙ Admin — Challenge Status Manager</div><div class="admin-panel-sub">Change which challenge is active. Only one should be "Active now" at a time.</div>${challengesBase.map(c=>{const status=getChallengeStatus(c.id);return`<div class="chal-status-row"><div class="chal-status-name">${c.fort}: ${c.title.slice(0,60)}…</div><button class="status-btn${status==='active'?' active-btn':''}" onclick="setChallengeStatus(${c.id},'active')">Active now</button><button class="status-btn${status==='upcoming'?' upcoming-btn':''}" onclick="setChallengeStatus(${c.id},'upcoming')">Upcoming</button><button class="status-btn${status==='done'?' done-btn':''}" onclick="setChallengeStatus(${c.id},'done')">Completed</button></div>`;}).join('')}</div>`;
+  chalStatus={};(data||[]).forEach(r=>chalStatus[r.challenge_id]=r.status);
+  challenges.forEach(c=>{if(!chalStatus[c.id])chalStatus[c.id]=c.def;});
 }
 
 // ── WALL OF FAME ──
-async function loadWallOfFame(){
+async function loadWOF(){
   const{data}=await sb.from('wall_of_fame').select('*').order('created_at',{ascending:false});
-  wofEntries={};(data||[]).forEach(e=>{const key=e.month_label+'|'+e.award_type;if(!wofEntries[key])wofEntries[key]=e;});
-  renderWallOfFame();
+  wofData={};(data||[]).forEach(e=>{const k=e.month_label+'|'+e.award_type;if(!wofData[k])wofData[k]=e;});
+  renderWOF();
 }
-function renderWallOfFame(){
-  const months=[...new Set(Object.values(wofEntries).map(e=>e.month_label))];
+function renderWOF(){
+  const months=[...new Set(Object.values(wofData).map(e=>e.month_label))];
   if(!months.length)months.push('April 2026');
   const el=document.getElementById('wof-content');
-  el.innerHTML=months.map(month=>`<div class="sec-label" style="display:flex;align-items:center;justify-content:space-between">${month}${isAdmin()?`<span style="font-size:11px;color:var(--text3)">Click ✏ to edit</span>`:''}</div><div class="honour-grid" style="margin-bottom:32px">${awardTypes.map(a=>{const entry=wofEntries[month+'|'+a.type];return`<div class="honour-card" style="border-color:${a.borderColor}">${isAdmin()?`<button class="honour-edit-btn" onclick="openHonourModal('${a.type}','${month}')">✏ Edit</button>`:''}<div style="width:32px;height:32px;border-radius:8px;background:${a.iconBg};display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:16px">${a.icon}</div><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:6px">${a.label}</div><div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:4px">${entry?entry.winner_name:'To be announced'}</div><div style="font-size:12.5px;color:var(--text2);line-height:1.5">${entry?entry.description:'Awarded at the end of the month.'}</div><div style="font-size:11px;color:var(--text3);margin-top:8px">${entry&&entry.winner_pod?entry.winner_pod:'—'}</div></div>`;}).join('')}</div>`).join('');
-  if(isAdmin()){const nextMonth=new Date();nextMonth.setMonth(nextMonth.getMonth()+1);const suggested=nextMonth.toLocaleDateString('en-GB',{month:'long',year:'numeric'});el.innerHTML+=`<button onclick="openNewMonthModal('${suggested}')" style="background:transparent;border:1px dashed var(--border2);border-radius:var(--r);padding:14px 20px;color:var(--text3);font-size:13px;cursor:pointer;width:100%;font-family:var(--font)">+ Add awards for a new month</button>`;}
+  el.innerHTML=months.map(month=>`
+    <div class="sec-label" style="display:flex;align-items:center;justify-content:space-between">${month}${isAdmin()?'<span style="font-size:11px;color:var(--text3)">Click ✏ to edit</span>':''}</div>
+    <div class="honour-grid" style="margin-bottom:32px">
+      ${awards.map(a=>{const e=wofData[month+'|'+a.type];return`<div class="honour-card" style="border-color:${a.bc}">${isAdmin()?`<button class="honour-edit-btn" onclick="openHonourModal('${a.type}','${month}')">✏ Edit</button>`:''}<div style="width:32px;height:32px;border-radius:8px;background:${a.ib};display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:16px">${a.icon}</div><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:6px">${a.label}</div><div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:4px">${e?e.winner_name:'To be announced'}</div><div style="font-size:12.5px;color:var(--text2);line-height:1.5">${e?e.description:'Awarded at the end of the month.'}</div><div style="font-size:11px;color:var(--text3);margin-top:8px">${e&&e.winner_pod?e.winner_pod:'—'}</div></div>`;}).join('')}
+    </div>`).join('');
+  if(isAdmin()){const nm=new Date();nm.setMonth(nm.getMonth()+1);const s=nm.toLocaleDateString('en-GB',{month:'long',year:'numeric'});el.innerHTML+=`<button onclick="openNewMonthModal('${s}')" style="background:transparent;border:1px dashed var(--border2);border-radius:var(--r);padding:14px 20px;color:var(--text3);font-size:13px;cursor:pointer;width:100%;font-family:var(--font)">+ Add awards for a new month</button>`;}
 }
-function openNewMonthModal(suggested){openHonourModal('use_case',suggested);document.getElementById('hm-sub').textContent='Start with Use Case of the Month, then edit each award in turn.';}
-function openHonourModal(awardType,month){
-  const a=awardTypes.find(x=>x.type===awardType);
+function openNewMonthModal(s){openHonourModal('use_case',s);document.getElementById('hm-sub').textContent='Start with Use Case of the Month, then edit each award in turn.';}
+function openHonourModal(type,month){
+  const a=awards.find(x=>x.type===type);
   document.getElementById('hm-title').textContent='Edit — '+(a?.label||'Award');
   document.getElementById('hm-sub').textContent='Update the winner for '+(month||'this month')+'.';
-  document.getElementById('hm-award-type').value=awardType;
+  document.getElementById('hm-award-type').value=type;
   document.getElementById('hm-month').value=month||'April 2026';
-  const existing=wofEntries[month+'|'+awardType];
-  document.getElementById('hm-winner').value=existing?.winner_name||'';
-  document.getElementById('hm-pod').value=existing?.winner_pod||'';
-  document.getElementById('hm-desc').value=existing?.description||'';
+  const e=wofData[month+'|'+type];
+  document.getElementById('hm-winner').value=e?.winner_name||'';
+  document.getElementById('hm-pod').value=e?.winner_pod||'';
+  document.getElementById('hm-desc').value=e?.description||'';
   document.getElementById('honour-modal').classList.add('open');
 }
 function closeHonourModal(){document.getElementById('honour-modal').classList.remove('open');}
 async function saveHonour(){
-  const awardType=document.getElementById('hm-award-type').value,month=document.getElementById('hm-month').value.trim(),winner=document.getElementById('hm-winner').value.trim(),pod=document.getElementById('hm-pod').value.trim(),desc=document.getElementById('hm-desc').value.trim();
+  const type=document.getElementById('hm-award-type').value,month=document.getElementById('hm-month').value.trim(),winner=document.getElementById('hm-winner').value.trim(),pod=document.getElementById('hm-pod').value.trim(),desc=document.getElementById('hm-desc').value.trim();
   if(!month||!winner){showToast('Please fill in the month and winner name.');return;}
-  const{error}=await sb.from('wall_of_fame').insert({month_label:month,award_type:awardType,winner_name:winner,winner_pod:pod,description:desc});
+  const{error}=await sb.from('wall_of_fame').insert({month_label:month,award_type:type,winner_name:winner,winner_pod:pod,description:desc});
   if(error){showToast('Error: '+error.message);return;}
-  closeHonourModal();showToast('Award saved!');loadWallOfFame();
+  closeHonourModal();showToast('Award saved!');loadWOF();
 }
 
 // ── MODULES ──
-const modulesData=[
-  {n:1,name:'AI Foundations',desc:'What AI is and isn\'t. How LLMs work. Responsible use principles.',weeks:'Weeks 1–2',intro:'What AI actually is — and what it isn\'t. This module builds a clear mental model of how large language models work, where they are reliable, where they fall short, and how to use them responsibly in a professional consultancy context.',learns:['The difference between AI, machine learning, and large language models — in plain English','How an LLM generates a response — and why it sometimes gets things wrong','What AI is genuinely good at, and where you should never rely on it without checking','Responsible use principles for Proicere — client data, accuracy, and transparency'],lesson:`<h4 class="mod-h4">What is AI, really?</h4><p>When people say "AI" today they almost always mean a <strong>large language model (LLM)</strong> — a system trained on enormous amounts of text that has learned to predict what a useful response looks like. It is not thinking. It is not searching the internet in real time. It is pattern matching at a very sophisticated level.</p><p>That distinction matters. An LLM will produce a confident-sounding answer whether it is right or wrong. It has no built-in sense of "I don't know" — it fills the gap with something plausible. This is called <strong>hallucination</strong>, and it is the single most important thing to understand about working with AI.</p><h4 class="mod-h4">Where AI is genuinely useful at Proicere</h4><p>AI is best at tasks that involve taking existing information and doing something structured with it — summarising, reformatting, drafting, explaining, comparing. If you give it a meeting transcript and ask it to pull out the action items, it will do that well. If you ask it to invent cost data for a project it has never seen, it will invent something convincing but wrong.</p><p>The practical rule: <strong>AI works with what you give it.</strong> Vague inputs produce vague outputs. Specific, well-structured inputs produce genuinely useful outputs.</p><h4 class="mod-h4">Responsible use at Proicere</h4><div class="mod-principle"><span class="mod-pnum" style="background:var(--blue-bg);color:var(--blue)">1</span><div><strong>Never share client-identifiable data</strong> with a public AI tool. Anonymise project names, client names, and sensitive figures before pasting anything in.</div></div><div class="mod-principle"><span class="mod-pnum" style="background:var(--teal-bg);color:var(--teal)">2</span><div><strong>Always verify outputs</strong> before using them in client-facing work. AI-generated content should be treated as a first draft, not a finished product.</div></div><div class="mod-principle"><span class="mod-pnum" style="background:var(--purple-bg);color:var(--purple)">3</span><div><strong>Be transparent</strong> about AI use where relevant. If a document was drafted with AI assistance, that should be known to whoever is reviewing it.</div></div>`,quiz:[{q:'An LLM produces a confident answer to a question it has no reliable data on. What is this called?',opts:['A smart guess','Hallucination','A system bug'],correct:1},{q:'Which is the best use of AI at Proicere?',opts:['Generating cost estimates for a client proposal without any source data','Summarising a meeting transcript into a structured action list','Replacing a domain specialist\'s judgement on a complex risk'],correct:1},{q:'Before pasting project information into a public AI tool, you should always:',opts:['Ask your line manager first','Check the project is not live','Anonymise client names, project names, and sensitive figures'],correct:2}]},
-  {n:2,name:'Prompting Basics',desc:'Writing prompts that actually work. Context, constraints, clarity.',weeks:'Weeks 3–4',intro:'The quality of what AI gives you is almost entirely determined by the quality of what you ask it.',learns:['The context-task-format structure that produces consistently good outputs','How to give AI the right amount of context without overloading it','Common prompting mistakes and exactly how to fix them','How to iterate — when your first prompt doesn\'t work, what to do next'],lesson:`<h4 class="mod-h4">The context-task-format structure</h4><p>Most weak prompts fail for one of three reasons: not enough context, a vague task description, or no guidance on how the output should be structured.</p><div class="mod-principle"><span class="mod-pnum" style="background:var(--blue-bg);color:var(--blue)">C</span><div><strong>Context</strong> — tell the AI who you are and any relevant background.</div></div><div class="mod-principle"><span class="mod-pnum" style="background:var(--teal-bg);color:var(--teal)">T</span><div><strong>Task</strong> — be specific about what you want.</div></div><div class="mod-principle"><span class="mod-pnum" style="background:var(--purple-bg);color:var(--purple)">F</span><div><strong>Format</strong> — tell the AI how you want the output delivered.</div></div><h4 class="mod-h4">The most common mistake</h4><p>Asking too many things in one prompt. Separate tasks into separate prompts and you will get significantly better outputs for each.</p>`,quiz:[{q:'What does "F" stand for in the context-task-format structure?',opts:['Feedback','File','Format'],correct:2},{q:'Your first prompt produces output that is too long and too informal. What do you do?',opts:['Start a completely new conversation','Follow up with "shorten to 5 bullet points and use a more formal tone"','Accept the output and edit it manually'],correct:1},{q:'You need a risk register, a meeting summary, and a client email. Best approach?',opts:['Ask for all three in one prompt','Write three separate prompts, one for each task','Ask for the most important one only'],correct:1}]},
-  {n:3,name:'AI for Documents & Reporting',desc:'Summarising, drafting, and formatting reports and comms.',weeks:'Weeks 5–6',intro:'Summarising long documents, drafting client communications, and formatting written outputs.',learns:['Summarising a 40-page report into an executive summary in minutes','Drafting client-facing emails from bullet point notes','Converting messy meeting notes into structured action logs','Controlling tone — getting AI to match your client relationship style'],lesson:`<h4 class="mod-h4">Summarising long documents</h4><p>The key is being specific about your audience and the format you need.</p><h4 class="mod-h4">Tone control</h4><p>The words "formal", "friendly-professional", and "technical" produce meaningfully different outputs.</p>`,quiz:[{q:'You need to summarise a 60-page project report for a client board. Best approach?',opts:['Paste the whole report in one go','Split into sections, summarise each, then ask AI to combine','Write the summary yourself'],correct:1},{q:'Which instruction gives AI the most useful guidance on a client email?',opts:['"Write a professional email"','"Write a friendly-professional update email to a project sponsor, under 200 words, leading with progress then flagging two risks"','"Write a good email about the project"'],correct:1},{q:'AI produces a client email that is too formal for the relationship. What do you do?',opts:['Edit manually','Send it anyway','Follow up with "rewrite this in a friendly-professional tone — this client is informal"'],correct:2}]},
-  {n:4,name:'AI for Data & Analysis',desc:'Interpreting outputs, assisting Power BI, structuring queries.',weeks:'Weeks 7–8',intro:'Generating Power BI DAX measures, explaining data to non-technical audiences, and validating AI-generated outputs.',learns:['Generating Power BI DAX measures from a plain English description','Explaining what a data table is showing in language for a non-technical client','Spotting patterns and anomalies in programme data','Validating AI-generated data outputs before using them'],lesson:`<h4 class="mod-h4">DAX measures in plain English</h4><p>Describe what you want to calculate in plain English and AI will write the measure and explain each part. Always test in Power BI Desktop before deploying.</p><h4 class="mod-h4">The golden rule — always validate</h4><p>Never use AI-generated data outputs in client-facing work without independently checking at least one result.</p>`,quiz:[{q:'What should you include when asking AI to generate a DAX measure?',opts:['Just the measure name','A plain English description, table name, relevant columns, and any filters','The Power BI version you are using'],correct:1},{q:'AI produces a DAX measure and the results look slightly off. What should you do?',opts:['Trust it','Ask AI to review the DAX for errors and manually verify at least one result','Discard the output'],correct:1},{q:'Before using an AI-generated data output in a client presentation:',opts:['Ask a colleague to check it looks professional','Check it was generated by the latest AI model','Independently verify at least one result against your source data'],correct:2}]},
-  {n:5,name:'AI in Project Delivery',desc:'Planning, risk, and programme controls use cases from real projects.',weeks:'Weeks 9–10',intro:'Focusing specifically on Proicere\'s core work — project controls, programme management, risk, and client delivery.',learns:['Generating risk registers from meeting transcripts','Translating P6 schedule logic into plain English for clients','AI-assisted change control — drafting change requests from verbal descriptions','Where AI adds the most value in a programme controls environment'],lesson:`<h4 class="mod-h4">Risk registers from transcripts</h4><p>Paste the transcript into Claude with a structured prompt and get a categorised risk register as a starting point. Expect 70–80% accuracy — always review and add domain knowledge.</p><h4 class="mod-h4">Where AI has limits</h4><p>AI cannot replace domain expertise on complex programme decisions. The most effective use is AI handling structured formatting work so expert time is freed for judgement calls.</p>`,quiz:[{q:'After using AI to generate a risk register from a transcript, you should expect the output to be:',opts:['Complete and ready to submit','Around 70–80% accurate — needs your review and domain knowledge','Too unreliable to use'],correct:1},{q:'What is AI NOT able to do in a project delivery context?',opts:['Generate a structured risk register','Translate schedule logic into plain English','Validate whether a programme schedule is actually achievable'],correct:2},{q:'The best use of AI in project controls is to:',opts:['Handle structured formatting work so expert time is freed for judgement calls','Replace experienced project controls professionals','Automate all client reporting'],correct:0}]},
-  {n:6,name:'Building a Workflow',desc:'Turning one-off AI uses into repeatable, shareable processes.',weeks:'Weeks 11–12',intro:'Turning one-off experiments into repeatable, shareable workflows that become permanent improvements to how Proicere works.',learns:['What makes a use case a workflow — the difference between a one-off and a repeatable process','How to document a workflow so anyone in the team can follow it','Building a prompt template that works consistently across different projects','How your pod\'s best workflow becomes a Success Story and a permanent company asset'],lesson:`<h4 class="mod-h4">From use case to workflow</h4><p>A use case is something you tried once. A workflow is something anyone can repeat. A good workflow has three components: a clear trigger, a prompt template with placeholders, and a validation step.</p><h4 class="mod-h4">Becoming a company asset</h4><p>The best workflows your pod builds this cycle live in the Use Case Library and Prompt Pack permanently.</p>`,quiz:[{q:'What is the key difference between a use case and a workflow?',opts:['A workflow uses a better AI tool','A workflow is documented so anyone can repeat it','A workflow saves more time'],correct:1},{q:'Before publishing a prompt template to the Prompt Pack, you should:',opts:['Make sure it looks professional','Test it on at least three different inputs','Get sign-off from the Academy Lead first'],correct:1},{q:'What happens to your pod\'s best workflows at the end of Cycle 1?',opts:['They are archived and replaced','They are deleted when pods rotate','They remain permanently in the Use Case Library and Prompt Pack'],correct:2}]}
-];
-
-function renderHomeModules(){
-  document.getElementById('home-module-grid').innerHTML=modulesData.map(m=>{
-    const done=userModuleProgress[m.n]?.quiz_passed,locked=!isModuleUnlocked(m.n)&&!done;
-    return `<div class="module-card${done?' done':locked?' locked':''}" onclick="${locked?`showToast('This module unlocks on ${getUnlockDateForModule(m.n)}')`:`goToModule(${m.n})`}">
+function renderHomeMods(){
+  document.getElementById('home-module-grid').innerHTML=mods.map(m=>{
+    const done=modProg[m.n]?.quiz_passed,locked=!isModUnlocked(m.n)&&!done;
+    return `<div class="module-card${done?' done':locked?' locked':''}" onclick="${locked?`showToast('This module unlocks on ${unlockDate(m.n)}')`:`goToMod(${m.n})`}">
       <div class="module-num">MODULE ${String(m.n).padStart(2,'0')} ${done?'✓':locked?'🔒':''}</div>
       <div class="module-name">${m.name}</div><div class="module-desc">${m.desc}</div>
       <div class="progress-bar"><div class="progress-fill" style="width:${done?100:0}%;background:${done?'var(--teal)':'var(--blue)'}"></div></div>
-      <div style="font-size:11px;color:${done?'var(--teal)':locked?'var(--text3)':'var(--blue)'};margin-top:6px">${done?'✓ Complete':locked?'Unlocks '+getUnlockDateForModule(m.n):'Available — click to open'}</div>
+      <div style="font-size:11px;color:${done?'var(--teal)':locked?'var(--text3)':'var(--blue)'};margin-top:6px">${done?'✓ Complete':locked?'Unlocks '+unlockDate(m.n):'Available — click to open'}</div>
     </div>`;
   }).join('');
 }
-
-function renderModules(){
-  const nextDate=getNextUnlockDate();
+function renderModsList(){
+  const nd=getNextUnlockDate();
   const note=document.getElementById('module-unlock-note');
-  note.textContent=nextDate?`Module ${getUnlockedModules().length+1} unlocks automatically on ${nextDate.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}.`:'All modules are now unlocked.';
-  document.getElementById('modules-list').innerHTML=modulesData.map(m=>{
-    const done=userModuleProgress[m.n]?.quiz_passed,prog=userModuleProgress[m.n],isUnlocked=isModuleUnlocked(m.n);
-    const statusBadge=done?'<span class="badge b-teal">✓ Complete</span>':isUnlocked?'<span class="badge b-blue">Available now</span>':`<span class="badge" style="background:var(--bg4);color:var(--text3)">Unlocks ${getUnlockDateForModule(m.n)}</span>`;
-    const learnsHTML=m.learns.map(l=>`<div class="mod-learn-item"><div class="mod-learn-dot"></div><div>${l}</div></div>`).join('');
-    const quizHTML=m.quiz.length?`<div class="mod-section-title">Reflection quiz — pass all questions to earn your pod +4 points</div><div id="quiz-mod-${m.n}">${m.quiz.map((q,qi)=>`<div class="mod-q"><div class="mod-q-text">${qi+1}. ${q.q}</div><div class="mod-options">${q.opts.map((o,oi)=>`<div class="mod-opt${done?' disabled':''}" onclick="quizAnswer(${m.n},${qi},this,${oi===q.correct})">${o}</div>`).join('')}</div></div>`).join('')}<div class="mod-quiz-result" id="qr-mod-${m.n}" style="display:none"></div>${done?`<div class="mod-done-banner">✓ You completed this module${prog?.completed_at?' on '+new Date(prog.completed_at).toLocaleDateString('en-GB'):''}. Your pod earned +4 points.</div>`:''}</div>`:'';
-    return `<div class="mod-card${done?' open':''}" id="mod-${m.n}"><div class="mod-header" onclick="toggleMod(${m.n})"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">${statusBadge}<span style="font-size:11px;color:var(--text3);font-weight:600">MODULE ${String(m.n).padStart(2,'0')}</span><span style="font-size:14px;font-weight:500;color:var(--text)">${m.name}</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;color:var(--text3)">${m.weeks}</span><span class="mod-chevron">▼</span></div></div><div class="mod-body" id="modb-${m.n}" style="display:${done?'block':'none'}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px"><span class="badge b-teal">All pods</span><span class="badge b-amber">${m.quiz.length} quiz questions</span><span class="badge b-blue">+4 pts on completion</span></div><div class="mod-video-wrap" onclick="showToast('Record your Module ${m.n} walkthrough in Loom and paste the embed link here')"><div class="mod-play-ring"><div class="mod-play-tri"></div></div><div class="mod-video-label">Module ${String(m.n).padStart(2,'0')} — ${m.name}</div><div class="mod-video-hint">Click to play · Replace with your Loom or Teams embed link</div></div><p class="mod-intro">${m.intro}</p>${m.learns.length?`<div class="mod-section-title">What you will learn</div><div class="mod-learn-grid">${learnsHTML}</div>`:''}<div class="mod-section-title">Lesson</div><div class="mod-lesson">${m.lesson}</div>${quizHTML}</div></div>`;
+  note.textContent=nd?`Module ${getUnlockedMods().length+1} unlocks automatically on ${nd.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}.`:'All modules are now unlocked.';
+  document.getElementById('modules-list').innerHTML=mods.map(m=>{
+    const done=modProg[m.n]?.quiz_passed,prog=modProg[m.n],unlocked=isModUnlocked(m.n);
+    const sb2=done?'<span class="badge b-teal">✓ Complete</span>':unlocked?'<span class="badge b-blue">Available now</span>':`<span class="badge" style="background:var(--bg4);color:var(--text3)">Unlocks ${unlockDate(m.n)}</span>`;
+    const lH=m.learns.map(l=>`<div class="mod-learn-item"><div class="mod-learn-dot"></div><div>${l}</div></div>`).join('');
+    const qH=m.quiz.length?`<div class="mod-section-title">Reflection quiz — pass all questions to earn your pod +4 points</div><div id="quiz-mod-${m.n}">${m.quiz.map((q,qi)=>`<div class="mod-q"><div class="mod-q-text">${qi+1}. ${q.q}</div><div class="mod-options">${q.opts.map((o,oi)=>`<div class="mod-opt${done?' disabled':''}" onclick="quizAns(${m.n},${qi},this,${oi===q.c})">${o}</div>`).join('')}</div></div>`).join('')}<div class="mod-quiz-result" id="qr-mod-${m.n}" style="display:none"></div>${done?`<div class="mod-done-banner">✓ You completed this module${prog?.completed_at?' on '+new Date(prog.completed_at).toLocaleDateString('en-GB'):''}. Your pod earned +4 points.</div>`:''}</div>`:'';
+    return `<div class="mod-card${done?' open':''}" id="mod-${m.n}"><div class="mod-header" onclick="toggleMod(${m.n})"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">${sb2}<span style="font-size:11px;color:var(--text3);font-weight:600">MODULE ${String(m.n).padStart(2,'0')}</span><span style="font-size:14px;font-weight:500;color:var(--text)">${m.name}</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;color:var(--text3)">${m.weeks}</span><span class="mod-chevron">▼</span></div></div><div class="mod-body" id="modb-${m.n}" style="display:${done?'block':'none'}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px"><span class="badge b-teal">All pods</span><span class="badge b-amber">${m.quiz.length} quiz questions</span><span class="badge b-blue">+4 pts on completion</span></div><div class="mod-video-wrap" onclick="showToast('Record your Module ${m.n} walkthrough in Loom and paste the embed link here')"><div class="mod-play-ring"><div class="mod-play-tri"></div></div><div class="mod-video-label">Module ${String(m.n).padStart(2,'0')} — ${m.name}</div><div class="mod-video-hint">Click to play · Replace with your Loom embed link</div></div><p class="mod-intro">${m.intro}</p>${m.learns.length?`<div class="mod-section-title">What you will learn</div><div class="mod-learn-grid">${lH}</div>`:''}<div class="mod-section-title">Lesson</div><div class="mod-lesson">${m.lesson}</div>${qH}</div></div>`;
   }).join('');
 }
-
-function toggleMod(n){const card=document.getElementById('mod-'+n),body=document.getElementById('modb-'+n);if(!card||!body)return;const open=card.classList.toggle('open');body.style.display=open?'block':'none';}
-function goToModule(n){go('modules',document.querySelector('.nav[onclick*="modules"]'));setTimeout(()=>{const card=document.getElementById('mod-'+n),body=document.getElementById('modb-'+n);if(card&&body){card.classList.add('open');body.style.display='block';card.scrollIntoView({behavior:'smooth',block:'start'});}},60);}
-async function quizAnswer(modN,qi,el,correct){
-  const key=`m${modN}q${qi}`;if(quizState[key])return;quizState[key]=true;
+function getNextUnlockDate(){const u=getUnlockedMods(),n=u.length+1;if(n>6)return null;return new Date(CYCLE_START.getTime()+(n-1)*14*24*60*60*1000);}
+function toggleMod(n){const c=document.getElementById('mod-'+n),b=document.getElementById('modb-'+n);if(!c||!b)return;const o=c.classList.toggle('open');b.style.display=o?'block':'none';}
+function goToMod(n){go('modules',document.querySelector('.nav[onclick*="modules"]'));setTimeout(()=>{const c=document.getElementById('mod-'+n),b=document.getElementById('modb-'+n);if(c&&b){c.classList.add('open');b.style.display='block';c.scrollIntoView({behavior:'smooth',block:'start'});}},60);}
+async function quizAns(mn,qi,el,correct){
+  const k=`m${mn}q${qi}`;if(quizSt[k])return;quizSt[k]=true;
   const opts=el.closest('.mod-options').querySelectorAll('.mod-opt');
   opts.forEach(o=>o.classList.add('disabled'));el.classList.add(correct?'correct':'wrong');
   if(!correct)opts.forEach(o=>{if(o.getAttribute('onclick')?.includes(',true)'))o.classList.add('correct');});
-  await checkQuizComplete(modN);
+  await checkQuizDone(mn);
 }
-async function checkQuizComplete(modN){
-  const mod=modulesData.find(m=>m.n===modN);if(!mod?.quiz.length)return;
-  const answered=mod.quiz.filter((_,qi)=>quizState[`m${modN}q${qi}`]).length;
-  if(answered<mod.quiz.length)return;
-  const correctCount=mod.quiz.filter((_,qi)=>!!document.querySelector(`#quiz-mod-${modN} .mod-q:nth-child(${qi+1}) .correct`)).length;
-  const rEl=document.getElementById(`qr-mod-${modN}`),passed=correctCount===mod.quiz.length;
+async function checkQuizDone(mn){
+  const mod=mods.find(m=>m.n===mn);if(!mod?.quiz.length)return;
+  if(mod.quiz.filter((_,qi)=>quizSt[`m${mn}q${qi}`]).length<mod.quiz.length)return;
+  const cc=mod.quiz.filter((_,qi)=>!!document.querySelector(`#quiz-mod-${mn} .mod-q:nth-child(${qi+1}) .correct`)).length;
+  const rEl=document.getElementById(`qr-mod-${mn}`),passed=cc===mod.quiz.length;
   rEl.style.display='block';rEl.className='mod-quiz-result '+(passed?'pass':'retry');
-  rEl.textContent=passed?`All ${correctCount}/${mod.quiz.length} correct — module complete! +4 points added to your pod.`:`${correctCount}/${mod.quiz.length} correct. Review the highlighted answers above.`;
-  if(passed&&!userModuleProgress[modN]){
-    await sb.from('module_progress').upsert({user_id:currentUser.id,module_number:modN,quiz_passed:true,quiz_score:correctCount,completed_at:new Date().toISOString()},{onConflict:'user_id,module_number'});
-    userModuleProgress[modN]={quiz_passed:true,completed_at:new Date().toISOString()};
-    showToast(`Module ${modN} complete! +4 points added to Pod ${currentProfile.pod_id} 🎉`);
-    renderHomeModules();loadHomeStats();loadLeaderboard();
+  rEl.textContent=passed?`All ${cc}/${mod.quiz.length} correct — module complete! +4 points added to your pod.`:`${cc}/${mod.quiz.length} correct. Review the highlighted answers above.`;
+  if(passed&&!modProg[mn]){
+    await sb.from('module_progress').upsert({user_id:CU.id,module_number:mn,quiz_passed:true,quiz_score:cc,completed_at:new Date().toISOString()},{onConflict:'user_id,module_number'});
+    modProg[mn]={quiz_passed:true,completed_at:new Date().toISOString()};
+    showToast(`Module ${mn} complete! +4 points added to Pod ${CP.pod_id} 🎉`);
+    renderHomeMods();loadHomeStats();loadLB();
   }
 }
 
 // ── LEARNING LOG ──
-function renderWeekSelector(){
-  document.getElementById('week-sel').innerHTML=[1,2,3,4].map(w=>`<button class="week-btn${w===selectedWeekNum?' active':''}" onclick="selWeek(this,${w})">Wk ${w}</button>`).join('');
-  document.getElementById('log-form-title').textContent=`New entry — ${currentProfile?.full_name||''} · ${currentProfile?.pod_id?'Pod '+currentProfile.pod_id:'Admin'}`;
+function renderWeekSel(){
+  document.getElementById('week-sel').innerHTML=[1,2,3,4].map(w=>`<button class="week-btn${w===selWeek?' active':''}" onclick="selW(this,${w})">Wk ${w}</button>`).join('');
+  document.getElementById('log-form-title').textContent=`New entry — ${CP?.full_name||''} · ${CP?.pod_id?'Pod '+CP.pod_id:'Admin'}`;
 }
-function selWeek(btn,w){document.querySelectorAll('.week-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');selectedWeekNum=w;loadMyLogEntries();}
-function selRating(btn,n){selectedRating=n;document.querySelectorAll('.rating-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
+function selW(btn,w){document.querySelectorAll('.week-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');selWeek=w;loadMyLogs();}
+function selRating(btn,n){selRat=n;document.querySelectorAll('.rating-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
 async function submitLog(){
-  const tool=document.getElementById('log-tool').value,time=document.getElementById('log-time').value,usecase=document.getElementById('log-usecase').value.trim(),what=document.getElementById('log-what').value.trim(),share=document.getElementById('log-share').value,video=document.getElementById('log-video').value.trim();
-  if(!tool||!time||!usecase||!what||!share||!selectedRating){showToast('Please fill in all required fields and select a confidence rating.');return;}
+  const tool=document.getElementById('log-tool').value,time=document.getElementById('log-time').value,uc=document.getElementById('log-usecase').value.trim(),what=document.getElementById('log-what').value.trim(),share=document.getElementById('log-share').value,video=document.getElementById('log-video').value.trim();
+  if(!tool||!time||!uc||!what||!share||!selRat){showToast('Please fill in all required fields and select a confidence rating.');return;}
   const btn=document.getElementById('log-submit-btn');btn.disabled=true;btn.textContent='Saving…';
   const isFailed=share==='No — was a failed experiment';
-  const{error}=await sb.from('learning_log').insert({user_id:currentUser.id,pod_id:currentProfile.pod_id,week_number:selectedWeekNum,tool_used:tool,use_case:usecase,what_happened:what,time_saved:time,worth_sharing:share,confidence_level:selectedRating,prompt_used:document.getElementById('log-prompt').value.trim()||null,video_url:video||null,status:isFailed?'approved':'pending',is_failed_experiment:isFailed});
+  const{error}=await sb.from('learning_log').insert({user_id:CU.id,pod_id:CP.pod_id,week_number:selWeek,tool_used:tool,use_case:uc,what_happened:what,time_saved:time,worth_sharing:share,confidence_level:selRat,prompt_used:document.getElementById('log-prompt').value.trim()||null,video_url:video||null,status:isFailed?'approved':'pending',is_failed_experiment:isFailed});
   btn.disabled=false;btn.textContent='Save entry → pending review';
   if(error){showToast('Error: '+error.message);return;}
   ['log-tool','log-time','log-usecase','log-what','log-share','log-prompt','log-video'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  selectedRating=0;document.querySelectorAll('.rating-btn').forEach(b=>b.classList.remove('selected'));
-  showToast(isFailed?`Failed experiment logged — +2 points added to Pod ${currentProfile.pod_id} ✓`:'Entry saved — your pod lead will review and award +5 points when approved');
-  if(isFailed)loadLeaderboard();
-  loadMyLogEntries();if(isAdmin())loadPendingCount();
+  selRat=0;document.querySelectorAll('.rating-btn').forEach(b=>b.classList.remove('selected'));
+  showToast(isFailed?`Failed experiment logged — +2 points added to Pod ${CP.pod_id} ✓`:'Entry saved — your pod lead will review and award +5 points when approved');
+  if(isFailed)loadLB();
+  loadMyLogs();if(isAdmin())loadPendingCount();
 }
-async function loadMyLogEntries(){
+async function loadMyLogs(){
   const el=document.getElementById('my-log-entries');
   el.innerHTML='<div class="loading"><div class="spinner"></div>Loading…</div>';
-  const{data,error}=await sb.from('learning_log').select('*').eq('user_id',currentUser.id).eq('week_number',selectedWeekNum).order('created_at',{ascending:false});
+  const{data,error}=await sb.from('learning_log').select('*').eq('user_id',CU.id).eq('week_number',selWeek).order('created_at',{ascending:false});
   if(error||!data?.length){el.innerHTML='<div class="empty-state">No entries for this week yet.</div>';return;}
   const sc={pending:'amber',approved:'teal',rejected:'red'};
-  el.innerHTML=data.map(e=>`<div class="log-entry" id="log-entry-${e.id}">
+  el.innerHTML=data.map(e=>`<div class="log-entry">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:11.5px;color:var(--text3);flex-wrap:wrap">Week ${e.week_number} · ${e.tool_used} · <span class="badge b-${sc[e.status]||'blue'}">${e.status}</span>${e.is_failed_experiment?'<span class="badge b-amber" style="font-size:10px">+2 pts</span>':''}<span style="margin-left:auto">${new Date(e.created_at).toLocaleDateString('en-GB')}</span></div>
     <div style="font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:4px">${e.use_case}</div>
     <div style="font-size:13px;color:var(--text2)">${e.what_happened}</div>
@@ -1283,8 +1070,8 @@ async function loadMyLogEntries(){
     <div style="font-size:11.5px;margin-top:6px;color:${e.status==='approved'?'var(--teal)':e.status==='rejected'?'var(--red)':'var(--text3)'}">${e.status==='pending'?'⏳ Awaiting review':e.status==='approved'?'✓ Approved':'✗ Not approved'}</div>
   </div>`).join('');
 }
-function openEditModal(id,usecase,what,tool,time,prompt,video){
-  document.getElementById('edit-log-id').value=id;document.getElementById('edit-usecase').value=usecase;document.getElementById('edit-what').value=what;document.getElementById('edit-tool').value=tool;document.getElementById('edit-time').value=time;document.getElementById('edit-prompt').value=prompt;document.getElementById('edit-video').value=video;
+function openEditModal(id,uc,what,tool,time,prompt,video){
+  document.getElementById('edit-log-id').value=id;document.getElementById('edit-usecase').value=uc;document.getElementById('edit-what').value=what;document.getElementById('edit-tool').value=tool;document.getElementById('edit-time').value=time;document.getElementById('edit-prompt').value=prompt;document.getElementById('edit-video').value=video;
   document.getElementById('edit-log-modal').classList.add('open');
 }
 function closeEditModal(){document.getElementById('edit-log-modal').classList.remove('open');}
@@ -1292,40 +1079,38 @@ async function saveEditedLog(){
   const id=document.getElementById('edit-log-id').value;
   const{error}=await sb.from('learning_log').update({use_case:document.getElementById('edit-usecase').value.trim(),what_happened:document.getElementById('edit-what').value.trim(),tool_used:document.getElementById('edit-tool').value,time_saved:document.getElementById('edit-time').value,prompt_used:document.getElementById('edit-prompt').value.trim()||null,video_url:document.getElementById('edit-video').value.trim()||null}).eq('id',id).eq('status','pending');
   if(error){showToast('Error: '+error.message);return;}
-  closeEditModal();showToast('Entry updated ✓');loadMyLogEntries();
+  closeEditModal();showToast('Entry updated ✓');loadMyLogs();
 }
 async function deleteLog(id){
   if(!confirm('Delete this entry? This cannot be undone.'))return;
   const{error}=await sb.from('learning_log').delete().eq('id',id).eq('status','pending');
   if(error){showToast('Error: '+error.message);return;}
-  showToast('Entry deleted');loadMyLogEntries();loadPendingCount();
+  showToast('Entry deleted');loadMyLogs();loadPendingCount();
 }
 
 // ── USE CASE LIBRARY ──
-async function initUCLibrary(){
+async function initUCLib(){
   const{data}=await sb.from('learning_log').select('*').eq('status','approved').neq('is_failed_experiment',true).order('created_at',{ascending:false});
-  allUCData=data||[];renderUCTable();
+  allUC=data||[];renderUCTable();
 }
 function renderUCTable(){
-  const rows=allUCData.filter(u=>{
-    const ms=!ucSearch||(u.use_case||'').toLowerCase().includes(ucSearch.toLowerCase())||(u.what_happened||'').toLowerCase().includes(ucSearch.toLowerCase());
-    const md=ucFilter==='all'||(u.use_case||'').toLowerCase().includes(ucFilter.toLowerCase())||(u.tool_used||'').toLowerCase().includes(ucFilter.toLowerCase());
+  const rows=allUC.filter(u=>{
+    const ms=!ucSrch||(u.use_case||'').toLowerCase().includes(ucSrch.toLowerCase())||(u.what_happened||'').toLowerCase().includes(ucSrch.toLowerCase());
+    const md=ucFil==='all'||(u.use_case||'').toLowerCase().includes(ucFil.toLowerCase())||(u.tool_used||'').toLowerCase().includes(ucFil.toLowerCase());
     return ms&&md;
   });
   document.getElementById('uc-body').innerHTML=rows.length?rows.map(u=>`<tr><td><div class="uc-name">${u.use_case}</div><div class="uc-detail">${(u.what_happened||'').slice(0,100)}…</div></td><td><span style="font-size:11.5px">${u.tool_used}</span></td><td><span style="color:var(--teal);font-size:12px">${u.time_saved}</span></td><td><span class="badge b-teal">Pod ${u.pod_id}</span></td><td>${u.video_url?`<a href="${u.video_url}" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">▶ Watch</a>`:'—'}</td><td><span class="badge b-green">Approved</span></td></tr>`).join(''):'<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text3)">No approved use cases yet.</td></tr>';
 }
-function filterUC(btn,domain){document.querySelectorAll('#page-usecases .filter-pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');ucFilter=domain;renderUCTable();}
-function searchUC(v){ucSearch=v;renderUCTable();}
+function filterUC(btn,domain){document.querySelectorAll('#page-usecases .filter-pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');ucFil=domain;renderUCTable();}
+function searchUC(v){ucSrch=v;renderUCTable();}
 
 // ── APPROVALS ──
 async function loadApprovals(){
   const el=document.getElementById('approvals-content');
   el.innerHTML='<div class="loading"><div class="spinner"></div>Loading…</div>';
-  const q=currentProfile.role==='admin'?sb.from('learning_log').select('*,profiles(full_name)').eq('status','pending').order('created_at',{ascending:false}):sb.from('learning_log').select('*,profiles(full_name)').eq('pod_id',currentProfile.pod_id).eq('status','pending').order('created_at',{ascending:false});
-  const{data:pending}=await q;
-  const q2=currentProfile.role==='admin'?sb.from('learning_log').select('*,profiles(full_name)').neq('status','pending').order('created_at',{ascending:false}).limit(30):sb.from('learning_log').select('*,profiles(full_name)').eq('pod_id',currentProfile.pod_id).neq('status','pending').order('created_at',{ascending:false}).limit(30);
-  const{data:reviewed}=await q2;
-  if(!pending?.length&&!reviewed?.length){el.innerHTML='<div class="empty-state">No submissions yet.</div>';return;}
+  const qp=CP.role==='admin'?sb.from('learning_log').select('*,profiles(full_name)').eq('status','pending').order('created_at',{ascending:false}):sb.from('learning_log').select('*,profiles(full_name)').eq('pod_id',CP.pod_id).eq('status','pending').order('created_at',{ascending:false});
+  const qr=CP.role==='admin'?sb.from('learning_log').select('*,profiles(full_name)').neq('status','pending').order('created_at',{ascending:false}).limit(30):sb.from('learning_log').select('*,profiles(full_name)').eq('pod_id',CP.pod_id).neq('status','pending').order('created_at',{ascending:false}).limit(30);
+  const[{data:pending},{data:reviewed}]=await Promise.all([qp,qr]);
   el.innerHTML=`<div class="sec-label">Pending review (${pending?.length||0})</div>${pending?.length?pending.map(e=>approvalCard(e,true)).join(''):'<div class="empty-state" style="margin-bottom:24px">Nothing pending ✓</div>'}<div class="divider"></div><div class="sec-label">Previously reviewed (${reviewed?.length||0})</div>${reviewed?.length?reviewed.map(e=>approvalCard(e,false)).join(''):'<div class="empty-state">No reviewed entries yet.</div>'}`;
 }
 function approvalCard(e,showActions){
@@ -1334,184 +1119,183 @@ function approvalCard(e,showActions){
 }
 function togglePromptDomain(id){const cb=document.getElementById('opt-prompt-'+id);const d=document.getElementById('prompt-domain-'+id);if(cb&&d)d.style.display=cb.checked?'':'none';}
 async function reviewLog(id,status,title='',podId='',tool='',timeSaved='',videoUrl=''){
-  const{error}=await sb.from('learning_log').update({status,reviewed_by:currentUser.id,reviewed_at:new Date().toISOString()}).eq('id',id);
+  const{error}=await sb.from('learning_log').update({status,reviewed_by:CU.id,reviewed_at:new Date().toISOString()}).eq('id',id);
   if(error){showToast('Error: '+error.message);return;}
   if(status==='approved'){
-    const destinations=[];
-    const ucChecked=document.getElementById('opt-uc-'+id);if(!ucChecked||ucChecked.checked)destinations.push('use case library');
-    const storyChecked=document.getElementById('opt-story-'+id);
-    if(storyChecked?.checked){destinations.push('success stories');const month=new Date().toLocaleDateString('en-GB',{month:'long',year:'numeric'});await sb.from('success_stories').insert({log_entry_id:id,pod_id:podId?parseInt(podId):null,title:title||'Use case',tool_used:tool,time_saved:timeSaved,video_url:videoUrl||null,presented_month:month}).catch(()=>{});}
-    const promptChecked=document.getElementById('opt-prompt-'+id);
-    if(promptChecked?.checked){destinations.push('prompt pack');const domain=document.getElementById('prompt-domain-sel-'+id)?.value||'General';const{data:entry}=await sb.from('learning_log').select('*').eq('id',id).single();if(entry?.prompt_used){await sb.from('community_prompts').insert({log_entry_id:id,submitted_by:entry.user_id,pod_id:podId?parseInt(podId):null,domain,title:title||entry.use_case||'Prompt',prompt_text:entry.prompt_used,notes:entry.what_happened,time_saved:timeSaved,approved_by:currentUser.id}).catch(()=>{});}}
-    showToast('Approved — added to: '+destinations.join(', ')+' · +5 pts to pod');
+    const dest=[];
+    const ucCb=document.getElementById('opt-uc-'+id);if(!ucCb||ucCb.checked)dest.push('use case library');
+    const stCb=document.getElementById('opt-story-'+id);
+    if(stCb?.checked){dest.push('success stories');const month=new Date().toLocaleDateString('en-GB',{month:'long',year:'numeric'});await sb.from('success_stories').insert({log_entry_id:id,pod_id:podId?parseInt(podId):null,title:title||'Use case',tool_used:tool,time_saved:timeSaved,video_url:videoUrl||null,presented_month:month}).catch(()=>{});}
+    const prCb=document.getElementById('opt-prompt-'+id);
+    if(prCb?.checked){dest.push('prompt pack');const domain=document.getElementById('prompt-domain-sel-'+id)?.value||'General';const{data:entry}=await sb.from('learning_log').select('*').eq('id',id).single();if(entry?.prompt_used){await sb.from('community_prompts').insert({log_entry_id:id,submitted_by:entry.user_id,pod_id:podId?parseInt(podId):null,domain,title:title||entry.use_case||'Prompt',prompt_text:entry.prompt_used,notes:entry.what_happened,time_saved:timeSaved,approved_by:CU.id}).catch(()=>{});}}
+    showToast('Approved — added to: '+dest.join(', ')+' · +5 pts to pod');
   }else showToast('Entry not approved');
-  loadApprovals();loadPendingCount();loadLeaderboard();initUCLibrary();loadTeamVideos();loadHomeStats();
+  loadApprovals();loadPendingCount();loadLB();initUCLib();loadTeamVids();loadHomeStats();
 }
 
 // ── CHALLENGES ──
 async function renderChallenges(filter){
-  currentChalFilter=filter;
+  chalFilter=filter;
   document.querySelectorAll('#chal-tabs .tab').forEach(t=>t.classList.toggle('active',t.dataset.filter===filter));
-  const{data:allSubs}=await sb.from('challenge_submissions').select('*,profiles(full_name)').order('created_at',{ascending:false});
-  const tagMap={done:'b-teal',active:'b-blue',upcoming:'b-amber'};
-  const tagLabel={done:'Completed',active:'Active now',upcoming:'Upcoming'};
-  const filtered=challengesBase.filter(c=>{const eff=chalCompletedByUser[c.id]?'done':getChallengeStatus(c.id);return filter==='all'||eff===filter;});
+  const{data:subs}=await sb.from('challenge_submissions').select('*,profiles(full_name)').order('created_at',{ascending:false});
+  const tm={done:'b-teal',active:'b-blue',upcoming:'b-amber'},tl={done:'Completed',active:'Active now',upcoming:'Upcoming'};
+  const filtered=challenges.filter(c=>{const eff=chalDone[c.id]?'done':getChalStatus(c.id);return filter==='all'||eff===filter;});
   if(!filtered.length){document.getElementById('chal-list').innerHTML='<div class="empty-state">No challenges in this category yet.</div>';return;}
   document.getElementById('chal-list').innerHTML=filtered.map(c=>{
-    const isDone=!!chalCompletedByUser[c.id],eff=isDone?'done':getChallengeStatus(c.id),subs=(allSubs||[]).filter(s=>s.challenge_id===c.id),pct=Math.min(Math.round(subs.length/c.target*100),100);
-    const submitForm=eff==='active'&&!isDone?`<div class="chal-submit-form"><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">Submit your result — earns your pod +3 points instantly</div><div class="chal-form-row"><div class="chal-form-group"><label class="chal-form-label">Tool used</label><select class="chal-form-select" id="ct-tool-${c.id}"><option value="">— Select —</option><option>Claude (Anthropic)</option><option>ChatGPT</option><option>Copilot</option><option>Gemini</option><option>Other</option></select></div><div class="chal-form-group"><label class="chal-form-label">Time saved</label><select class="chal-form-select" id="ct-time-${c.id}"><option value="">— Select —</option><option>Less than 15 mins</option><option>15–30 mins</option><option>30–60 mins</option><option>1–2 hours</option><option>2+ hours</option><option>Didn't save time — but learned something</option></select></div></div><div class="chal-form-row"><div class="chal-form-group full"><label class="chal-form-label">What did you do?</label><textarea class="chal-form-textarea" id="ct-task-${c.id}" placeholder="Describe the task…"></textarea></div></div><div class="chal-form-row"><div class="chal-form-group full"><label class="chal-form-label">What was the result?</label><textarea class="chal-form-textarea" id="ct-result-${c.id}" placeholder="What worked, what didn't?"></textarea></div></div><div class="chal-form-row"><div class="chal-form-group full"><label class="chal-form-label">Prompt used (optional)</label><textarea class="chal-form-textarea" id="ct-prompt-${c.id}" placeholder="Paste your prompt…"></textarea></div></div><div style="margin-top:14px"><button class="submit-btn" onclick="submitChallenge(${c.id})">Submit &amp; complete ✓</button></div></div>`:isDone?`<div class="chal-submitted-card"><div style="font-size:13px;font-weight:600;color:var(--teal);margin-bottom:4px">✓ You completed this challenge</div><div style="font-size:12.5px;color:var(--text2)">Your pod earned +3 points.</div></div>`:'';
-    const entries=subs.length?`<div class="chal-entries"><div class="chal-entries-title">Team submissions (${subs.length}/${c.target})</div>${subs.map(s=>`<div class="chal-entry"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap"><strong style="font-size:13px;color:var(--text)">${s.profiles?.full_name||'Team member'}</strong><span style="font-size:11px;color:var(--text3)">Pod ${s.pod_id} · ${s.tool_used}</span><span style="margin-left:auto;font-size:11px;color:var(--teal);background:var(--teal-bg);padding:2px 7px;border-radius:4px">${s.time_saved}</span></div><div style="font-size:12.5px;color:var(--text2);margin-bottom:4px"><strong>Task:</strong> ${s.task_description}</div><div style="font-size:12.5px;color:var(--text2)"><strong>Result:</strong> ${s.result_description}</div>${s.prompt_used?`<div class="chal-entry-prompt"><div style="font-size:10px;font-weight:600;text-transform:uppercase;color:var(--blue);margin-bottom:3px">Prompt used</div>${s.prompt_used}</div>`:''}</div>`).join('')}</div>`:'';
-    return `<div class="chal-card${isDone?' completed':''}" id="cc-${c.id}"><div class="chal-header" onclick="toggleChal(${c.id})"><div class="chal-header-left"><span class="chal-fort">${c.fort}</span><span class="badge ${tagMap[eff]}">${tagLabel[eff]}</span><span class="badge ${c.domainClass}">${c.domain}</span><span class="chal-title">${c.title}</span>${isDone?`<div style="width:20px;height:20px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 12 12" width="12" height="12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`:''}</div><div class="chal-header-right"><span class="prog-txt">${subs.length}/${c.target}</span><div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div><span class="chal-chevron">▼</span></div></div><div class="chal-body" id="cb-${c.id}" style="display:none"><p class="chal-desc">${c.desc}</p><div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Starter prompt — copy and adapt</div><div class="prompt-code" style="font-size:12px">${c.prompt}<button class="copy-btn" onclick="copyChalPrompt(${c.id})">Copy</button></div><div class="tip-box"><div class="tip-label">Tip</div>${c.tip}</div>${submitForm}${entries}</div></div>`;
+    const isDone=!!chalDone[c.id],eff=isDone?'done':getChalStatus(c.id),cs=(subs||[]).filter(s=>s.challenge_id===c.id),pct=Math.min(Math.round(cs.length/c.target*100),100);
+    const sf=eff==='active'&&!isDone?`<div class="chal-submit-form"><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">Submit your result — earns your pod +3 points instantly</div><div class="chal-form-row"><div class="chal-form-group"><label class="chal-form-label">Tool used</label><select class="chal-form-select" id="ct-tool-${c.id}"><option value="">— Select —</option><option>Claude (Anthropic)</option><option>ChatGPT</option><option>Copilot</option><option>Gemini</option><option>Other</option></select></div><div class="chal-form-group"><label class="chal-form-label">Time saved</label><select class="chal-form-select" id="ct-time-${c.id}"><option value="">— Select —</option><option>Less than 15 mins</option><option>15–30 mins</option><option>30–60 mins</option><option>1–2 hours</option><option>2+ hours</option><option>Didn't save time — but learned something</option></select></div></div><div class="chal-form-row"><div class="chal-form-group full"><label class="chal-form-label">What did you do?</label><textarea class="chal-form-textarea" id="ct-task-${c.id}" placeholder="Describe the task…"></textarea></div></div><div class="chal-form-row"><div class="chal-form-group full"><label class="chal-form-label">What was the result?</label><textarea class="chal-form-textarea" id="ct-result-${c.id}" placeholder="What worked, what didn't?"></textarea></div></div><div class="chal-form-row"><div class="chal-form-group full"><label class="chal-form-label">Prompt used (optional)</label><textarea class="chal-form-textarea" id="ct-prompt-${c.id}" placeholder="Paste your prompt…"></textarea></div></div><div style="margin-top:14px"><button class="submit-btn" onclick="submitChallenge(${c.id})">Submit &amp; complete ✓</button></div></div>`:isDone?`<div class="chal-submitted-card"><div style="font-size:13px;font-weight:600;color:var(--teal);margin-bottom:4px">✓ You completed this challenge</div><div style="font-size:12.5px;color:var(--text2)">Your pod earned +3 points.</div></div>`:'';
+    const entries=cs.length?`<div class="chal-entries"><div class="chal-entries-title">Team submissions (${cs.length}/${c.target})</div>${cs.map(s=>`<div class="chal-entry"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap"><strong style="font-size:13px;color:var(--text)">${s.profiles?.full_name||'Team member'}</strong><span style="font-size:11px;color:var(--text3)">Pod ${s.pod_id} · ${s.tool_used}</span><span style="margin-left:auto;font-size:11px;color:var(--teal);background:var(--teal-bg);padding:2px 7px;border-radius:4px">${s.time_saved}</span></div><div style="font-size:12.5px;color:var(--text2);margin-bottom:4px"><strong>Task:</strong> ${s.task_description}</div><div style="font-size:12.5px;color:var(--text2)"><strong>Result:</strong> ${s.result_description}</div>${s.prompt_used?`<div class="chal-entry-prompt"><div style="font-size:10px;font-weight:600;text-transform:uppercase;color:var(--blue);margin-bottom:3px">Prompt used</div>${s.prompt_used}</div>`:''}</div>`).join('')}</div>`:'';
+    return `<div class="chal-card${isDone?' completed':''}" id="cc-${c.id}"><div class="chal-header" onclick="toggleChal(${c.id})"><div class="chal-header-left"><span class="chal-fort">${c.fort}</span><span class="badge ${tm[eff]}">${tl[eff]}</span><span class="badge ${c.dc}">${c.domain}</span><span class="chal-title">${c.title}</span>${isDone?`<div style="width:20px;height:20px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 12 12" width="12" height="12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`:''}</div><div class="chal-header-right"><span class="prog-txt">${cs.length}/${c.target}</span><div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div><span class="chal-chevron">▼</span></div></div><div class="chal-body" id="cb-${c.id}" style="display:none"><p class="chal-desc">${c.desc}</p><div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Starter prompt — copy and adapt</div><div class="prompt-code" style="font-size:12px">${c.prompt}<button class="copy-btn" onclick="copyChalPrompt(${c.id})">Copy</button></div><div class="tip-box"><div class="tip-label">Tip</div>${c.tip}</div>${sf}${entries}</div></div>`;
   }).join('');
 }
-function toggleChal(id){const body=document.getElementById('cb-'+id),card=document.getElementById('cc-'+id);if(!body||!card)return;const open=body.style.display==='block';body.style.display=open?'none':'block';card.classList.toggle('open',!open);}
+function toggleChal(id){const b=document.getElementById('cb-'+id),c=document.getElementById('cc-'+id);if(!b||!c)return;const o=b.style.display==='block';b.style.display=o?'none':'block';c.classList.toggle('open',!o);}
 function filterChal(btn,key){renderChallenges(key);}
-function copyChalPrompt(id){const c=challengesBase.find(x=>x.id===id);if(c)navigator.clipboard.writeText(c.prompt).then(()=>showToast('Prompt copied'));}
+function copyChalPrompt(id){const c=challenges.find(x=>x.id===id);if(c)navigator.clipboard.writeText(c.prompt).then(()=>showToast('Prompt copied'));}
 async function submitChallenge(id){
   const tool=document.getElementById(`ct-tool-${id}`)?.value,time=document.getElementById(`ct-time-${id}`)?.value,task=document.getElementById(`ct-task-${id}`)?.value.trim(),result=document.getElementById(`ct-result-${id}`)?.value.trim(),prompt=document.getElementById(`ct-prompt-${id}`)?.value.trim();
   if(!tool||!time||!task||!result){showToast('Please fill in all required fields.');return;}
-  const{error}=await sb.from('challenge_submissions').insert({challenge_id:id,user_id:currentUser.id,pod_id:currentProfile.pod_id,tool_used:tool,time_saved:time,task_description:task,result_description:result,prompt_used:prompt||null});
+  const{error}=await sb.from('challenge_submissions').insert({challenge_id:id,user_id:CU.id,pod_id:CP.pod_id,tool_used:tool,time_saved:time,task_description:task,result_description:result,prompt_used:prompt||null});
   if(error){showToast('Error: '+error.message);return;}
-  chalCompletedByUser[id]=true;showToast(`Challenge complete! +3 points added to Pod ${currentProfile.pod_id} 🎉`);
-  renderChallenges(currentChalFilter);loadLeaderboard();loadHomeStats();
+  chalDone[id]=true;showToast(`Challenge complete! +3 points added to Pod ${CP.pod_id} 🎉`);
+  renderChallenges(chalFilter);loadLB();loadHomeStats();
+}
+function renderChalAdmin(){
+  const panel=document.getElementById('chal-admin-panel');if(!panel||!isAdmin())return;
+  panel.style.display='';
+  panel.innerHTML=`<div class="admin-panel"><div class="admin-panel-title">⚙ Admin — Challenge Status Manager</div><div class="admin-panel-sub">Change which challenge is active. Only one should be "Active now" at a time.</div>${challenges.map(c=>{const status=getChalStatus(c.id);return`<div class="chal-status-row"><div class="chal-status-name">${c.fort}: ${c.title.slice(0,60)}…</div><button class="status-btn${status==='active'?' active-btn':''}" onclick="setChalStatus(${c.id},'active')">Active now</button><button class="status-btn${status==='upcoming'?' upcoming-btn':''}" onclick="setChalStatus(${c.id},'upcoming')">Upcoming</button><button class="status-btn${status==='done'?' done-btn':''}" onclick="setChalStatus(${c.id},'done')">Completed</button></div>`;}).join('')}</div>`;
+}
+async function setChalStatus(id,status){
+  chalStatus[id]=status;
+  await sb.from('challenge_status').upsert({challenge_id:id,status,updated_by:CU.id,updated_at:new Date().toISOString()},{onConflict:'challenge_id'});
+  renderChalAdmin();renderChallenges(chalFilter);showToast('Challenge status updated to "'+status+'"');
 }
 
 // ── LEADERBOARD ──
-async function loadLeaderboard(){
-  const[{data:allLogs},{data:allChals},{data:allMods},{data:allProfiles}]=await Promise.all([
+async function loadLB(){
+  const[{data:logs},{data:chals},{data:modRows},{data:profiles}]=await Promise.all([
     sb.from('learning_log').select('pod_id,is_failed_experiment').eq('status','approved'),
     sb.from('challenge_submissions').select('pod_id'),
     sb.from('module_progress').select('user_id').eq('quiz_passed',true),
     sb.from('profiles').select('id,pod_id')
   ]);
-  const userPodMap={};(allProfiles||[]).forEach(p=>{if(p.pod_id)userPodMap[p.id]=p.pod_id;});
+  const upm={};(profiles||[]).forEach(p=>{if(p.pod_id)upm[p.id]=p.pod_id;});
   podData=[];
   for(let i=1;i<=6;i++){
-    const logs=(allLogs||[]).filter(l=>l.pod_id===i&&!l.is_failed_experiment).length;
-    const failed=(allLogs||[]).filter(l=>l.pod_id===i&&l.is_failed_experiment).length;
-    const chals=(allChals||[]).filter(c=>c.pod_id===i).length;
-    const mods=(allMods||[]).filter(m=>userPodMap[m.user_id]===i).length;
-    const score=logs*5+chals*3+mods*4+failed*2;
-    podData.push({name:'Pod '+i,members:(podAssignments['Pod '+i]?.members||[]).join(', '),score,uc:logs,chals,mods,failed});
+    const uc=(logs||[]).filter(l=>l.pod_id===i&&!l.is_failed_experiment).length;
+    const fe=(logs||[]).filter(l=>l.pod_id===i&&l.is_failed_experiment).length;
+    const ch=(chals||[]).filter(c=>c.pod_id===i).length;
+    const mo=(modRows||[]).filter(m=>upm[m.user_id]===i).length;
+    podData.push({name:'Pod '+i,members:(pods['Pod '+i]?.members||[]).join(', '),score:uc*5+mo*4+ch*3+fe*2,uc,ch,mo,fe});
   }
-  const updated=document.getElementById('lb-last-updated');
-  if(updated)updated.textContent='Last updated '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  renderLB();renderHomeLB();
+  const upd=document.getElementById('lb-last-updated');
+  if(upd)upd.textContent='Last updated '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  renderLBTable();renderHomeLB();
 }
-function renderLB(){
-  const sorted=[...podData].sort((a,b)=>lbSortKey==='uc'?b.uc-a.uc:lbSortKey==='chals'?b.chals-a.chals:b.score-a.score);
+function renderLBTable(){
+  const sorted=[...podData].sort((a,b)=>lbKey==='uc'?b.uc-a.uc:lbKey==='chals'?b.ch-a.ch:b.score-a.score);
   const max=Math.max(...sorted.map(p=>p.score),1);
   const colors=['var(--gold)','var(--silver)','var(--bronze)','var(--blue)','var(--teal)','var(--purple)'];
-  document.getElementById('lb-wrap').innerHTML=`<table class="lb-table"><thead><tr><th style="width:40px">#</th><th>Pod</th><th>Score</th><th style="width:100px">Bar</th><th>Use cases</th><th>Challenges</th><th>Modules</th></tr></thead><tbody>${sorted.map((p,i)=>{const r=i+1,rc=['rank-1','rank-2','rank-3','rank-n'][Math.min(r-1,3)];return`<tr><td><span class="rank ${rc}">#${r}</span></td><td><div style="font-weight:500;color:var(--text)">${p.name}</div><div style="font-size:11px;color:var(--text3)">${p.members}</div></td><td style="font-weight:500">${p.score} pts</td><td><div class="bar-bg"><div class="bar-fill" style="width:${Math.round(p.score/max*100)}%;background:${colors[i]}"></div></div></td><td><span class="badge b-teal">${p.uc}</span></td><td><span class="badge b-blue">${p.chals}</span></td><td><span class="badge b-purple">${p.mods}</span></td></tr>`;}).join('')}</tbody></table>`;
+  document.getElementById('lb-wrap').innerHTML=`<table class="lb-table"><thead><tr><th style="width:40px">#</th><th>Pod</th><th>Score</th><th style="width:100px">Bar</th><th>Use cases</th><th>Challenges</th><th>Modules</th></tr></thead><tbody>${sorted.map((p,i)=>{const r=i+1,rc=['rank-1','rank-2','rank-3','rank-n'][Math.min(r-1,3)];return`<tr><td><span class="rank ${rc}">#${r}</span></td><td><div style="font-weight:500;color:var(--text)">${p.name}</div><div style="font-size:11px;color:var(--text3)">${p.members}</div></td><td style="font-weight:500">${p.score} pts</td><td><div class="bar-bg"><div class="bar-fill" style="width:${Math.round(p.score/max*100)}%;background:${colors[i]}"></div></div></td><td><span class="badge b-teal">${p.uc}</span></td><td><span class="badge b-blue">${p.ch}</span></td><td><span class="badge b-purple">${p.mo}</span></td></tr>`;}).join('')}</tbody></table>`;
 }
 function renderHomeLB(){
   const sorted=[...podData].sort((a,b)=>b.score-a.score);const max=Math.max(...sorted.map(p=>p.score),1);
   const colors=['var(--gold)','var(--silver)','var(--bronze)','var(--blue)','var(--teal)','var(--purple)'];
   document.getElementById('home-lb').innerHTML=`<table class="lb-table"><thead><tr><th style="width:40px">#</th><th>Pod</th><th>Score</th><th></th></tr></thead><tbody>${sorted.map((p,i)=>{const r=i+1,rc=['rank-1','rank-2','rank-3','rank-n'][Math.min(r-1,3)];return`<tr><td><span class="rank ${rc}">#${r}</span></td><td style="font-weight:500;color:var(--text)">${p.name}</td><td>${p.score} pts</td><td><div class="bar-bg"><div class="bar-fill" style="width:${Math.round(p.score/max*100)}%;background:${colors[i]}"></div></div></td></tr>`;}).join('')}</tbody></table>`;
 }
-function switchLbTab(btn,key){
-  document.querySelectorAll('#page-leaderboard .tab').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active');lbSortKey=key;
-  if(podData.length)renderLB();else loadLeaderboard();
-}
+function switchLbTab(btn,key){document.querySelectorAll('#page-leaderboard .tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');lbKey=key;if(podData.length)renderLBTable();else loadLB();}
 
 // ── ADMIN DASHBOARD ──
-function podBar(p){
-  const pct=Math.round(p.actual/p.max*100);
-  return `<div style="margin-bottom:16px">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-      <span style="font-size:13px;font-weight:500;color:var(--text)">${p.name}</span>
-      <span style="font-size:11px;color:var(--text3)">${p.actual} pts &nbsp;·&nbsp; ${p.logs} use cases &nbsp;·&nbsp; ${p.chals} challenges &nbsp;·&nbsp; ${p.mods} modules</span>
-    </div>
-    <div style="width:100%;height:7px;background:var(--bg4);border-radius:4px;overflow:hidden">
-      <div style="width:${pct}%;height:100%;background:var(--blue);border-radius:4px"></div>
-    </div>
-  </div>`;
-}
 async function loadAdminDash(){
   if(!isAdmin())return;
   const el=document.getElementById('admindash-content');
-  el.innerHTML='<div class="loading"><div class="spinner"></div>Loading programme data…</div>';
+  el.innerHTML='<div class="loading"><div class="spinner"></div>Loading…</div>';
   try{
-    const[{data:logs},{data:chals},{data:allMods},{data:profiles},{count:pendingCount}]=await Promise.all([
-      sb.from('learning_log').select('pod_id,status,is_failed_experiment,use_case,confidence_level,time_saved,created_at').eq('status','approved'),
+    const[{data:logs},{data:chals},{data:modRows},{data:profiles}]=await Promise.all([
+      sb.from('learning_log').select('pod_id,is_failed_experiment,confidence_level,created_at').eq('status','approved'),
       sb.from('challenge_submissions').select('pod_id,user_id,created_at'),
-      sb.from('module_progress').select('user_id,module_number,quiz_passed,completed_at').eq('quiz_passed',true),
-      sb.from('profiles').select('id,pod_id,role'),
-      (await sb.from('learning_log').select('*',{count:'exact',head:true}).eq('status','pending')).count
+      sb.from('module_progress').select('user_id,module_number').eq('quiz_passed',true),
+      sb.from('profiles').select('id,pod_id')
     ]);
-    const avgConf=logs?.length?((logs.reduce((a,l)=>a+(l.confidence_level||0),0)/logs.length)).toFixed(1):'—';
-    const podEngagement=[];
-    // Max possible points per pod:
-    // +5 per use case (assume max 3 per member = 3 members × 3 = 9 use cases = 45pts)
-    // +4 per module completion per member (3 members × unlocked modules)
-    // +3 per challenge (one per member per active challenge)
-    // +2 per failed experiment (assume max 1 per member)
-    const unlockedMods=getUnlockedModules().length;
-    const activeChallenges=challengesBase.filter(c=>getChallengeStatus(c.id)==='active'||getChallengeStatus(c.id)==='done').length;
-    const membersPerPod=3;
-    const maxPts=Math.max(
-      (membersPerPod*3*5)+ // use cases
-      (membersPerPod*unlockedMods*4)+ // modules
-      (membersPerPod*activeChallenges*3)+ // challenges
-      (membersPerPod*2), // failed experiments
-      1
-    );
-    for(let i=1;i<=6;i++){
-      const podProfiles=(profiles||[]).filter(p=>p.pod_id===i);
-      const podLogs=(logs||[]).filter(l=>l.pod_id===i&&!l.is_failed_experiment).length;
-      const podFailed=(logs||[]).filter(l=>l.pod_id===i&&l.is_failed_experiment).length;
-      const podChals=(chals||[]).filter(c=>c.pod_id===i).length;
-      const podMods=safeModRows.filter(m=>podProfiles.some(p=>p.id===m.user_id)).length;
-      const actualPts=podLogs*5+podMods*4+podChals*3+podFailed*2;
-      podEngagement.push({name:'Pod '+i,actual:actualPts,max:maxPts,logs:podLogs,chals:podChals,mods:podMods||0,failed:podFailed||0});
-    }
+    const{count:pending}=await sb.from('learning_log').select('*',{count:'exact',head:true}).eq('status','pending');
+    const L=logs||[],C=chals||[],M=modRows||[],P=profiles||[];
+    const avgConf=L.length?(L.reduce((a,l)=>a+(l.confidence_level||0),0)/L.length).toFixed(1):'—';
+    const uCnt=getUnlockedMods().length;
+    const aChal=challenges.filter(c=>['active','done'].includes(getChalStatus(c.id))).length;
+    const maxPts=Math.max((9*5)+(3*uCnt*4)+(3*aChal*3)+(3*2),1);
+    const podStats=Array.from({length:6},(_,i)=>{
+      const n=i+1,pp=P.filter(p=>p.pod_id===n);
+      const uc=L.filter(l=>l.pod_id===n&&!l.is_failed_experiment).length;
+      const fe=L.filter(l=>l.pod_id===n&&l.is_failed_experiment).length;
+      const ch=C.filter(c=>c.pod_id===n).length;
+      const mo=M.filter(m=>pp.some(p=>p.id===m.user_id)).length;
+      return{name:'Pod '+n,pts:uc*5+mo*4+ch*3+fe*2,uc,ch,mo};
+    });
     const thisMonth=new Date().toLocaleDateString('en-GB',{month:'long',year:'numeric'});
-    const monthStart=new Date();monthStart.setDate(1);monthStart.setHours(0,0,0,0);
-    const recentLogs=(logs||[]).filter(l=>new Date(l.created_at)>=monthStart&&!l.is_failed_experiment);
-    const podUCCounts={};recentLogs.forEach(l=>{podUCCounts[l.pod_id]=(podUCCounts[l.pod_id]||0)+1;});
-    const topUCPod=Object.entries(podUCCounts).sort((a,b)=>b[1]-a[1])[0];
-    const podConf={};recentLogs.forEach(l=>{if(!podConf[l.pod_id])podConf[l.pod_id]=[];podConf[l.pod_id].push(l.confidence_level||0);});
-    const topConfPod=Object.entries(podConf).map(([pod,scores])=>({pod,avg:scores.reduce((a,b)=>a+b,0)/scores.length})).sort((a,b)=>b.avg-a.avg)[0];
-    const recentChals=(chals||[]).filter(c=>new Date(c.created_at)>=monthStart);
-    const podChalCounts={};recentChals.forEach(c=>{podChalCounts[c.pod_id]=(podChalCounts[c.pod_id]||0)+1;});
-    const topChalPod=Object.entries(podChalCounts).sort((a,b)=>b[1]-a[1])[0];
+    const ms=new Date();ms.setDate(1);ms.setHours(0,0,0,0);
+    const rL=L.filter(l=>new Date(l.created_at)>=ms&&!l.is_failed_experiment);
+    const rC=C.filter(c=>new Date(c.created_at)>=ms);
+    const ucByP={};rL.forEach(l=>{ucByP[l.pod_id]=(ucByP[l.pod_id]||0)+1;});
+    const cfByP={};rL.forEach(l=>{if(!cfByP[l.pod_id])cfByP[l.pod_id]=[];cfByP[l.pod_id].push(l.confidence_level||0);});
+    const chByP={};rC.forEach(c=>{chByP[c.pod_id]=(chByP[c.pod_id]||0)+1;});
+    const tUC=Object.entries(ucByP).sort((a,b)=>b[1]-a[1])[0];
+    const tCF=Object.entries(cfByP).map(([p,s])=>({p,avg:s.reduce((a,b)=>a+b,0)/s.length})).sort((a,b)=>b.avg-a.avg)[0];
+    const tCH=Object.entries(chByP).sort((a,b)=>b[1]-a[1])[0];
     el.innerHTML=`
-      <div class="stats-grid"><div class="stat"><div class="stat-n" style="color:var(--blue)">${(logs||[]).filter(l=>!l.is_failed_experiment).length}</div><div class="stat-l">Approved use cases</div></div><div class="stat"><div class="stat-n" style="color:var(--amber)">${pendingCount||0}</div><div class="stat-l">Pending review</div></div><div class="stat"><div class="stat-n" style="color:var(--teal)">${avgConf}</div><div class="stat-l">Avg confidence</div></div><div class="stat"><div class="stat-n" style="color:var(--purple)">${(mods||[]).length}</div><div class="stat-l">Module completions</div></div></div>
-      <div class="sec-label">Pod engagement</div>
-      <div class="dash-grid"><div class="dash-card" style="grid-column:1/-1"><div class="dash-card-title">Activity across all pods</div>${podEngagement.map(p=>`<div class="pod-progress-row"><div class="pod-progress-name">${p.name}</div><div class="pod-progress-bar"><div class="pod-progress-fill" style="width:${Math.round(p.actual/p.max*100)}%"></div></div><div class="pod-progress-val">${p.logs} use cases · ${p.chals} challenges · ${p.modUsers} mods</div></div>`).join('')}</div></div>
+      <div class="stats-grid">
+        <div class="stat"><div class="stat-n" style="color:var(--blue)">${L.filter(l=>!l.is_failed_experiment).length}</div><div class="stat-l">Approved use cases</div></div>
+        <div class="stat"><div class="stat-n" style="color:var(--amber)">${pending||0}</div><div class="stat-l">Pending review</div></div>
+        <div class="stat"><div class="stat-n" style="color:var(--teal)">${avgConf}</div><div class="stat-l">Avg confidence</div></div>
+        <div class="stat"><div class="stat-n" style="color:var(--purple)">${M.length}</div><div class="stat-l">Module completions</div></div>
+      </div>
+      <div class="sec-label">Pod engagement — points scored vs max possible (${maxPts} pts)</div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:24px">
+        ${podStats.map(p=>`<div style="margin-bottom:16px">
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;margin-bottom:4px">
+            <span style="font-size:13px;font-weight:500;color:var(--text)">${p.name}</span>
+            <span style="font-size:11px;color:var(--text3)">${p.pts} pts · ${p.uc} use cases · ${p.ch} challenges · ${p.mo} modules</span>
+          </div>
+          <div style="width:100%;height:7px;background:var(--bg4);border-radius:4px;overflow:hidden">
+            <div style="width:${Math.round(p.pts/maxPts*100)}%;height:100%;background:var(--blue);border-radius:4px"></div>
+          </div>
+        </div>`).join('')}
+      </div>
       <div class="sec-label">Wall of fame suggestions — ${thisMonth}</div>
       <div class="dash-grid">
-        <div class="dash-card"><div class="dash-card-title">🏆 Use case of the month</div>${topUCPod?`<div class="suggest-card"><div class="suggest-label">Auto-suggested</div><div class="suggest-name">Pod ${topUCPod[0]}</div><div class="suggest-reason">${topUCPod[1]} use case${topUCPod[1]>1?'s':''} this month</div><button class="suggest-use-btn" onclick="openHonourModal('use_case','${thisMonth}');document.getElementById('hm-pod').value='Pod ${topUCPod[0]}'">Use this →</button></div>`:'<div style="font-size:12.5px;color:var(--text3)">No data yet.</div>'}</div>
-        <div class="dash-card"><div class="dash-card-title">🔥 Bravest experiment</div>${topConfPod?`<div class="suggest-card"><div class="suggest-label">Auto-suggested</div><div class="suggest-name">Pod ${topConfPod.pod}</div><div class="suggest-reason">Avg confidence ${topConfPod.avg.toFixed(1)}/5 — highest this month</div><button class="suggest-use-btn" onclick="openHonourModal('experiment','${thisMonth}');document.getElementById('hm-pod').value='Pod ${topConfPod.pod}'">Use this →</button></div>`:'<div style="font-size:12.5px;color:var(--text3)">No data yet.</div>'}</div>
-        <div class="dash-card"><div class="dash-card-title">📈 Most improved</div>${topChalPod?`<div class="suggest-card"><div class="suggest-label">Auto-suggested</div><div class="suggest-name">Pod ${topChalPod[0]}</div><div class="suggest-reason">${topChalPod[1]} challenge${topChalPod[1]>1?'s':''} this month</div><button class="suggest-use-btn" onclick="openHonourModal('improved','${thisMonth}');document.getElementById('hm-pod').value='Pod ${topChalPod[0]}'">Use this →</button></div>`:'<div style="font-size:12.5px;color:var(--text3)">No data yet.</div>'}</div>
+        <div class="dash-card"><div class="dash-card-title">🏆 Use case of the month</div>${tUC?`<div class="suggest-card"><div class="suggest-label">Auto-suggested</div><div class="suggest-name">Pod ${tUC[0]}</div><div class="suggest-reason">${tUC[1]} use case${tUC[1]>1?'s':''} this month</div><button class="suggest-use-btn" onclick="openHonourModal('use_case','${thisMonth}');document.getElementById('hm-pod').value='Pod ${tUC[0]}'">Use this →</button></div>`:'<p style="font-size:12.5px;color:var(--text3)">No data yet.</p>'}</div>
+        <div class="dash-card"><div class="dash-card-title">🔥 Bravest experiment</div>${tCF?`<div class="suggest-card"><div class="suggest-label">Auto-suggested</div><div class="suggest-name">Pod ${tCF.p}</div><div class="suggest-reason">Avg confidence ${tCF.avg.toFixed(1)}/5 this month</div><button class="suggest-use-btn" onclick="openHonourModal('experiment','${thisMonth}');document.getElementById('hm-pod').value='Pod ${tCF.p}'">Use this →</button></div>`:'<p style="font-size:12.5px;color:var(--text3)">No data yet.</p>'}</div>
+        <div class="dash-card"><div class="dash-card-title">📈 Most improved</div>${tCH?`<div class="suggest-card"><div class="suggest-label">Auto-suggested</div><div class="suggest-name">Pod ${tCH[0]}</div><div class="suggest-reason">${tCH[1]} challenge${tCH[1]>1?'s':''} this month</div><button class="suggest-use-btn" onclick="openHonourModal('improved','${thisMonth}');document.getElementById('hm-pod').value='Pod ${tCH[0]}'">Use this →</button></div>`:'<p style="font-size:12.5px;color:var(--text3)">No data yet.</p>'}</div>
       </div>
       <div class="sec-label">Module unlock status</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:28px">${modulesData.map(m=>{const unlocked=isModuleUnlocked(m.n);const modComps=safeModRows.filter(r=>r.module_number===m.n).length;return`<div style="background:var(--bg2);border:1px solid ${unlocked?'rgba(13,158,117,.3)':'var(--border)'};border-radius:var(--r);padding:12px;text-align:center"><div style="font-size:18px;margin-bottom:4px">${unlocked?'🟢':'🔒'}</div><div style="font-size:11px;font-weight:600;color:var(--text)">Mod ${m.n}</div><div style="font-size:10px;color:var(--text3)">${unlocked?modComps+' completions':'Unlocks '+getUnlockDateForModule(m.n)}</div></div>`;}).join('')}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:28px">
+        ${mods.map(m=>{const u=isModUnlocked(m.n),co=M.filter(r=>r.module_number===m.n).length;return`<div style="background:var(--bg2);border:1px solid ${u?'rgba(13,158,117,.3)':'var(--border)'};border-radius:var(--r);padding:12px;text-align:center"><div style="font-size:18px;margin-bottom:4px">${u?'🟢':'🔒'}</div><div style="font-size:11px;font-weight:600;color:var(--text)">Mod ${m.n}</div><div style="font-size:10px;color:var(--text3)">${u?co+' completions':'Unlocks '+unlockDate(m.n)}</div></div>`;}).join('')}
+      </div>
       <div class="sec-label">Quick actions</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="submit-btn" style="background:var(--amber)" onclick="go('approvals',document.querySelector('.nav[onclick*=approvals]'))">Review ${pendingCount||0} pending →</button><button class="submit-btn" style="background:var(--purple)" onclick="go('honours',document.querySelector('.nav[onclick*=honours]'))">Update Wall of Fame →</button></div>`;
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="submit-btn" style="background:var(--amber)" onclick="go('approvals',document.querySelector('.nav[onclick*=approvals]'))">Review ${pending||0} pending →</button>
+        <button class="submit-btn" style="background:var(--purple)" onclick="go('honours',document.querySelector('.nav[onclick*=honours]'))">Update Wall of Fame →</button>
+      </div>`;
   }catch(e){el.innerHTML=`<div class="empty-state">Could not load dashboard — ${e.message}</div>`;}
 }
 
 // ── MY POD ──
 async function loadMyPod(){
-  const podNum=currentProfile.pod_id;
-  if(!podNum){document.getElementById('mypod-crumb').textContent='proicere-academy / admin';document.getElementById('mypod-title').innerHTML='Admin <span class="hl">Overview</span>';document.getElementById('mypod-content').innerHTML='<p style="color:var(--text2);font-size:13px">As admin you can see all pod data in the Leaderboard and Admin Dashboard.</p>';return;}
-  document.getElementById('mypod-crumb').textContent=`proicere-academy / pod-${podNum}`;
-  document.getElementById('mypod-title').innerHTML=`Pod <span class="hl">${podNum}</span>`;
-  const podName='Pod '+podNum,members=podAssignments[podName]?.members||[];
-  const colours=['var(--blue)','var(--teal)','var(--amber)','var(--purple)','var(--coral)','var(--green)'];
-  const col=colours[(podNum-1)%colours.length],roles=['Digital Lead','Specialist','Willing Learner'];
-  document.getElementById('mypod-content').innerHTML=`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:20px"><div class="sec-label" style="margin-bottom:12px">Members</div><div class="member-list">${members.map((name,i)=>{const init=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();const isLead=podAssignments[podName]?.lead.includes(name);return`<div class="member-item"><div class="av" style="background:${col}20;color:${col}">${init}</div><div style="flex:1;font-size:13px;color:var(--text)">${name}</div><span class="badge" style="background:${col}15;color:${col};font-size:10px">${isLead?'Pod Lead':roles[i]||'Member'}</span></div>`;}).join('')}</div></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px" id="pod-stats"><div class="stat"><div class="stat-n" style="color:var(--teal)">—</div><div class="stat-l">Approved use cases</div></div><div class="stat"><div class="stat-n" style="color:var(--blue)">—</div><div class="stat-l">Challenges done</div></div><div class="stat"><div class="stat-n" style="color:var(--purple)">${members.length}</div><div class="stat-l">Members</div></div></div><div id="pod-usecases"><div class="loading"><div class="spinner"></div>Loading…</div></div>`;
+  const pn=CP.pod_id;
+  if(!pn){document.getElementById('mypod-crumb').textContent='proicere-academy / admin';document.getElementById('mypod-title').innerHTML='Admin <span class="hl">Overview</span>';document.getElementById('mypod-content').innerHTML='<p style="color:var(--text2);font-size:13px">As admin you can see all pod data in the Leaderboard and Admin Dashboard.</p>';return;}
+  document.getElementById('mypod-crumb').textContent=`proicere-academy / pod-${pn}`;
+  document.getElementById('mypod-title').innerHTML=`Pod <span class="hl">${pn}</span>`;
+  const pname='Pod '+pn,members=pods[pname]?.members||[];
+  const cols=['var(--blue)','var(--teal)','var(--amber)','var(--purple)','var(--coral)','var(--green)'];
+  const col=cols[(pn-1)%cols.length],roles=['Digital Lead','Specialist','Willing Learner'];
+  document.getElementById('mypod-content').innerHTML=`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:20px"><div class="sec-label" style="margin-bottom:12px">Members</div><div class="member-list">${members.map((name,i)=>{const init=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();const isLead=pods[pname]?.lead.includes(name);return`<div class="member-item"><div class="av" style="background:${col}20;color:${col}">${init}</div><div style="flex:1;font-size:13px;color:var(--text)">${name}</div><span class="badge" style="background:${col}15;color:${col};font-size:10px">${isLead?'Pod Lead':roles[i]||'Member'}</span></div>`;}).join('')}</div></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px" id="pod-stats"><div class="stat"><div class="stat-n" style="color:var(--teal)">—</div><div class="stat-l">Approved use cases</div></div><div class="stat"><div class="stat-n" style="color:var(--blue)">—</div><div class="stat-l">Challenges done</div></div><div class="stat"><div class="stat-n" style="color:var(--purple)">${members.length}</div><div class="stat-l">Members</div></div></div><div id="pod-usecases"><div class="loading"><div class="spinner"></div>Loading…</div></div>`;
   try{
-    const[{data:logs},{data:chals}]=await Promise.all([sb.from('learning_log').select('*').eq('pod_id',podNum).eq('status','approved').neq('is_failed_experiment',true),sb.from('challenge_submissions').select('*').eq('pod_id',podNum)]);
+    const[{data:logs},{data:chals}]=await Promise.all([sb.from('learning_log').select('*').eq('pod_id',pn).eq('status','approved').neq('is_failed_experiment',true),sb.from('challenge_submissions').select('*').eq('pod_id',pn)]);
     document.getElementById('pod-stats').innerHTML=`<div class="stat"><div class="stat-n" style="color:var(--teal)">${logs?.length||0}</div><div class="stat-l">Approved use cases</div></div><div class="stat"><div class="stat-n" style="color:var(--blue)">${chals?.length||0}</div><div class="stat-l">Challenges done</div></div><div class="stat"><div class="stat-n" style="color:var(--purple)">${members.length}</div><div class="stat-l">Members</div></div>`;
     document.getElementById('pod-usecases').innerHTML=logs?.length?`<div class="sec-label">Approved use cases</div>${logs.map(l=>`<div class="log-entry"><div style="font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:4px">${l.use_case}</div><div style="font-size:13px;color:var(--text2)">${l.what_happened}</div><div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap"><span class="badge b-teal" style="font-size:10px">${l.time_saved}</span><span class="badge b-blue" style="font-size:10px">${l.tool_used}</span></div></div>`).join('')}`:'<div class="empty-state">No approved use cases yet.</div>';
   }catch(e){document.getElementById('pod-usecases').innerHTML='<div class="empty-state">Could not load — please refresh.</div>';}
 }
 
 // ── TUTORIALS ──
-async function loadTeamVideos(){
+async function loadTeamVids(){
   const{data}=await sb.from('learning_log').select('*').eq('status','approved').not('video_url','is',null).order('created_at',{ascending:false});
   const vids=data||[],grid=document.getElementById('team-vids-grid'),empty=document.getElementById('team-vids-empty');
   if(!vids.length){if(grid)grid.style.display='none';if(empty)empty.style.display='';return;}
@@ -1520,15 +1304,14 @@ async function loadTeamVideos(){
 }
 function filterVids(btn,cat){
   document.querySelectorAll('#page-tutorials .filter-pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');
-  document.querySelectorAll('#vid-academy-grid .vid-card').forEach(card=>{if(cat==='all'){card.style.display='';return;}card.style.display=(card.querySelector('.vid-meta')?.textContent||'').toLowerCase().includes(cat.toLowerCase())?'':'none';});
-  document.querySelectorAll('#team-vids-grid .vid-card').forEach(card=>{if(cat==='all'){card.style.display='';return;}card.style.display=(card.querySelector('.vid-meta')?.textContent||'').toLowerCase().includes(cat.toLowerCase())?'':'none';});
-  ['vid-sec-academy','vid-sec-team'].forEach(secId=>{const sec=document.getElementById(secId);if(!sec)return;const grid=sec.nextElementSibling;if(!grid)return;const cards=grid.querySelectorAll?.('.vid-card');if(!cards?.length)return;sec.style.display=[...cards].some(c=>c.style.display!=='none')?'':'none';});
-  const divider=document.getElementById('vid-divider-team');if(divider)divider.style.display=cat==='all'?'':'none';
+  document.querySelectorAll('#vid-academy-grid .vid-card').forEach(c=>{if(cat==='all'){c.style.display='';return;}c.style.display=(c.querySelector('.vid-meta')?.textContent||'').toLowerCase().includes(cat.toLowerCase())?'':'none';});
+  document.querySelectorAll('#team-vids-grid .vid-card').forEach(c=>{if(cat==='all'){c.style.display='';return;}c.style.display=(c.querySelector('.vid-meta')?.textContent||'').toLowerCase().includes(cat.toLowerCase())?'':'none';});
+  ['vid-sec-academy','vid-sec-team'].forEach(id=>{const s=document.getElementById(id);if(!s)return;const g=s.nextElementSibling;if(!g)return;const cs=g.querySelectorAll?.('.vid-card');if(!cs?.length)return;s.style.display=[...cs].some(c=>c.style.display!=='none')?'':'none';});
 }
 async function submitVideo(){
   const title=document.getElementById('vid-title').value.trim(),cat=document.getElementById('vid-cat').value,url=document.getElementById('vid-url').value.trim(),desc=document.getElementById('vid-desc').value.trim();
   if(!title||!cat||!url){showToast('Please fill in title, category, and video link.');return;}
-  const{error}=await sb.from('learning_log').insert({user_id:currentUser.id,pod_id:currentProfile.pod_id,week_number:selectedWeekNum,tool_used:'Video submission',use_case:title,what_happened:desc||title,time_saved:'N/A',worth_sharing:'Yes — add to use case library',confidence_level:3,video_url:url,status:'pending'});
+  const{error}=await sb.from('learning_log').insert({user_id:CU.id,pod_id:CP.pod_id,week_number:selWeek,tool_used:'Video submission',use_case:title,what_happened:desc||title,time_saved:'N/A',worth_sharing:'Yes — add to use case library',confidence_level:3,video_url:url,status:'pending'});
   if(error){showToast('Error: '+error.message);return;}
   ['vid-title','vid-cat','vid-url','vid-desc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   showToast('Video submitted — your pod lead will review it shortly');
@@ -1540,19 +1323,19 @@ function closeVideo(){document.getElementById('vid-modal').classList.remove('ope
 function filterPrompts(btn,domain){
   document.querySelectorAll('#page-prompts .filter-pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');
   document.querySelectorAll('#prompt-grid .prompt-card[data-domain]').forEach(card=>{
-    const matchDomain=domain==='all'||card.dataset.domain===domain;
-    const matchSearch=!promptSearch||card.textContent.toLowerCase().includes(promptSearch.toLowerCase());
-    card.classList.toggle('hidden-filter',!matchDomain||!matchSearch);
+    const md=domain==='all'||card.dataset.domain===domain;
+    const ms=!promptSrch||card.textContent.toLowerCase().includes(promptSrch.toLowerCase());
+    card.classList.toggle('hidden-filter',!md||!ms);
   });
 }
 function searchPrompts(v){
-  promptSearch=v;
-  const activeDomain=document.querySelector('#page-prompts .filter-pill.active')?.textContent?.trim()||'all';
-  const domain=activeDomain==='All packs'?'all':activeDomain;
+  promptSrch=v;
+  const active=document.querySelector('#page-prompts .filter-pill.active')?.textContent?.trim()||'all';
+  const domain=active==='All packs'?'all':active;
   document.querySelectorAll('#prompt-grid .prompt-card[data-domain]').forEach(card=>{
-    const matchDomain=domain==='all'||card.dataset.domain===domain;
-    const matchSearch=!v||card.textContent.toLowerCase().includes(v.toLowerCase());
-    card.classList.toggle('hidden-filter',!matchDomain||!matchSearch);
+    const md=domain==='all'||card.dataset.domain===domain;
+    const ms=!v||card.textContent.toLowerCase().includes(v.toLowerCase());
+    card.classList.toggle('hidden-filter',!md||!ms);
   });
 }
 function togglePrompt(hdr){hdr.closest('.prompt-card').classList.toggle('open');}
@@ -1566,11 +1349,11 @@ async function loadCommunityPrompts(){
     data.forEach(p=>{
       if(document.getElementById('cp-'+p.id))return;
       const card=document.createElement('div');card.className='prompt-card';card.id='cp-'+p.id;card.dataset.domain=p.domain||'General';
-      const domainBadge={Controls:'b-blue',Comms:'b-purple',Data:'b-red',Reporting:'b-amber',General:'b-teal'}[p.domain]||'b-blue';
-      card.innerHTML=`<div class="prompt-header" onclick="togglePrompt(this)"><span class="badge ${domainBadge}">${p.domain||'General'}</span><div class="prompt-title">${p.title}</div><span class="prompt-expand">▼</span></div><div class="prompt-body"><div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap"><span class="badge b-teal">From team</span>${p.time_saved&&p.time_saved!=='N/A'?`<span class="badge b-amber">${p.time_saved} saved</span>`:''}</div><div class="prompt-code">${p.prompt_text}<button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>${p.notes?`<div class="prompt-note">${p.notes}</div>`:''}</div>`;
+      const db={Controls:'b-blue',Comms:'b-purple',Data:'b-red',Reporting:'b-amber',General:'b-teal'}[p.domain]||'b-blue';
+      card.innerHTML=`<div class="prompt-header" onclick="togglePrompt(this)"><span class="badge ${db}">${p.domain||'General'}</span><div class="prompt-title">${p.title}</div><span class="prompt-expand">▼</span></div><div class="prompt-body"><div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap"><span class="badge b-teal">From team</span>${p.time_saved&&p.time_saved!=='N/A'?`<span class="badge b-amber">${p.time_saved} saved</span>`:''}</div><div class="prompt-code">${p.prompt_text}<button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>${p.notes?`<div class="prompt-note">${p.notes}</div>`:''}</div>`;
       if(addCard)grid.insertBefore(card,addCard);else grid.appendChild(card);
     });
-  }catch(e){console.warn('Could not load community prompts',e);}
+  }catch(e){console.warn('Community prompts:',e);}
 }
 
 // ── SUCCESS STORIES ──
@@ -1578,8 +1361,8 @@ async function loadSuccessStories(){
   const el=document.getElementById('showcase-content');if(!el)return;
   el.innerHTML='<div class="loading"><div class="spinner"></div>Loading…</div>';
   try{
-    const{data,error}=await Promise.race([sb.from('success_stories').select('*').order('created_at',{ascending:false}),new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),4000))]);
-    if(error||!data?.length){el.innerHTML=`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:32px;margin-bottom:16px"><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px">How Success Stories work</div><div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:16px">When approving a learning log entry, tick <strong>"Success Stories"</strong> to feature it here.</div></div><div class="empty-state">No success stories yet.</div>`;return;}
+    const{data,error}=await Promise.race([sb.from('success_stories').select('*').order('created_at',{ascending:false}),new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),4000))]);
+    if(error||!data?.length){el.innerHTML=`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:32px;margin-bottom:16px"><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px">How Success Stories work</div><div style="font-size:13px;color:var(--text2);line-height:1.7">When approving a learning log entry, tick <strong>"Success Stories"</strong> to feature it here.</div></div><div class="empty-state">No success stories yet.</div>`;return;}
     el.innerHTML=data.map(s=>`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px;display:flex;gap:16px"><div style="font-size:10px;color:var(--text3);writing-mode:vertical-rl;transform:rotate(180deg);min-width:20px">${s.presented_month||'—'}</div><div style="flex:1"><div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px">${s.title}</div>${s.description?`<div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px">${s.description}</div>`:''}<div style="display:flex;gap:6px;flex-wrap:wrap">${s.time_saved&&s.time_saved!=='N/A'?`<span class="badge b-teal">${s.time_saved} saved</span>`:''}${s.pod_id?`<span class="badge b-blue">Pod ${s.pod_id}</span>`:''}${s.tool_used?`<span class="badge b-amber">${s.tool_used}</span>`:''}${s.video_url?`<a href="${s.video_url}" target="_blank" style="font-size:11px;padding:2px 8px;border-radius:4px;background:var(--purple-bg);color:var(--purple);text-decoration:none">▶ Watch</a>`:''}</div></div></div>`).join('');
   }catch(e){el.innerHTML='<div class="empty-state">Could not load — please refresh.</div>';}
 }
@@ -1590,23 +1373,19 @@ function go(id,el){
   document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));
   const page=document.getElementById('page-'+id);if(page)page.classList.add('active');
   if(el)el.classList.add('active');
-  // Update browser tab title
-  document.title=`${PAGE_TITLES[id]||id} · Proicere AI Academy`;
-  // Close mobile menu
+  document.title=(PAGE_TITLES[id]||id)+' · Proicere AI Academy';
   closeMobileMenu();
-  if(id==='log')loadMyLogEntries();
-  if(id==='usecases')initUCLibrary();
+  if(id==='log')loadMyLogs();
+  if(id==='usecases')initUCLib();
   if(id==='approvals'&&isAdmin())loadApprovals();
   if(id==='mypod')loadMyPod();
-  if(id==='leaderboard')loadLeaderboard();
-  if(id==='tutorials')loadTeamVideos();
-  if(id==='challenges')renderChalAdminPanel();
+  if(id==='leaderboard')loadLB();
+  if(id==='tutorials')loadTeamVids();
+  if(id==='challenges')renderChalAdmin();
   if(id==='showcase')loadSuccessStories();
   if(id==='prompts')loadCommunityPrompts();
   if(id==='admindash')loadAdminDash();
 }
-
-function showToast(msg){const t=document.getElementById('toast');document.getElementById('tmsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);}
 </script>
 </body>
 </html>
