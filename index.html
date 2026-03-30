@@ -754,7 +754,16 @@ const CYCLE_START = new Date('2026-04-01'); // Change to your actual start date
 const {createClient}=supabase;
 const sb=createClient(
   'https://mfrlyfcogynuqmmmutdj.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mcmx5ZmNvZ3ludXFtbW11dGRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMTMwMzEsImV4cCI6MjA4OTU4OTAzMX0.r-hhrKGasBaR7vmqdU-8Vldq3_z64fEkLE35xXQv3a0'
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mcmx5ZmNvZ3ludXFtbW11dGRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMTMwMzEsImV4cCI6MjA4OTU4OTAzMX0.r-hhrKGasBaR7vmqdU-8Vldq3_z64fEkLE35xXQv3a0',
+  {
+    auth:{
+      persistSession:true,
+      storageKey:'proicere-academy-auth',
+      storage:window.localStorage,
+      autoRefreshToken:true,
+      detectSessionInUrl:true
+    }
+  }
 );
 
 let currentUser=null,currentProfile=null,selectedRating=0,selectedWeekNum=1,
@@ -898,9 +907,48 @@ async function signOut(){
   switchAuthTab('signin');
 }
 
+// On page load — clean up any broken legacy tokens, then restore session
+(async()=>{
+  // Remove any old session keys that predate the named storageKey
+  // This clears stale tokens left over before persistence was configured
+  try{
+    Object.keys(localStorage)
+      .filter(k=>k.startsWith('sb-')&&k!=='proicere-academy-auth')
+      .forEach(k=>localStorage.removeItem(k));
+  }catch(e){}
+
+  try{
+    const {data:{session},error}=await sb.auth.getSession();
+    if(session?.user&&!error){
+      currentUser=session.user;
+      await tryLoadAndShow();
+    } else {
+      // If session is broken, sign out cleanly and show login
+      await sb.auth.signOut().catch(()=>{});
+      document.getElementById('auth-wrap').classList.remove('hidden');
+      document.getElementById('app').style.display='none';
+    }
+  }catch(e){
+    await sb.auth.signOut().catch(()=>{});
+    document.getElementById('auth-wrap').classList.remove('hidden');
+    document.getElementById('app').style.display='none';
+  }
+})();
+
+// Then keep listening for auth changes (login, logout, token refresh)
 sb.auth.onAuthStateChange(async(event,session)=>{
-  if(session?.user){currentUser=session.user;await tryLoadAndShow();}
-  else{document.getElementById('auth-wrap').classList.remove('hidden');document.getElementById('app').style.display='none';}
+  if(event==='SIGNED_IN'&&session?.user&&!currentUser){
+    currentUser=session.user;
+    await tryLoadAndShow();
+  }
+  if(event==='SIGNED_OUT'){
+    currentUser=null;currentProfile=null;
+    document.getElementById('app').style.display='none';
+    document.getElementById('auth-wrap').classList.remove('hidden');
+  }
+  if(event==='TOKEN_REFRESHED'&&session?.user){
+    currentUser=session.user;
+  }
 });
 
 async function tryLoadAndShow(){
