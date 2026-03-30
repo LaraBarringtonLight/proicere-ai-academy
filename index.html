@@ -1462,7 +1462,7 @@ async function loadAdminDash(){
       const podLogs=(logs||[]).filter(l=>l.pod_id===i&&!l.is_failed_experiment).length;
       const podFailed=(logs||[]).filter(l=>l.pod_id===i&&l.is_failed_experiment).length;
       const podChals=(chals||[]).filter(c=>c.pod_id===i).length;
-      const podMods=(mods||[]).filter(m=>podProfiles.some(p=>p.id===m.user_id)).length;
+      const podMods=(allMods||[]).filter(m=>podProfiles.some(p=>p.id===m.user_id)).length;
       const actualPts=podLogs*5+podMods*4+podChals*3+podFailed*2;
       podEngagement.push({name:'Pod '+i,actual:actualPts,max:maxPts,logs:podLogs,chals:podChals,mods:podMods||0,failed:podFailed||0});
     }
