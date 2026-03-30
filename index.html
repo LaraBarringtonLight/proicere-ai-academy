@@ -912,8 +912,16 @@ async function signOut(){
   // Remove any old session keys that predate the named storageKey
   // This clears stale tokens left over before persistence was configured
   try{
+    // Remove ALL supabase-related keys except our named one
+    // Catches all formats: sb-*, supabase.auth.*, *-auth-token
     Object.keys(localStorage)
-      .filter(k=>k.startsWith('sb-')&&k!=='proicere-academy-auth')
+      .filter(k=>
+        k!=='proicere-academy-auth'&&(
+          k.startsWith('sb-')||
+          k.includes('-auth-token')||
+          k.includes('supabase')
+        )
+      )
       .forEach(k=>localStorage.removeItem(k));
   }catch(e){}
 
