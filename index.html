@@ -1602,7 +1602,17 @@ function renderHomeLB(){
     return `<tr><td><span class="rank ${rc}">#${r}</span></td><td style="font-weight:500;color:var(--text)">${p.name}</td><td>${p.score} pts</td><td><div class="bar-bg"><div class="bar-fill" style="width:${Math.round(p.score/max*100)}%;background:${colors[i]}"></div></div></td></tr>`;
   }).join('')}</tbody></table>`;
 }
-function switchLbTab(btn,key){document.querySelectorAll('#page-leaderboard .tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');lbSortKey=key;renderLB();}
+function switchLbTab(btn,key){
+  document.querySelectorAll('#page-leaderboard .tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  lbSortKey=key;
+  if(podData.length){
+    renderLB();
+  } else {
+    // Data not loaded yet — load it first then render
+    loadLeaderboard();
+  }
+}
 
 // ── ADMIN DASHBOARD ──
 async function loadAdminDash(){
