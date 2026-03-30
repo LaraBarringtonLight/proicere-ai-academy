@@ -1433,7 +1433,7 @@ async function loadAdminDash(){
   const el=document.getElementById('admindash-content');
   el.innerHTML='<div class="loading"><div class="spinner"></div>Loading programme data…</div>';
   try{
-    const[{data:logs},{data:chals},{data:mods},{data:profiles},{count:pendingCount}]=await Promise.all([
+    const[{data:logs},{data:chals},{data:allMods},{data:profiles},{count:pendingCount}]=await Promise.all([
       sb.from('learning_log').select('pod_id,status,is_failed_experiment,use_case,confidence_level,time_saved,created_at').eq('status','approved'),
       sb.from('challenge_submissions').select('pod_id,user_id,created_at'),
       sb.from('module_progress').select('user_id,module_number,quiz_passed,completed_at').eq('quiz_passed',true),
@@ -1462,7 +1462,7 @@ async function loadAdminDash(){
       const podLogs=(logs||[]).filter(l=>l.pod_id===i&&!l.is_failed_experiment).length;
       const podFailed=(logs||[]).filter(l=>l.pod_id===i&&l.is_failed_experiment).length;
       const podChals=(chals||[]).filter(c=>c.pod_id===i).length;
-      const podMods=(allMods||[]).filter(m=>podProfiles.some(p=>p.id===m.user_id)).length;
+      const podMods=safeModRows.filter(m=>podProfiles.some(p=>p.id===m.user_id)).length;
       const actualPts=podLogs*5+podMods*4+podChals*3+podFailed*2;
       podEngagement.push({name:'Pod '+i,actual:actualPts,max:maxPts,logs:podLogs,chals:podChals,mods:podMods||0,failed:podFailed||0});
     }
@@ -1487,7 +1487,7 @@ async function loadAdminDash(){
         <div class="dash-card"><div class="dash-card-title">📈 Most improved</div>${topChalPod?`<div class="suggest-card"><div class="suggest-label">Auto-suggested</div><div class="suggest-name">Pod ${topChalPod[0]}</div><div class="suggest-reason">${topChalPod[1]} challenge${topChalPod[1]>1?'s':''} this month</div><button class="suggest-use-btn" onclick="openHonourModal('improved','${thisMonth}');document.getElementById('hm-pod').value='Pod ${topChalPod[0]}'">Use this →</button></div>`:'<div style="font-size:12.5px;color:var(--text3)">No data yet.</div>'}</div>
       </div>
       <div class="sec-label">Module unlock status</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:28px">${modulesData.map(m=>{const unlocked=isModuleUnlocked(m.n);const modComps=(mods||[]).filter(mod=>mod.module_number===m.n).length;return`<div style="background:var(--bg2);border:1px solid ${unlocked?'rgba(13,158,117,.3)':'var(--border)'};border-radius:var(--r);padding:12px;text-align:center"><div style="font-size:18px;margin-bottom:4px">${unlocked?'🟢':'🔒'}</div><div style="font-size:11px;font-weight:600;color:var(--text)">Mod ${m.n}</div><div style="font-size:10px;color:var(--text3)">${unlocked?modComps+' completions':'Unlocks '+getUnlockDateForModule(m.n)}</div></div>`;}).join('')}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:28px">${modulesData.map(m=>{const unlocked=isModuleUnlocked(m.n);const modComps=safeModRows.filter(r=>r.module_number===m.n).length;return`<div style="background:var(--bg2);border:1px solid ${unlocked?'rgba(13,158,117,.3)':'var(--border)'};border-radius:var(--r);padding:12px;text-align:center"><div style="font-size:18px;margin-bottom:4px">${unlocked?'🟢':'🔒'}</div><div style="font-size:11px;font-weight:600;color:var(--text)">Mod ${m.n}</div><div style="font-size:10px;color:var(--text3)">${unlocked?modComps+' completions':'Unlocks '+getUnlockDateForModule(m.n)}</div></div>`;}).join('')}</div>
       <div class="sec-label">Quick actions</div>
       <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="submit-btn" style="background:var(--amber)" onclick="go('approvals',document.querySelector('.nav[onclick*=approvals]'))">Review ${pendingCount||0} pending →</button><button class="submit-btn" style="background:var(--purple)" onclick="go('honours',document.querySelector('.nav[onclick*=honours]'))">Update Wall of Fame →</button></div>`;
   }catch(e){el.innerHTML=`<div class="empty-state">Could not load dashboard — ${e.message}</div>`;}
