@@ -1416,6 +1416,18 @@ function switchLbTab(btn,key){
 }
 
 // ── ADMIN DASHBOARD ──
+function podBar(p){
+  const pct=Math.round(p.actual/p.max*100);
+  return `<div style="margin-bottom:16px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+      <span style="font-size:13px;font-weight:500;color:var(--text)">${p.name}</span>
+      <span style="font-size:11px;color:var(--text3)">${p.actual} pts &nbsp;·&nbsp; ${p.logs} use cases &nbsp;·&nbsp; ${p.chals} challenges &nbsp;·&nbsp; ${p.mods} modules</span>
+    </div>
+    <div style="width:100%;height:7px;background:var(--bg4);border-radius:4px;overflow:hidden">
+      <div style="width:${pct}%;height:100%;background:var(--blue);border-radius:4px"></div>
+    </div>
+  </div>`;
+}
 async function loadAdminDash(){
   if(!isAdmin())return;
   const el=document.getElementById('admindash-content');
