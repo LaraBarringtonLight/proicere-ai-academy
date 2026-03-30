@@ -308,11 +308,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .dash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
 .dash-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;}
 .dash-card-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:12px;}
-.pod-progress-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12.5px;}
-.pod-progress-name{width:44px;color:var(--text2);flex-shrink:0;}
-.pod-progress-bar{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+.pod-progress-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12px;}
+.pod-progress-name{width:44px;color:var(--text2);flex-shrink:0;font-weight:500;}
+.pod-progress-bar{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;min-width:0;}
 .pod-progress-fill{height:100%;border-radius:3px;background:var(--blue);}
-.pod-progress-val{width:120px;text-align:right;color:var(--text3);font-size:11px;white-space:nowrap;flex-shrink:0;}
+.pod-progress-val{width:200px;text-align:right;color:var(--text3);font-size:11px;white-space:nowrap;flex-shrink:0;}
 .suggest-card{background:var(--amber-bg);border:1px solid rgba(212,130,10,.2);border-radius:var(--rs);padding:12px 14px;margin-bottom:8px;}
 .suggest-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);margin-bottom:4px;}
 .suggest-name{font-size:14px;font-weight:500;color:var(--text);}
@@ -1451,7 +1451,7 @@ async function loadAdminDash(){
       const podChals=(chals||[]).filter(c=>c.pod_id===i).length;
       const podMods=(mods||[]).filter(m=>podProfiles.some(p=>p.id===m.user_id)).length;
       const actualPts=podLogs*5+podMods*4+podChals*3+podFailed*2;
-      podEngagement.push({name:'Pod '+i,actual:actualPts,max:maxPts,logs:podLogs,chals:podChals,mods:podMods,failed:podFailed});
+      podEngagement.push({name:'Pod '+i,actual:actualPts,max:maxPts,logs:podLogs,chals:podChals,mods:podMods||0,failed:podFailed||0});
     }
     const thisMonth=new Date().toLocaleDateString('en-GB',{month:'long',year:'numeric'});
     const monthStart=new Date();monthStart.setDate(1);monthStart.setHours(0,0,0,0);
