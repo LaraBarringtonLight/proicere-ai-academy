@@ -113,13 +113,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .mod-card.open .mod-chevron{transform:rotate(180deg);}
 .mod-body{padding:20px 24px;border-top:1px solid var(--border);}
 .mod-intro{font-size:13.5px;color:var(--text2);line-height:1.7;margin-bottom:16px;}
-.mod-video-wrap{width:100%;aspect-ratio:16/9;background:var(--navy);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;cursor:pointer;overflow:hidden;}
-.mod-video-wrap iframe{width:100%;height:100%;border:0;display:block;}
+.mod-video-wrap{width:100%;aspect-ratio:16/9;background:var(--navy);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;cursor:pointer;}
 .mod-play-ring{width:52px;height:52px;border-radius:50%;border:2px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;}
 .mod-play-tri{width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:16px solid #fff;margin-left:3px;}
 .mod-video-label{font-size:12px;font-weight:600;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.08em;}
 .mod-video-hint{font-size:11px;color:rgba(255,255,255,.3);text-align:center;padding:0 20px;}
-.mod-video-caption{font-size:11.5px;color:var(--text3);margin:-8px 0 20px;text-align:center;font-style:italic;}
 .mod-section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
 .mod-learn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px;margin-bottom:12px;}
 .mod-learn-item{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:var(--text2);line-height:1.55;background:var(--bg3);border-radius:var(--rs);padding:10px 12px;}
@@ -129,10 +127,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .mod-h4{font-size:13.5px;font-weight:500;color:var(--text);margin:16px 0 6px;}
 .mod-principle{display:flex;align-items:flex-start;gap:12px;background:var(--bg3);border-radius:var(--rs);padding:12px 14px;margin-bottom:8px;font-size:13px;color:var(--text2);line-height:1.6;}
 .mod-pnum{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;}
-.mod-extra-video{margin:14px 0;padding:12px 14px;background:var(--bg3);border-radius:var(--rs);border-left:3px solid var(--blue);}
-.mod-extra-video a{color:var(--blue);text-decoration:none;font-weight:500;font-size:13px;}
-.mod-extra-video a:hover{text-decoration:underline;}
-.mod-extra-video-desc{font-size:12px;color:var(--text3);margin-top:3px;}
 .mod-q{margin-bottom:16px;}
 .mod-q-text{font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px;}
 .mod-options{display:flex;flex-direction:column;gap:6px;}
@@ -621,22 +615,19 @@ Do not add information not present in the report. Use plain, non-jargon language
 <div class="page" id="page-tutorials">
   <div class="crumb">proicere-academy / tutorial-videos</div>
   <h1 class="ptitle">Tutorial <span class="hl">Videos</span></h1>
-  <p class="psub" style="margin-bottom:24px">Curated walkthroughs from across the web, plus recordings from the team.</p>
+  <p class="psub" style="margin-bottom:24px">Academy walkthroughs and team recordings.</p>
   <div class="filter-bar">
     <button class="filter-pill active" onclick="filterVids(this,'all')">All</button>
     <button class="filter-pill" onclick="filterVids(this,'Foundations')">Foundations</button>
-    <button class="filter-pill" onclick="filterVids(this,'Setup')">Setup</button>
-    <button class="filter-pill" onclick="filterVids(this,'Prompting')">Prompting</button>
-    <button class="filter-pill" onclick="filterVids(this,'Microsoft 365')">Microsoft 365</button>
+    <button class="filter-pill" onclick="filterVids(this,'Controls')">Controls</button>
+    <button class="filter-pill" onclick="filterVids(this,'Comms')">Comms</button>
+    <button class="filter-pill" onclick="filterVids(this,'Data')">Data</button>
   </div>
-  <div class="sec-label" id="vid-sec-academy">Curated videos — aligned to the curriculum</div>
+  <div class="sec-label" id="vid-sec-academy">Academy starter videos</div>
   <div class="vid-grid" id="vid-academy-grid">
-    <div class="vid-card"><div class="vid-thumb" onclick="openVideo('https://www.youtube.com/embed/LPZh9BOjkQs')"><div class="vid-tag">Module 01</div><div class="vid-play"><div class="vid-tri"></div></div></div><div class="vid-info"><div class="vid-title">Large Language Models explained briefly — 3Blue1Brown</div><div class="vid-meta"><span class="badge b-blue">Foundations</span><span>3Blue1Brown · ~8 min</span></div></div></div>
-    <div class="vid-card"><div class="vid-thumb" onclick="openVideo('https://www.youtube.com/embed/kovgemcH3cI')"><div class="vid-tag">Module 02</div><div class="vid-play"><div class="vid-tri"></div></div></div><div class="vid-info"><div class="vid-title">How to Use ChatGPT — beginner's guide 2025</div><div class="vid-meta"><span class="badge b-teal">Setup</span><span>~12 min</span></div></div></div>
-    <div class="vid-card"><div class="vid-thumb" onclick="openVideo('https://www.youtube.com/embed/2vJVuOj0ul0')"><div class="vid-tag">Module 02</div><div class="vid-play"><div class="vid-tri"></div></div></div><div class="vid-info"><div class="vid-title">Microsoft 365 Copilot for Individuals — Complete Tutorial</div><div class="vid-meta"><span class="badge b-teal">Setup</span><span>~15 min</span></div></div></div>
-    <div class="vid-card"><div class="vid-thumb" onclick="openVideo('https://www.youtube.com/embed/T6iMHtEL9FU')"><div class="vid-tag">Module 03</div><div class="vid-play"><div class="vid-tri"></div></div></div><div class="vid-info"><div class="vid-title">99% of people don't know the basics of prompting</div><div class="vid-meta"><span class="badge b-purple">Prompting</span><span>~28 min</span></div></div></div>
-    <div class="vid-card"><div class="vid-thumb" onclick="openVideo('https://www.youtube.com/embed/mQDTJTGIvhg')"><div class="vid-tag">Module 04</div><div class="vid-play"><div class="vid-tri"></div></div></div><div class="vid-info"><div class="vid-title">Copilot in PowerPoint — 2025 new features</div><div class="vid-meta"><span class="badge b-amber">Microsoft 365</span><span>~14 min</span></div></div></div>
-    <div class="vid-card"><div class="vid-thumb" onclick="openVideo('https://www.youtube.com/embed/KXqR6VuPBlk')"><div class="vid-tag">Module 04</div><div class="vid-play"><div class="vid-tri"></div></div></div><div class="vid-info"><div class="vid-title">Copilot Excel — Excel's biggest upgrade ever</div><div class="vid-meta"><span class="badge b-amber">Microsoft 365</span><span>~16 min</span></div></div></div>
+    <div class="vid-card"><div class="vid-thumb" onclick="showToast('Replace with your Loom embed link')"><div class="vid-tag">Module 01</div><div class="vid-play"><div class="vid-tri"></div></div></div><div class="vid-info"><div class="vid-title">AI Foundations — what it is and how to use it safely</div><div class="vid-meta"><span class="badge b-blue">Foundations</span><span>Academy Lead · ~15 min</span></div></div></div>
+    <div class="vid-card"><div class="vid-thumb" onclick="showToast('Replace with your Loom embed link')"><div class="vid-tag">Module 02</div><div class="vid-play"><div class="vid-tri"></div></div></div><div class="vid-info"><div class="vid-title">Prompting basics — writing prompts that actually work</div><div class="vid-meta"><span class="badge b-blue">Foundations</span><span>Academy Lead · ~20 min</span></div></div></div>
+    <div class="vid-card"><div class="vid-thumb" onclick="showToast('Replace with your Loom embed link')"><div class="vid-tag">Demo</div><div class="vid-play"><div class="vid-tri"></div></div></div><div class="vid-info"><div class="vid-title">Live demo — risk register from a meeting transcript</div><div class="vid-meta"><span class="badge b-teal">Controls</span><span>Academy Lead · ~5 min</span></div></div></div>
   </div>
   <div class="divider" id="vid-divider-team"></div>
   <div class="sec-label" id="vid-sec-team">From the team</div>
@@ -648,7 +639,7 @@ Do not add information not present in the report. Use plain, non-jargon language
     <p style="font-size:13px;color:var(--text2);margin-bottom:16px">Record using <strong>Loom</strong> (free) or <strong>Microsoft Teams</strong>, then paste the link below.</p>
     <div class="form-row">
       <div class="form-group"><label class="form-label">Video title</label><input class="form-input" id="vid-title" type="text" placeholder="e.g. How I used Claude to draft a client update"></div>
-      <div class="form-group"><label class="form-label">Category</label><select class="form-select" id="vid-cat"><option value="">— Select —</option><option>Foundations</option><option>Setup</option><option>Prompting</option><option>Microsoft 365</option><option>Controls</option><option>Comms</option><option>Data</option><option>Reporting</option><option>General</option></select></div>
+      <div class="form-group"><label class="form-label">Category</label><select class="form-select" id="vid-cat"><option value="">— Select —</option><option>Foundations</option><option>Controls</option><option>Comms</option><option>Data</option><option>Reporting</option><option>General</option></select></div>
     </div>
     <div class="form-row"><div class="form-group full"><label class="form-label">Video link</label><input class="form-input" id="vid-url" type="url" placeholder="https://www.loom.com/share/..."></div></div>
     <div class="form-row"><div class="form-group full"><label class="form-label">Brief description</label><textarea class="form-textarea" id="vid-desc" placeholder="What does the video show?"></textarea></div></div>
@@ -683,7 +674,7 @@ Do not add information not present in the report. Use plain, non-jargon language
 <div id="vid-modal" onclick="if(event.target===this)closeVideo()">
   <div style="width:100%;max-width:900px;position:relative">
     <button onclick="closeVideo()" style="position:absolute;top:-36px;right:0;background:transparent;border:none;color:#fff;font-size:24px;cursor:pointer">✕</button>
-    <iframe id="vid-iframe" src="" style="width:100%;aspect-ratio:16/9;border:none;border-radius:var(--r)" allowfullscreen></iframe>
+    <iframe id="vid-iframe" src="" style="width:100%;aspect-ratio:16/9;border:none;border-radius:var(--r)"></iframe>
   </div>
 </div>
 
@@ -882,503 +873,6 @@ async function loadModuleProgress(){const{data}=await sb.from('module_progress')
 async function loadChalSubmissions(){const{data}=await sb.from('challenge_submissions').select('*').eq('user_id',currentUser.id);chalCompletedByUser={};(data||[]).forEach(r=>chalCompletedByUser[r.challenge_id]=true);}
 async function loadHomeStats(){
   const[{count:uc},{count:mods}]=await Promise.all([sb.from('learning_log').select('*',{count:'exact',head:true}).eq('status','approved'),sb.from('module_progress').select('*',{count:'exact',head:true}).eq('quiz_passed',true)]);
-  document.getElementById('home-uc-count').textContent=uc||0;document.getElementById('home-mods-count').textContent=mods||0;
-}
-async function loadPendingCount(){
-  const q=currentProfile.role==='admin'?sb.from('learning_log').select('*',{count:'exact',head:true}).eq('status','pending'):sb.from('learning_log').select('*',{count:'exact',head:true}).eq('pod_id',currentProfile.pod_id).eq('status','pending');
-  const{count}=await q;const badge=document.getElementById('pending-count');
-  if(count>0){badge.style.display='';badge.textContent=count;}else badge.style.display='none';
-}
-async function loadChallengeStatuses(){
-  const{data}=await sb.from('challenge_status').select('*');
-  challengeStatuses={};(data||[]).forEach(r=>challengeStatuses[r.challenge_id]=r.status);
-  challengesBase.forEach(c=>{if(!challengeStatuses[c.id])challengeStatuses[c.id]=c.defaultStatus;});
-}
-
-// ── WALL OF FAME ──
-async function loadWallOfFame(){
-  const{data}=await sb.from('wall_of_fame').select('*').order('created_at',{ascending:false});
-  wofEntries={};(data||[]).forEach(e=>{const key=e.month_label+'|'+e.award_type;if(!wofEntries[key])wofEntries[key]=e;});
-  renderWallOfFame();
-}
-function renderWallOfFame(){
-  const months=[...new Set(Object.values(wofEntries).map(e=>e.month_label))];
-  if(!months.length)months.push('April 2026');
-  const el=document.getElementById('wof-content');
-  el.innerHTML=months.map(month=>`<div class="sec-label" style="display:flex;align-items:center;justify-content:space-between">${month}${isAdmin()?'<span style="font-size:11px;color:var(--text3)">Click ✏ to edit</span>':''}</div><div class="honour-grid" style="margin-bottom:32px">${awardTypes.map(a=>{const entry=wofEntries[month+'|'+a.type];return`<div class="honour-card" style="border-color:${a.borderColor}">${isAdmin()?`<button class="honour-edit-btn" onclick="openHonourModal('${a.type}','${month}')">✏ Edit</button>`:''}<div style="width:32px;height:32px;border-radius:8px;background:${a.iconBg};display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:16px">${a.icon}</div><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:6px">${a.label}</div><div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:4px">${entry?entry.winner_name:'To be announced'}</div><div style="font-size:12.5px;color:var(--text2);line-height:1.5">${entry?entry.description:'Awarded at the end of the month.'}</div><div style="font-size:11px;color:var(--text3);margin-top:8px">${entry&&entry.winner_pod?entry.winner_pod:'—'}</div></div>`;}).join('')}</div>`).join('');
-  if(isAdmin()){const nm=new Date();nm.setMonth(nm.getMonth()+1);const s=nm.toLocaleDateString('en-GB',{month:'long',year:'numeric'});el.innerHTML+=`<button onclick="openNewMonthModal('${s}')" style="background:transparent;border:1px dashed var(--border2);border-radius:var(--r);padding:14px 20px;color:var(--text3);font-size:13px;cursor:pointer;width:100%;font-family:var(--font)">+ Add awards for a new month</button>`;}
-}
-function openNewMonthModal(s){openHonourModal('use_case',s);document.getElementById('hm-sub').textContent='Start with Use Case of the Month, then edit each award in turn.';}
-function openHonourModal(type,month){
-  const a=awardTypes.find(x=>x.type===type);
-  document.getElementById('hm-title').textContent='Edit — '+(a?.label||'Award');
-  document.getElementById('hm-sub').textContent='Update the winner for '+(month||'this month')+'.';
-  document.getElementById('hm-award-type').value=type;document.getElementById('hm-month').value=month||'April 2026';
-  const e=wofEntries[month+'|'+type];
-  document.getElementById('hm-winner').value=e?.winner_name||'';document.getElementById('hm-pod').value=e?.winner_pod||'';document.getElementById('hm-desc').value=e?.description||'';
-  document.getElementById('honour-modal').classList.add('open');
-}
-function closeHonourModal(){document.getElementById('honour-modal').classList.remove('open');}
-async function saveHonour(){
-  const type=document.getElementById('hm-award-type').value,month=document.getElementById('hm-month').value.trim(),winner=document.getElementById('hm-winner').value.trim(),pod=document.getElementById('hm-pod').value.trim(),desc=document.getElementById('hm-desc').value.trim();
-  if(!month||!winner){showToast('Please fill in the month and winner name.');return;}
-  const{error}=await sb.from('wall_of_fame').insert({month_label:month,award_type:type,winner_name:winner,winner_pod:pod,description:desc});
-  if(error){showToast('Error: '+error.message);return;}
-  closeHonourModal();showToast('Award saved!');loadWallOfFame();
-}
-
-// ── MODULES ──
-const modulesData=[
-  {
-    n:1,
-    name:'AI Foundations',
-    desc:'What AI is, how LLMs work, hallucination, responsible use.',
-    weeks:'Weeks 1–2',
-    videoEmbed:'https://www.youtube.com/embed/LPZh9BOjkQs',
-    videoCaption:'3Blue1Brown — "Large Language Models explained briefly" (8 mins). Cleanest short explanation that exists.',
-    extraVideos:[
-      {title:'Introduction to Generative AI and LLMs — Microsoft Learn','url':'https://learn.microsoft.com/en-us/shows/generative-ai-for-beginners/introduction-to-generative-ai-and-llms-generative-ai-for-beginners','desc':'Optional 10-minute extra. Same ground, Microsoft framing — useful context for Module 04.'}
-    ],
-    intro:'Before we touch any tool, we need a shared understanding of what AI actually is — and isn\'t. This module covers how large language models work in plain English, why they sometimes make things up, and what responsible use looks like in a consultancy context.',
-    learns:[
-      'What generative AI and large language models actually are',
-      'How LLMs predict the next word — and why that explains almost everything they do',
-      'What hallucination is, why it happens, and how to catch it',
-      'The principles of responsible AI use for professional work'
-    ],
-    lesson:`<h4 class="mod-h4">The three things that matter</h4><p><strong>LLMs predict the next word.</strong> That's it. Everything else — the apparent reasoning, the essays, the code — emerges from doing that very well on a very large scale. When you ask a question, the model is generating the most statistically likely continuation based on patterns in its training data.</p><p><strong>Hallucination is a feature, not a bug.</strong> Because the model generates plausible text, it will sometimes generate plausible-sounding text that happens to be wrong. Always verify anything that matters — names, dates, numbers, legal or technical claims.</p><p><strong>Training data has a cut-off.</strong> The model doesn't know about events after its training date unless it has live web access turned on. Check which mode you're using.</p><h4 class="mod-h4">Responsible use at Proicere</h4><div class="mod-principle"><span class="mod-pnum" style="background:var(--blue-bg);color:var(--blue)">1</span><div><strong>Treat AI output as a strong first draft, never a final answer.</strong> You are still accountable for what ends up in a client deliverable.</div></div><div class="mod-principle"><span class="mod-pnum" style="background:var(--teal-bg);color:var(--teal)">2</span><div><strong>Don't paste client-confidential data into public AI tools.</strong> Use Copilot in Microsoft 365 (which stays within your tenant) or anonymise first.</div></div><div class="mod-principle"><span class="mod-pnum" style="background:var(--purple-bg);color:var(--purple)">3</span><div><strong>Flag AI use</strong> to your pod lead when it materially shapes a client output — we're tracking this in the use case library.</div></div>`,
-    quiz:[
-      {q:'What does an LLM fundamentally do?',opts:['Looks up answers in a database','Predicts the most likely next word based on patterns in its training data','Searches the internet in real time','Reasons through problems step by step like a human'],correct:1},
-      {q:'Why do LLMs hallucinate?',opts:['They are broken or poorly trained','They generate plausible-sounding text even when they don\'t have the actual information','Users ask them trick questions','They only hallucinate when the servers are slow'],correct:1},
-      {q:'Which of these is the most responsible way to use AI in client work?',opts:['Copy the output straight into deliverables','Use it for everything, including final sign-off','Use it as a first draft, then verify, edit, and apply your own judgement','Avoid it entirely to be safe'],correct:2}
-    ]
-  },
-  {
-    n:2,
-    name:'Getting Set Up',
-    desc:'Accounts for ChatGPT, Claude, Copilot. Turning on memory. Projects.',
-    weeks:'Weeks 3–4',
-    videoEmbed:'https://www.youtube.com/embed/kovgemcH3cI',
-    videoCaption:'ChatGPT for beginners 2025 (~12 mins). Watch with chat.openai.com open alongside and follow along.',
-    extraVideos:[
-      {title:'Microsoft 365 Copilot for Individuals — Complete Tutorial','url':'https://www.youtube.com/watch?v=2vJVuOj0ul0','desc':'~15 minutes. Access Copilot via your Proicere Microsoft 365 login.'},
-      {title:'Claude AI Tutorial — Setup section only (first 6 mins)','url':'https://www.youtube.com/watch?v=dG2iFVKdyhs','desc':'Claude signup and a tour of Projects. Skip the prompt engineering part — that\'s Module 03.'}
-    ],
-    intro:'Now you know what AI is — time to get your accounts working. By the end of this module you\'ll have logged into ChatGPT, Claude, and Microsoft Copilot, turned on memory where appropriate, and understood when to reach for which tool.',
-    learns:[
-      'How to create free accounts on ChatGPT and Claude',
-      'How to access Microsoft Copilot through your Proicere Microsoft 365 login',
-      'How to turn on memory and custom instructions',
-      'When to use which tool (the practical differences)'
-    ],
-    lesson:`<h4 class="mod-h4">Turning on memory</h4><p>All three tools can remember things about you across conversations — your role, your writing style, your typical projects. This is the single biggest time-saver once set up.</p><div class="mod-principle"><span class="mod-pnum" style="background:var(--blue-bg);color:var(--blue)">C</span><div><strong>ChatGPT:</strong> Settings → Personalisation → Memory (toggle on). Then "Custom Instructions" to tell it your role and preferred response style.</div></div><div class="mod-principle"><span class="mod-pnum" style="background:var(--teal-bg);color:var(--teal)">C</span><div><strong>Claude:</strong> Memory is on by default for Pro accounts. Click your profile → Settings → Memory to view what it's tracking.</div></div><div class="mod-principle"><span class="mod-pnum" style="background:var(--purple-bg);color:var(--purple)">M</span><div><strong>Microsoft Copilot:</strong> Memory is rolling out gradually through the Copilot app — settings icon → Memory.</div></div><h4 class="mod-h4">When to use which</h4><p><strong>Copilot</strong> for anything that lives in Excel, PowerPoint, Word, Outlook or Teams. It stays within your Proicere tenant so client data is safer there.</p><p><strong>Claude</strong> for long documents, nuanced writing, and Projects-based recurring work (you can load reference docs once and ask questions across them for weeks).</p><p><strong>ChatGPT</strong> for general-purpose tasks, image generation, and Custom GPTs you can share with colleagues.</p>`,
-    quiz:[
-      {q:'Which tool is accessed through your Proicere Microsoft 365 login?',opts:['ChatGPT','Claude','Microsoft Copilot','All three'],correct:2},
-      {q:'What does "memory" let an AI tool do?',opts:['Store your passwords','Remember facts about you across future conversations','Save files to your computer','Remember the exact words of every chat forever'],correct:1},
-      {q:'You want to upload a 60-page report and ask questions about it. Which approach is sensible?',opts:['Paste the whole report into a text message','Upload the PDF directly using the attachment button','Email the PDF to the AI','Retype the report manually'],correct:1}
-    ]
-  },
-  {
-    n:3,
-    name:'Prompting Basics',
-    desc:'Context, role, task, format. Common mistakes. Iteration.',
-    weeks:'Weeks 5–6',
-    videoEmbed:'https://www.youtube.com/embed/T6iMHtEL9FU',
-    videoCaption:'Prompting fundamentals (~28 mins). Covers ChatGPT, Gemini, and Claude in one go with live demos.',
-    extraVideos:[
-      {title:'Prompt Engineering 101 — shorter version (11 mins)','url':'https://www.youtube.com/watch?v=rI1mRo8Gpgo','desc':'Tighter version for anyone who finds the main video too long.'}
-    ],
-    intro:'The quality of what you get out of AI is almost entirely driven by the quality of what you put in. This module teaches the four things every good prompt contains, the most common mistakes, and how to iterate when the first response isn\'t quite right.',
-    learns:[
-      'The Context–Role–Task–Format structure',
-      'Why vague prompts get vague answers',
-      'How to use examples (few-shot prompting) to get a specific style',
-      'When to start over vs. when to refine'
-    ],
-    lesson:`<h4 class="mod-h4">The Context–Role–Task–Format template</h4><p>Every good prompt has four parts. Miss one and results get vaguer.</p><div class="mod-principle"><span class="mod-pnum" style="background:var(--blue-bg);color:var(--blue)">C</span><div><strong>Context</strong> — what's the situation? Who's the audience? What background matters?</div></div><div class="mod-principle"><span class="mod-pnum" style="background:var(--teal-bg);color:var(--teal)">R</span><div><strong>Role</strong> — who do you want the AI to act as? ("Senior PMO lead", "Technical editor", "Friendly project coordinator")</div></div><div class="mod-principle"><span class="mod-pnum" style="background:var(--amber-bg);color:var(--amber)">T</span><div><strong>Task</strong> — what exactly do you want it to do?</div></div><div class="mod-principle"><span class="mod-pnum" style="background:var(--purple-bg);color:var(--purple)">F</span><div><strong>Format</strong> — length, structure, tone. Be specific.</div></div><h4 class="mod-h4">Common mistakes</h4><p>Too short and vague ("write something about risk"). No audience specified, so the output is pitched wrong. Starting a new chat when you should be iterating in the existing one. Not giving examples when you want a specific style.</p><h4 class="mod-h4">Iteration</h4><p>When the first response isn't right, tell the AI what was wrong. "Shorter." "More technical." "Lead with the risk, not the context." "Rewrite in the voice of the previous example." You'll get to good output in 2–3 turns rather than 5–6 new attempts.</p>`,
-    quiz:[
-      {q:'Which of these is the weakest prompt?',opts:['Write me something about project risk','Draft a 200-word risk summary for a rail client steering group, plain English, lead with the biggest risk','Act as a PMO lead and summarise the attached report in five bullets','Compare these two risk registers and tell me what\'s missing from the second one'],correct:0},
-      {q:'Your first response isn\'t quite right. What\'s usually better than starting a new chat?',opts:['Send the same prompt again word-for-word','Tell it what was wrong and ask for a revision','Switch to a different AI tool immediately','Give up and write it yourself'],correct:1},
-      {q:'What\'s the purpose of giving an AI an example of what you want?',opts:['It makes the AI faster','It shows the AI the exact tone, structure, and style you\'re after','It reduces your token cost','It unlocks hidden features'],correct:1}
-    ]
-  },
-  {
-    n:4,
-    name:'AI Inside Microsoft 365',
-    desc:'Copilot in Excel, PowerPoint, Word. Generating decks and sheets fast.',
-    weeks:'Weeks 7–8',
-    videoEmbed:'https://www.youtube.com/embed/mQDTJTGIvhg',
-    videoCaption:'Copilot in PowerPoint 2025 (~14 mins). Generating decks from Word docs, restructuring, image generation.',
-    extraVideos:[
-      {title:'Copilot Excel — Excel\'s Biggest Upgrade Ever','url':'https://www.youtube.com/watch?v=KXqR6VuPBlk','desc':'~16 minutes. Formulas, data cleanup, pivot tables, chart suggestions via Copilot.'},
-      {title:'Microsoft 365 Copilot Full Tutorial — Word, Excel, Teams, Outlook','url':'https://www.youtube.com/watch?v=1beYHq8aMyE','desc':'~35 minutes. Comprehensive reference if you want one long video for weekend catch-up.'}
-    ],
-    intro:'The fastest productivity gains come from embedding AI into the tools we already use — Excel, PowerPoint, and Word. This module covers turning Copilot on inside those apps and the specific things it\'s very good at.',
-    learns:[
-      'How to turn on Copilot inside Excel, PowerPoint, and Word',
-      'Generating a full PowerPoint deck from a document or prompt',
-      'Writing Excel formulas and cleaning data with Copilot',
-      'Using Claude or ChatGPT as an alternative when Copilot isn\'t available'
-    ],
-    lesson:`<h4 class="mod-h4">Three workflows worth knowing by heart</h4><div class="mod-principle"><span class="mod-pnum" style="background:var(--blue-bg);color:var(--blue)">1</span><div><strong>Word doc → PowerPoint deck.</strong> Open PowerPoint → Copilot button → "Create a presentation from this file" → pick the Word doc. 30-second conversion, then refine.</div></div><div class="mod-principle"><span class="mod-pnum" style="background:var(--teal-bg);color:var(--teal)">2</span><div><strong>Messy data → clean table.</strong> In Excel, select the range → Copilot → "Clean this data and suggest a structure". Handles inconsistent dates, mixed types, stray whitespace.</div></div><div class="mod-principle"><span class="mod-pnum" style="background:var(--purple-bg);color:var(--purple)">3</span><div><strong>Bullet points → full draft.</strong> In Word, type bullets → Copilot → "Expand these into a draft for [audience]". Keep the bullets, get a first draft underneath.</div></div><h4 class="mod-h4">When Copilot isn't available</h4><p>Draft in Claude or ChatGPT, then paste into the Office file. For presentations, Claude can generate slide outlines as Markdown that you can paste into PowerPoint's outline view.</p><h4 class="mod-h4">If a formula breaks</h4><p>Paste the error message back to Copilot and explain what you're trying to achieve. Nine times out of ten it fixes it on the next turn. Don't delete and restart.</p>`,
-    quiz:[
-      {q:'You have a 15-page Word doc and need a 10-slide deck by 5pm. Best first move?',opts:['Build the slides from scratch','Open PowerPoint → Copilot → "Create a presentation from this file" and pick the Word doc','Copy and paste each paragraph into a new slide','Ask someone else to do it'],correct:1},
-      {q:'Copilot writes you an Excel formula that returns a #REF error. What\'s the right next step?',opts:['Accept that Copilot doesn\'t work','Paste the error back and ask Copilot to fix it, explaining what you\'re trying to achieve','Delete everything and restart','Rewrite the formula yourself from scratch'],correct:1},
-      {q:'Copilot isn\'t available for the task you\'re on. What\'s a solid alternative?',opts:['Give up','Use Claude or ChatGPT to draft the content, then paste it into the Office file','Wait until Copilot is available','Do it without AI assistance'],correct:1}
-    ]
-  },
-  {
-    n:5,
-    name:'AI for Documents & Data',
-    desc:'Summarising reports, drafting comms, interpreting data outputs.',
-    weeks:'Weeks 9–10',
-    videoEmbed:'',
-    videoCaption:'This module focuses on applied prompt patterns rather than a long video. Review the three patterns below and try each one on a real document this fortnight.',
-    extraVideos:[
-      {title:'Claude Projects & Document Analysis — search YouTube','url':'https://www.youtube.com/results?search_query=Claude+Projects+tutorial+2025','desc':'Pick the most recent Claude Projects tutorial — content is evolving quickly.'}
-    ],
-    intro:'You\'re now set up and prompting well. This module is about doing the two highest-frequency consultancy tasks faster: making sense of long documents, and making sense of data. We\'ll cover summarisation, comparison, extraction, and how to interrogate a spreadsheet without writing a formula.',
-    learns:[
-      'Summarising long documents without losing nuance',
-      'Comparing two documents to flag what\'s different',
-      'Extracting structured data from unstructured text',
-      'Asking questions of a spreadsheet in plain English'
-    ],
-    lesson:`<h4 class="mod-h4">Three prompt patterns to memorise</h4><p><strong>Summarising a long document:</strong></p><div style="background:var(--bg3);padding:12px 16px;border-radius:var(--rs);margin:8px 0;font-size:13px;font-family:monospace;white-space:pre-wrap">Summarise the attached document for [audience]. Structure: one-sentence headline, three key points, anything uncertain or missing. Keep it to 200 words.</div><p><strong>Comparing two documents:</strong></p><div style="background:var(--bg3);padding:12px 16px;border-radius:var(--rs);margin:8px 0;font-size:13px;font-family:monospace;white-space:pre-wrap">Compare the two attached documents. Tell me what\'s new in version 2, what\'s been removed, and anything that materially changes meaning. Quote the exact clauses that changed.</div><p><strong>Extracting actions from minutes:</strong></p><div style="background:var(--bg3);padding:12px 16px;border-radius:var(--rs);margin:8px 0;font-size:13px;font-family:monospace;white-space:pre-wrap">From the attached meeting notes, extract every action in this format: Owner | Action | Due date | Status. If any are missing, say 'Not stated'.</div><h4 class="mod-h4">Spreadsheet interrogation</h4><p>Upload a CSV or Excel file and ask questions in plain English. "Which three projects are most at risk and why?" "Compare spend in Q1 and Q2 by team." "Flag any rows where the end date is before the start date." All three tools handle this; Claude tends to be best at keeping track across large sheets.</p><h4 class="mod-h4">One warning</h4><p>AI is confident about numbers even when it shouldn't be. <strong>Always verify specific figures back to the source data</strong> — especially anything going into a client report. Treat AI-reported numbers the way you'd treat numbers from a junior who's new to the project.</p>`,
-    quiz:[
-      {q:'What\'s the best way to summarise a 100-page report?',opts:['Paste the text in chunks','Upload the PDF directly and specify audience, length, and structure','Describe the report verbally and ask for a summary','It\'s not possible with AI'],correct:1},
-      {q:'You want a comparison of two contract versions. What\'s essential in the prompt?',opts:['Your favourite colour','Tell it to quote the exact clauses that changed','The weather forecast','A deadline for the AI'],correct:1},
-      {q:'AI gives you a data summary with a specific number. Before you put it in a client report:',opts:['Trust it — AI is rarely wrong with numbers','Verify the number against the source data yourself','Round it so it looks cleaner','Ask the AI to double-check its own work'],correct:1}
-    ]
-  },
-  {
-    n:6,
-    name:'Building a Workflow',
-    desc:'Turning one-off AI uses into repeatable, shareable processes.',
-    weeks:'Weeks 11–12',
-    videoEmbed:'',
-    videoCaption:'Turning your best experiments into team assets. Focus on the documentation template and the Projects vs Custom GPTs decision below.',
-    extraVideos:[
-      {title:'Custom GPT tutorials — search YouTube','url':'https://www.youtube.com/results?search_query=Custom+GPT+tutorial+2025','desc':'Pick any recent tutorial from OpenAI, Matt Wolfe, or AI Explained.'},
-      {title:'Claude Projects — search YouTube','url':'https://www.youtube.com/results?search_query=Claude+Projects+tutorial','desc':'Pick the most recent Claude Projects walkthrough.'}
-    ],
-    intro:'The final module is about turning individual AI wins into repeatable team processes. If your pod has found a prompt that works brilliantly for weekly reports, how does that become something everyone uses?',
-    learns:[
-      'How to document a prompt so someone else can use it',
-      'Claude Projects vs. ChatGPT Custom GPTs — when to use each',
-      'Building a pod-level prompt library',
-      'Knowing when NOT to use AI'
-    ],
-    lesson:`<h4 class="mod-h4">Documenting a prompt</h4><p>A prompt isn't useful to the team unless someone else can pick it up and run it. Every prompt you submit to the Prompt Pack needs: name and author, which tool it's designed for, when to use it, the prompt itself (copy-paste ready), what inputs are needed, and any caveats about verification.</p><h4 class="mod-h4">Projects vs Custom GPTs</h4><div class="mod-principle"><span class="mod-pnum" style="background:var(--blue-bg);color:var(--blue)">P</span><div><strong>Claude Projects</strong> — better for document-heavy recurring work. Load a set of reference docs once and ask questions across all of them for weeks.</div></div><div class="mod-principle"><span class="mod-pnum" style="background:var(--teal-bg);color:var(--teal)">C</span><div><strong>ChatGPT Custom GPTs</strong> — better for sharing with others. Each one has a URL you can send to a colleague. Requires ChatGPT Plus.</div></div><h4 class="mod-h4">When NOT to use AI</h4><p>When the task involves sensitive client data that shouldn't leave approved tools. When human judgement is the whole point (performance reviews, ethical calls, strategic decisions with your name on them). When a junior needs to develop a skill — don't do it for them. When the stakes of an error are so high that verification would take longer than doing it manually.</p>`,
-    quiz:[
-      {q:'Your pod has found a great prompt. What\'s the first thing to do?',opts:['Keep it secret for a competitive edge','Document it and submit it to the Prompt Pack via the learning log','Only share it verbally','Forget about it'],correct:1},
-      {q:'Which is better for a recurring task involving the same set of documents?',opts:['A fresh chat every time','A Claude Project or Custom GPT with the docs pre-loaded','Typing the same instructions manually each time','Emailing the AI'],correct:1},
-      {q:'When should you NOT use AI?',opts:['When drafting long documents','When the task involves sensitive client data that shouldn\'t leave approved tools, or when human judgement is the whole point','When making charts','When summarising'],correct:1}
-    ]
-  }
-];
-
-function renderHomeModules(){
-  document.getElementById('home-module-grid').innerHTML=modulesData.map(m=>{
-    const done=userModuleProgress[m.n]?.quiz_passed,locked=!isModuleUnlocked(m.n)&&!done;
-    return`<div class="module-card${done?' done':locked?' locked':''}" onclick="${locked?`showToast('This module unlocks on ${getUnlockDateForModule(m.n)}')`:`goToModule(${m.n})`}"><div class="module-num">MODULE ${String(m.n).padStart(2,'0')} ${done?'✓':locked?'🔒':''}</div><div class="module-name">${m.name}</div><div class="module-desc">${m.desc}</div><div class="progress-bar"><div class="progress-fill" style="width:${done?100:0}%;background:${done?'var(--teal)':'var(--blue)'}"></div></div><div style="font-size:11px;color:${done?'var(--teal)':locked?'var(--text3)':'var(--blue)'};margin-top:6px">${done?'✓ Complete':locked?'Unlocks '+getUnlockDateForModule(m.n):'Available — click to open'}</div></div>`;
-  }).join('');
-}
-
-function renderModules(){
-  const nd=getNextUnlockDate();
-  document.getElementById('module-unlock-note').textContent=nd?`Module ${getUnlockedModules().length+1} unlocks automatically on ${nd.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}.`:'All modules are now unlocked.';
-  document.getElementById('modules-list').innerHTML=modulesData.map(m=>{
-    const done=userModuleProgress[m.n]?.quiz_passed,prog=userModuleProgress[m.n],unlocked=isModuleUnlocked(m.n);
-    const sb2=done?'<span class="badge b-teal">✓ Complete</span>':unlocked?'<span class="badge b-blue">Available now</span>':`<span class="badge" style="background:var(--bg4);color:var(--text3)">Unlocks ${getUnlockDateForModule(m.n)}</span>`;
-    const lH=m.learns.map(l=>`<div class="mod-learn-item"><div class="mod-learn-dot"></div><div>${l}</div></div>`).join('');
-    const videoHTML=m.videoEmbed?`<div class="mod-video-wrap"><iframe src="${m.videoEmbed}" allowfullscreen></iframe></div>${m.videoCaption?`<div class="mod-video-caption">${m.videoCaption}</div>`:''}`:m.videoCaption?`<div class="mod-video-caption" style="margin-top:0;margin-bottom:16px;text-align:left;font-style:normal;padding:12px 14px;background:var(--bg3);border-radius:var(--rs);border-left:3px solid var(--blue);color:var(--text2)">${m.videoCaption}</div>`:'';
-    const extraH=m.extraVideos&&m.extraVideos.length?`<div class="mod-section-title">Further watching</div>${m.extraVideos.map(v=>`<div class="mod-extra-video"><a href="${v.url}" target="_blank" rel="noopener">${v.title} ↗</a><div class="mod-extra-video-desc">${v.desc}</div></div>`).join('')}`:'';
-    const qH=m.quiz.length?`<div class="mod-section-title">Reflection quiz — pass all questions to earn your pod +4 points</div><div id="quiz-mod-${m.n}">${m.quiz.map((q,qi)=>`<div class="mod-q"><div class="mod-q-text">${qi+1}. ${q.q}</div><div class="mod-options">${q.opts.map((o,oi)=>`<div class="mod-opt${done?' disabled':''}" onclick="quizAnswer(${m.n},${qi},this,${oi===q.correct})">${o}</div>`).join('')}</div></div>`).join('')}<div class="mod-quiz-result" id="qr-mod-${m.n}" style="display:none"></div>${done?`<div class="mod-done-banner">✓ You completed this module${prog?.completed_at?' on '+new Date(prog.completed_at).toLocaleDateString('en-GB'):''}. Your pod earned +4 points.</div>`:''}</div>`:'';
-    return`<div class="mod-card${done?' open':''}" id="mod-${m.n}"><div class="mod-header" onclick="toggleMod(${m.n})"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">${sb2}<span style="font-size:11px;color:var(--text3);font-weight:600">MODULE ${String(m.n).padStart(2,'0')}</span><span style="font-size:14px;font-weight:500;color:var(--text)">${m.name}</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;color:var(--text3)">${m.weeks}</span><span class="mod-chevron">▼</span></div></div><div class="mod-body" id="modb-${m.n}" style="display:${done?'block':'none'}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px"><span class="badge b-teal">All pods</span><span class="badge b-amber">${m.quiz.length} quiz questions</span><span class="badge b-blue">+4 pts on completion</span></div>${videoHTML}<p class="mod-intro">${m.intro}</p>${m.learns.length?`<div class="mod-section-title">What you will learn</div><div class="mod-learn-grid">${lH}</div>`:''}<div class="mod-section-title">Lesson</div><div class="mod-lesson">${m.lesson}</div>${extraH}${qH}</div></div>`;
-  }).join('');
-}
-
-function toggleMod(n){const c=document.getElementById('mod-'+n),b=document.getElementById('modb-'+n);if(!c||!b)return;const o=c.classList.toggle('open');b.style.display=o?'block':'none';}
-function goToModule(n){go('modules',document.querySelector('.nav[onclick*="modules"]'));setTimeout(()=>{const c=document.getElementById('mod-'+n),b=document.getElementById('modb-'+n);if(c&&b){c.classList.add('open');b.style.display='block';c.scrollIntoView({behavior:'smooth',block:'start'});}},60);}
-
-async function quizAnswer(modN,qi,el,correct){
-  const key=`m${modN}q${qi}`;if(quizState[key])return;quizState[key]=true;
-  const opts=el.closest('.mod-options').querySelectorAll('.mod-opt');
-  opts.forEach(o=>o.classList.add('disabled'));el.classList.add(correct?'correct':'wrong');
-  if(!correct)opts.forEach(o=>{if(o.getAttribute('onclick')?.includes(',true)'))o.classList.add('correct');});
-  await checkQuizComplete(modN);
-}
-async function checkQuizComplete(modN){
-  const mod=modulesData.find(m=>m.n===modN);if(!mod?.quiz.length)return;
-  if(mod.quiz.filter((_,qi)=>quizState[`m${modN}q${qi}`]).length<mod.quiz.length)return;
-  const cc=mod.quiz.filter((_,qi)=>!!document.querySelector(`#quiz-mod-${modN} .mod-q:nth-child(${qi+1}) .correct`)).length;
-  const rEl=document.getElementById(`qr-mod-${modN}`),passed=cc===mod.quiz.length;
-  rEl.style.display='block';rEl.className='mod-quiz-result '+(passed?'pass':'retry');
-  rEl.textContent=passed?`All ${cc}/${mod.quiz.length} correct — module complete! +4 points added to your pod.`:`${cc}/${mod.quiz.length} correct. Review the highlighted answers above.`;
-  if(passed&&!userModuleProgress[modN]){
-    await sb.from('module_progress').upsert({user_id:currentUser.id,module_number:modN,quiz_passed:true,quiz_score:cc,completed_at:new Date().toISOString()},{onConflict:'user_id,module_number'});
-    userModuleProgress[modN]={quiz_passed:true,completed_at:new Date().toISOString()};
-    showToast(`Module ${modN} complete! +4 points added to Pod ${currentProfile.pod_id} 🎉`);
-    renderHomeModules();loadHomeStats();loadLeaderboard();
-  }
-}
-
-// ── LEARNING LOG ──
-function renderWeekSelector(){
-  document.getElementById('week-sel').innerHTML=[1,2,3,4].map(w=>`<button class="week-btn${w===selectedWeekNum?' active':''}" onclick="selWeek(this,${w})">Wk ${w}</button>`).join('');
-  document.getElementById('log-form-title').textContent=`New entry — ${currentProfile?.full_name||''} · ${currentProfile?.pod_id?'Pod '+currentProfile.pod_id:'Admin'}`;
-}
-function selWeek(btn,w){document.querySelectorAll('.week-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');selectedWeekNum=w;loadMyLogEntries();}
-function selRating(btn,n){selectedRating=n;document.querySelectorAll('.rating-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
-
-async function submitLog(){
-  const tool=document.getElementById('log-tool').value,time=document.getElementById('log-time').value,uc=document.getElementById('log-usecase').value.trim(),what=document.getElementById('log-what').value.trim(),share=document.getElementById('log-share').value,video=document.getElementById('log-video').value.trim();
-  if(!tool||!time||!uc||!what||!share||!selectedRating){showToast('Please fill in all required fields and select a confidence rating.');return;}
-  const btn=document.getElementById('log-submit-btn');btn.disabled=true;btn.textContent='Saving…';
-  const isFailed=share==='No — was a failed experiment';
-  const{error}=await sb.from('learning_log').insert({user_id:currentUser.id,pod_id:currentProfile.pod_id,week_number:selectedWeekNum,tool_used:tool,use_case:uc,what_happened:what,time_saved:time,worth_sharing:share,confidence_level:selectedRating,prompt_used:document.getElementById('log-prompt').value.trim()||null,video_url:video||null,status:isFailed?'approved':'pending',is_failed_experiment:isFailed});
-  btn.disabled=false;btn.textContent='Save entry → pending review';
-  if(error){showToast('Error: '+error.message);return;}
-  ['log-tool','log-time','log-usecase','log-what','log-share','log-prompt','log-video'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  selectedRating=0;document.querySelectorAll('.rating-btn').forEach(b=>b.classList.remove('selected'));
-  showToast(isFailed?`Failed experiment logged — +2 points added to Pod ${currentProfile.pod_id} ✓`:'Entry saved — your pod lead will review and award +5 points when approved');
-  if(isFailed)loadLeaderboard();
-  loadMyLogEntries();if(isAdmin())loadPendingCount();
-}
-
-async function loadMyLogEntries(){
-  const el=document.getElementById('my-log-entries');
-  el.innerHTML='<div class="loading"><div class="spinner"></div>Loading…</div>';
-  const{data,error}=await sb.from('learning_log').select('*').eq('user_id',currentUser.id).eq('week_number',selectedWeekNum).order('created_at',{ascending:false});
-  if(error||!data?.length){el.innerHTML='<div class="empty-state">No entries for this week yet.</div>';return;}
-  const sc={pending:'amber',approved:'teal',rejected:'red'};
-  el.innerHTML=data.map(e=>`<div class="log-entry"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:11.5px;color:var(--text3);flex-wrap:wrap">Week ${e.week_number} · ${e.tool_used} · <span class="badge b-${sc[e.status]||'blue'}">${e.status}</span>${e.is_failed_experiment?'<span class="badge b-amber" style="font-size:10px">+2 pts</span>':''}<span style="margin-left:auto">${new Date(e.created_at).toLocaleDateString('en-GB')}</span></div><div style="font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:4px">${e.use_case}</div><div style="font-size:13px;color:var(--text2)">${e.what_happened}</div><div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center"><span class="badge b-teal" style="font-size:10px">${e.time_saved}</span><span class="badge b-amber" style="font-size:10px">Confidence: ${e.confidence_level}/5</span>${e.video_url?`<a href="${e.video_url}" target="_blank" style="font-size:10px;padding:2px 8px;border-radius:4px;background:var(--purple-bg);color:var(--purple);text-decoration:none">▶ Video</a>`:''}${e.status==='pending'?`<button class="btn-edit" style="margin-left:auto;padding:4px 10px;font-size:11px" onclick="openEditModal('${e.id}','${(e.use_case||'').replace(/'/g,"\\'")}','${(e.what_happened||'').replace(/'/g,"\\'")}','${e.tool_used||''}','${e.time_saved||''}','${(e.prompt_used||'').replace(/'/g,"\\'")}','${e.video_url||''}')">Edit</button><button class="btn-delete" style="padding:4px 10px;font-size:11px" onclick="deleteLog('${e.id}')">Delete</button>`:''}</div><div style="font-size:11.5px;margin-top:6px;color:${e.status==='approved'?'var(--teal)':e.status==='rejected'?'var(--red)':'var(--text3)'}">${e.status==='pending'?'⏳ Awaiting review':e.status==='approved'?'✓ Approved':'✗ Not approved'}</div></div>`).join('');
-}
-
-function openEditModal(id,uc,what,tool,time,prompt,video){
-  document.getElementById('edit-log-id').value=id;document.getElementById('edit-usecase').value=uc;document.getElementById('edit-what').value=what;document.getElementById('edit-tool').value=tool;document.getElementById('edit-time').value=time;document.getElementById('edit-prompt').value=prompt;document.getElementById('edit-video').value=video;
-  document.getElementById('edit-log-modal').classList.add('open');
-}
-function closeEditModal(){document.getElementById('edit-log-modal').classList.remove('open');}
-async function saveEditedLog(){
-  const id=document.getElementById('edit-log-id').value;
-  const{error}=await sb.from('learning_log').update({use_case:document.getElementById('edit-usecase').value.trim(),what_happened:document.getElementById('edit-what').value.trim(),tool_used:document.getElementById('edit-tool').value,time_saved:document.getElementById('edit-time').value,prompt_used:document.getElementById('edit-prompt').value.trim()||null,video_url:document.getElementById('edit-video').value.trim()||null}).eq('id',id).eq('status','pending');
-  if(error){showToast('Error: '+error.message);return;}
-  closeEditModal();showToast('Entry updated ✓');loadMyLogEntries();
-}
-async function deleteLog(id){
-  if(!confirm('Delete this entry? This cannot be undone.'))return;
-  const{error}=await sb.from('learning_log').delete().eq('id',id).eq('status','pending');
-  if(error){showToast('Error: '+error.message);return;}
-  showToast('Entry deleted');loadMyLogEntries();loadPendingCount();
-}
-
-// ── USE CASE LIBRARY ──
-async function initUCLibrary(){
-  const{data}=await sb.from('learning_log').select('*').eq('status','approved').neq('is_failed_experiment',true).order('created_at',{ascending:false});
-  allUCData=data||[];renderUCTable();
-}
-function renderUCTable(){
-  const rows=allUCData.filter(u=>{
-    const ms=!ucSearch||(u.use_case||'').toLowerCase().includes(ucSearch.toLowerCase())||(u.what_happened||'').toLowerCase().includes(ucSearch.toLowerCase());
-    const md=ucFilter==='all'||(u.use_case||'').toLowerCase().includes(ucFilter.toLowerCase())||(u.tool_used||'').toLowerCase().includes(ucFilter.toLowerCase());
-    return ms&&md;
-  });
-  document.getElementById('uc-body').innerHTML=rows.length?rows.map(u=>`<tr><td><div class="uc-name">${u.use_case}</div><div class="uc-detail">${(u.what_happened||'').slice(0,100)}…</div></td><td><span style="font-size:11.5px">${u.tool_used}</span></td><td><span style="color:var(--teal);font-size:12px">${u.time_saved}</span></td><td><span class="badge b-teal">Pod ${u.pod_id}</span></td><td>${u.video_url?`<a href="${u.video_url}" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none">▶ Watch</a>`:'—'}</td><td><span class="badge b-green">Approved</span></td></tr>`).join(''):'<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text3)">No approved use cases yet.</td></tr>';
-}
-function filterUC(btn,domain){document.querySelectorAll('#page-usecases .filter-pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');ucFilter=domain;renderUCTable();}
-function searchUC(v){ucSearch=v;renderUCTable();}
-
-// ── APPROVALS ──
-async function loadApprovals(){
-  const el=document.getElementById('approvals-content');
-  el.innerHTML='<div class="loading"><div class="spinner"></div>Loading…</div>';
-  const qp=currentProfile.role==='admin'?sb.from('learning_log').select('*,profiles(full_name)').eq('status','pending').order('created_at',{ascending:false}):sb.from('learning_log').select('*,profiles(full_name)').eq('pod_id',currentProfile.pod_id).eq('status','pending').order('created_at',{ascending:false});
-  const qr=currentProfile.role==='admin'?sb.from('learning_log').select('*,profiles(full_name)').neq('status','pending').order('created_at',{ascending:false}).limit(30):sb.from('learning_log').select('*,profiles(full_name)').eq('pod_id',currentProfile.pod_id).neq('status','pending').order('created_at',{ascending:false}).limit(30);
-  const[{data:pending},{data:reviewed}]=await Promise.all([qp,qr]);
-  el.innerHTML=`<div class="sec-label">Pending review (${pending?.length||0})</div>${pending?.length?pending.map(e=>approvalCard(e,true)).join(''):'<div class="empty-state" style="margin-bottom:24px">Nothing pending ✓</div>'}<div class="divider"></div><div class="sec-label">Previously reviewed (${reviewed?.length||0})</div>${reviewed?.length?reviewed.map(e=>approvalCard(e,false)).join(''):'<div class="empty-state">No reviewed entries yet.</div>'}`;
-}
-function approvalCard(e,showActions){
-  const sc={pending:'amber',approved:'teal',rejected:'red'};
-  return`<div class="approval-card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap"><strong style="font-size:13px">${e.profiles?.full_name||'Unknown'}</strong><span class="badge b-${sc[e.status]}">${e.status}</span>${e.pod_id?`<span class="badge b-blue" style="font-size:10px">Pod ${e.pod_id}</span>`:''}<span style="font-size:11px;color:var(--text3);margin-left:auto">${new Date(e.created_at).toLocaleDateString('en-GB')} · Wk ${e.week_number}</span></div><div style="font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:4px">${e.use_case}</div><div style="font-size:13px;color:var(--text2);margin-bottom:8px">${e.what_happened}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"><span class="badge b-amber" style="font-size:10px">${e.time_saved}</span><span class="badge b-blue" style="font-size:10px">${e.tool_used}</span><span class="badge b-teal" style="font-size:10px">Confidence: ${e.confidence_level}/5</span>${e.video_url?`<a href="${e.video_url}" target="_blank" style="font-size:10px;padding:2px 8px;border-radius:4px;background:var(--purple-bg);color:var(--purple);text-decoration:none">▶ Video</a>`:''}</div>${e.prompt_used?`<div style="background:var(--bg3);border-radius:var(--rs);padding:8px 12px;font-size:12px;color:var(--text2);border-left:3px solid var(--blue);margin-bottom:8px"><strong>Prompt:</strong> ${e.prompt_used}</div>`:''}<div style="font-size:11.5px;color:var(--text2);margin-bottom:${showActions?'10':'0'}px"><strong>Worth sharing?</strong> ${e.worth_sharing}</div>${showActions?`<div style="background:var(--bg3);border-radius:var(--rs);padding:12px 14px;margin-top:10px;border:1px solid var(--border2);"><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:10px">Approval options</div><div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px"><label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text2);cursor:pointer"><input type="checkbox" id="opt-uc-${e.id}" checked style="width:auto;accent-color:var(--blue);margin-top:2px"><span><strong>Use Case Library</strong></span></label><label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text2);cursor:pointer"><input type="checkbox" id="opt-story-${e.id}" style="width:auto;accent-color:var(--purple);margin-top:2px"><span><strong>Success Stories</strong></span></label>${e.prompt_used?`<label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text2);cursor:pointer"><input type="checkbox" id="opt-prompt-${e.id}" onchange="togglePromptDomain('${e.id}')" style="width:auto;accent-color:var(--teal);margin-top:2px"><span><strong>Prompt Pack</strong></span></label><div id="prompt-domain-${e.id}" style="display:none;margin-left:26px"><select id="prompt-domain-sel-${e.id}" style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-family:var(--font);font-size:13px;padding:6px 10px;outline:none;width:200px;margin-top:4px"><option>Controls</option><option>Comms</option><option>Data</option><option>Reporting</option><option>General</option></select></div>`:''}  </div><div style="display:flex;gap:8px"><button class="btn-approve" onclick="reviewLog('${e.id}','approved','${(e.use_case||'').replace(/'/g,"\\'")}','${e.pod_id}','${e.tool_used||''}','${e.time_saved||''}','${e.video_url||''}')">✓ Approve (+5 pts)</button><button class="btn-reject" onclick="reviewLog('${e.id}','rejected')">✗ Don't approve</button></div></div>`:''}  </div>`;
-}
-function togglePromptDomain(id){const cb=document.getElementById('opt-prompt-'+id);const d=document.getElementById('prompt-domain-'+id);if(cb&&d)d.style.display=cb.checked?'':'none';}
-async function reviewLog(id,status,title='',podId='',tool='',timeSaved='',videoUrl=''){
-  const{error}=await sb.from('learning_log').update({status,reviewed_by:currentUser.id,reviewed_at:new Date().toISOString()}).eq('id',id);
-  if(error){showToast('Error: '+error.message);return;}
-  if(status==='approved'){
-    const dest=[];
-    const ucCb=document.getElementById('opt-uc-'+id);if(!ucCb||ucCb.checked)dest.push('use case library');
-    const stCb=document.getElementById('opt-story-'+id);
-    if(stCb?.checked){dest.push('success stories');const month=new Date().toLocaleDateString('en-GB',{month:'long',year:'numeric'});await sb.from('success_stories').insert({log_entry_id:id,pod_id:podId?parseInt(podId):null,title:title||'Use case',tool_used:tool,time_saved:timeSaved,video_url:videoUrl||null,presented_month:month}).catch(()=>{});}
-    const prCb=document.getElementById('opt-prompt-'+id);
-    if(prCb?.checked){dest.push('prompt pack');const domain=document.getElementById('prompt-domain-sel-'+id)?.value||'General';const{data:entry}=await sb.from('learning_log').select('*').eq('id',id).single();if(entry?.prompt_used){await sb.from('community_prompts').insert({log_entry_id:id,submitted_by:entry.user_id,pod_id:podId?parseInt(podId):null,domain,title:title||entry.use_case||'Prompt',prompt_text:entry.prompt_used,notes:entry.what_happened,time_saved:timeSaved,approved_by:currentUser.id}).catch(()=>{});}}
-    showToast('Approved — added to: '+dest.join(', ')+' · +5 pts to pod');
-  }else showToast('Entry not approved');
-  loadApprovals();loadPendingCount();loadLeaderboard();initUCLibrary();loadTeamVideos();loadHomeStats();
-}
-
-// ── CHALLENGES ──
-async function renderChallenges(filter){
-  currentChalFilter=filter;
-  document.querySelectorAll('#chal-tabs .tab').forEach(t=>t.classList.toggle('active',t.dataset.filter===filter));
-  const{data:allSubs}=await sb.from('challenge_submissions').select('*,profiles(full_name)').order('created_at',{ascending:false});
-  const tagMap={done:'b-teal',active:'b-blue',upcoming:'b-amber'},tagLabel={done:'Completed',active:'Active now',upcoming:'Upcoming'};
-  const filtered=challengesBase.filter(c=>{const eff=chalCompletedByUser[c.id]?'done':getChallengeStatus(c.id);return filter==='all'||eff===filter;});
-  if(!filtered.length){document.getElementById('chal-list').innerHTML='<div class="empty-state">No challenges in this category yet.</div>';return;}
-  document.getElementById('chal-list').innerHTML=filtered.map(c=>{
-    const isDone=!!chalCompletedByUser[c.id],eff=isDone?'done':getChallengeStatus(c.id),subs=(allSubs||[]).filter(s=>s.challenge_id===c.id),pct=Math.min(Math.round(subs.length/c.target*100),100);
-    const sf=eff==='active'&&!isDone?`<div class="chal-submit-form"><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">Submit your result — earns your pod +3 points instantly</div><div class="chal-form-row"><div class="chal-form-group"><label class="chal-form-label">Tool used</label><select class="chal-form-select" id="ct-tool-${c.id}"><option value="">— Select —</option><option>Claude (Anthropic)</option><option>ChatGPT</option><option>Copilot</option><option>Gemini</option><option>Other</option></select></div><div class="chal-form-group"><label class="chal-form-label">Time saved</label><select class="chal-form-select" id="ct-time-${c.id}"><option value="">— Select —</option><option>Less than 15 mins</option><option>15–30 mins</option><option>30–60 mins</option><option>1–2 hours</option><option>2+ hours</option><option>Didn't save time — but learned something</option></select></div></div><div class="chal-form-row"><div class="chal-form-group full"><label class="chal-form-label">What did you do?</label><textarea class="chal-form-textarea" id="ct-task-${c.id}" placeholder="Describe the task…"></textarea></div></div><div class="chal-form-row"><div class="chal-form-group full"><label class="chal-form-label">What was the result?</label><textarea class="chal-form-textarea" id="ct-result-${c.id}" placeholder="What worked, what didn't?"></textarea></div></div><div class="chal-form-row"><div class="chal-form-group full"><label class="chal-form-label">Prompt used (optional)</label><textarea class="chal-form-textarea" id="ct-prompt-${c.id}" placeholder="Paste your prompt…"></textarea></div></div><div style="margin-top:14px"><button class="submit-btn" onclick="submitChallenge(${c.id})">Submit &amp; complete ✓</button></div></div>`:isDone?`<div class="chal-submitted-card"><div style="font-size:13px;font-weight:600;color:var(--teal);margin-bottom:4px">✓ You completed this challenge</div><div style="font-size:12.5px;color:var(--text2)">Your pod earned +3 points.</div></div>`:'';
-    const entries=subs.length?`<div class="chal-entries"><div class="chal-entries-title">Team submissions (${subs.length}/${c.target})</div>${subs.map(s=>`<div class="chal-entry"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap"><strong style="font-size:13px;color:var(--text)">${s.profiles?.full_name||'Team member'}</strong><span style="font-size:11px;color:var(--text3)">Pod ${s.pod_id} · ${s.tool_used}</span><span style="margin-left:auto;font-size:11px;color:var(--teal);background:var(--teal-bg);padding:2px 7px;border-radius:4px">${s.time_saved}</span></div><div style="font-size:12.5px;color:var(--text2);margin-bottom:4px"><strong>Task:</strong> ${s.task_description}</div><div style="font-size:12.5px;color:var(--text2)"><strong>Result:</strong> ${s.result_description}</div>${s.prompt_used?`<div class="chal-entry-prompt"><div style="font-size:10px;font-weight:600;text-transform:uppercase;color:var(--blue);margin-bottom:3px">Prompt used</div>${s.prompt_used}</div>`:''}</div>`).join('')}</div>`:'';
-    return`<div class="chal-card${isDone?' completed':''}" id="cc-${c.id}"><div class="chal-header" onclick="toggleChal(${c.id})"><div class="chal-header-left"><span class="chal-fort">${c.fort}</span><span class="badge ${tagMap[eff]}">${tagLabel[eff]}</span><span class="badge ${c.domainClass}">${c.domain}</span><span class="chal-title">${c.title}</span>${isDone?`<div style="width:20px;height:20px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 12 12" width="12" height="12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`:''}</div><div class="chal-header-right"><span class="prog-txt">${subs.length}/${c.target}</span><div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div><span class="chal-chevron">▼</span></div></div><div class="chal-body" id="cb-${c.id}" style="display:none"><p class="chal-desc">${c.desc}</p><div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Starter prompt — copy and adapt</div><div class="prompt-code" style="font-size:12px">${c.prompt}<button class="copy-btn" onclick="copyChalPrompt(${c.id})">Copy</button></div><div class="tip-box"><div class="tip-label">Tip</div>${c.tip}</div>${sf}${entries}</div></div>`;
-  }).join('');
-}
-function toggleChal(id){const b=document.getElementById('cb-'+id),c=document.getElementById('cc-'+id);if(!b||!c)return;const o=b.style.display==='block';b.style.display=o?'none':'block';c.classList.toggle('open',!o);}
-function filterChal(btn,key){renderChallenges(key);}
-function copyChalPrompt(id){const c=challengesBase.find(x=>x.id===id);if(c)navigator.clipboard.writeText(c.prompt).then(()=>showToast('Prompt copied'));}
-async function submitChallenge(id){
-  const tool=document.getElementById(`ct-tool-${id}`)?.value,time=document.getElementById(`ct-time-${id}`)?.value,task=document.getElementById(`ct-task-${id}`)?.value.trim(),result=document.getElementById(`ct-result-${id}`)?.value.trim(),prompt=document.getElementById(`ct-prompt-${id}`)?.value.trim();
-  if(!tool||!time||!task||!result){showToast('Please fill in all required fields.');return;}
-  const{error}=await sb.from('challenge_submissions').insert({challenge_id:id,user_id:currentUser.id,pod_id:currentProfile.pod_id,tool_used:tool,time_saved:time,task_description:task,result_description:result,prompt_used:prompt||null});
-  if(error){showToast('Error: '+error.message);return;}
-  chalCompletedByUser[id]=true;showToast(`Challenge complete! +3 points added to Pod ${currentProfile.pod_id} 🎉`);
-  renderChallenges(currentChalFilter);loadLeaderboard();loadHomeStats();
-}
-function renderChalAdminPanel(){
-  const panel=document.getElementById('chal-admin-panel');if(!panel||!isAdmin())return;
-  panel.style.display='';
-  panel.innerHTML=`<div class="admin-panel"><div class="admin-panel-title">⚙ Admin — Challenge Status Manager</div><div class="admin-panel-sub">Change which challenge is active.</div>${challengesBase.map(c=>{const status=getChallengeStatus(c.id);return`<div class="chal-status-row"><div class="chal-status-name">${c.fort}: ${c.title.slice(0,60)}…</div><button class="status-btn${status==='active'?' active-btn':''}" onclick="setChallengeStatus(${c.id},'active')">Active now</button><button class="status-btn${status==='upcoming'?' upcoming-btn':''}" onclick="setChallengeStatus(${c.id},'upcoming')">Upcoming</button><button class="status-btn${status==='done'?' done-btn':''}" onclick="setChallengeStatus(${c.id},'done')">Completed</button></div>`;}).join('')}</div>`;
-}
-async function setChallengeStatus(id,status){
-  challengeStatuses[id]=status;
-  await sb.from('challenge_status').upsert({challenge_id:id,status,updated_by:currentUser.id,updated_at:new Date().toISOString()},{onConflict:'challenge_id'});
-  renderChalAdminPanel();renderChallenges(currentChalFilter);showToast('Challenge status updated to "'+status+'"');
-}
-
-// ── LEADERBOARD ──
-async function loadLeaderboard(){
-  const[{data:allLogs},{data:allChals},{data:allMods},{data:allProfiles}]=await Promise.all([
-    sb.from('learning_log').select('pod_id,is_failed_experiment').eq('status','approved'),
-    sb.from('challenge_submissions').select('pod_id'),
-    sb.from('module_progress').select('user_id').eq('quiz_passed',true),
-    sb.from('profiles').select('id,pod_id')
-  ]);
-  const userPodMap={};(allProfiles||[]).forEach(p=>{if(p.pod_id)userPodMap[p.id]=p.pod_id;});
-  podData=[];
-  for(let i=1;i<=6;i++){
-    const uc=(allLogs||[]).filter(l=>l.pod_id===i&&!l.is_failed_experiment).length;
-    const fe=(allLogs||[]).filter(l=>l.pod_id===i&&l.is_failed_experiment).length;
-    const ch=(allChals||[]).filter(c=>c.pod_id===i).length;
-    const mo=(allMods||[]).filter(m=>userPodMap[m.user_id]===i).length;
-    podData.push({name:'Pod '+i,members:(podAssignments['Pod '+i]?.members||[]).join(', '),score:uc*5+mo*4+ch*3+fe*2,uc,ch,mo,fe});
-  }
-  const upd=document.getElementById('lb-last-updated');
-  if(upd)upd.textContent='Last updated '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  renderLB();renderHomeLB();
-}
-function renderLB(){
-  const sorted=[...podData].sort((a,b)=>lbSortKey==='uc'?b.uc-a.uc:lbSortKey==='chals'?b.ch-a.ch:b.score-a.score);
-  const max=Math.max(...sorted.map(p=>p.score),1);
-  const colors=['var(--gold)','var(--silver)','var(--bronze)','var(--blue)','var(--teal)','var(--purple)'];
-  document.getElementById('lb-wrap').innerHTML=`<table class="lb-table"><thead><tr><th style="width:40px">#</th><th>Pod</th><th>Score</th><th style="width:100px">Bar</th><th>Use cases</th><th>Challenges</th><th>Modules</th></tr></thead><tbody>${sorted.map((p,i)=>{const r=i+1,rc=['rank-1','rank-2','rank-3','rank-n'][Math.min(r-1,3)];return`<tr><td><span class="rank ${rc}">#${r}</span></td><td><div style="font-weight:500;color:var(--text)">${p.name}</div><div style="font-size:11px;color:var(--text3)">${p.members}</div></td><td style="font-weight:500">${p.score} pts</td><td><div class="bar-bg"><div class="bar-fill" style="width:${Math.round(p.score/max*100)}%;background:${colors[i]}"></div></div></td><td><span class="badge b-teal">${p.uc}</span></td><td><span class="badge b-blue">${p.ch}</span></td><td><span class="badge b-purple">${p.mo}</span></td></tr>`;}).join('')}</tbody></table>`;
-}
-function renderHomeLB(){
-  const sorted=[...podData].sort((a,b)=>b.score-a.score);const max=Math.max(...sorted.map(p=>p.score),1);
-  const colors=['var(--gold)','var(--silver)','var(--bronze)','var(--blue)','var(--teal)','var(--purple)'];
-  document.getElementById('home-lb').innerHTML=`<table class="lb-table"><thead><tr><th style="width:40px">#</th><th>Pod</th><th>Score</th><th></th></tr></thead><tbody>${sorted.map((p,i)=>{const r=i+1,rc=['rank-1','rank-2','rank-3','rank-n'][Math.min(r-1,3)];return`<tr><td><span class="rank ${rc}">#${r}</span></td><td style="font-weight:500;color:var(--text)">${p.name}</td><td>${p.score} pts</td><td><div class="bar-bg"><div class="bar-fill" style="width:${Math.round(p.score/max*100)}%;background:${colors[i]}"></div></div></td></tr>`;}).join('')}</tbody></table>`;
-}
-function switchLbTab(btn,key){
-  document.querySelectorAll('#page-leaderboard .tab').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active');lbSortKey=key;
-  if(podData.length)renderLB();else loadLeaderboard();
-}
-
-// ── ADMIN DASHBOARD ──
-async function loadAdminDash(){
-  if(!isAdmin())return;
-  const el=document.getElementById('admindash-content');
-  el.innerHTML='<div class="loading"><div class="spinner"></div>Loading…</div>';
-  try{
-    const[{data:logs},{data:chals},{data:modRows},{data:profiles}]=await Promise.all([
-      sb.from('learning_log').select('pod_id,is_failed_experiment,confidence_level,created_at').eq('status','approved'),
-      sb.from('challenge_submissions').select('pod_id,user_id,created_at'),
-      sb.from('module_progress').select('user_id,module_number').eq('quiz_passed',true),
-      sb.from('profiles').select('id,pod_id')
-    ]);
-    const{count:pendingCount}=await sb.from('learning_log').select('*',{count:'exact',head:true}).eq('status','pending');
-    const L=logs||[],C=chals||[],M=modRows||[],P=profiles||[];
-    const avgConf=L.length?(L.reduce((a,l)=>a+(l.confidence_level||0),0)/L.length).toFixed(1):'—';
-    const unlockedCount=getUnlockedModules().length;
-    const activeChalCount=challengesBase.filter(c=>['active','done'].includes(getChallengeStatus(c.id))).length;
-    const maxPts=Math.max((9*5)+(3*unlockedCount*4)+(3*activeChalCount*3)+(3*2),1);
-    const podStats=Array.from({length:6},(_,i)=>{
-      const n=i+1,pp=P.filter(p=>p.pod_id===n);
-      const uc=L.filter(l=>l.pod_id===n&&!l.is_failed_experiment).length;
-      const fe=L.filter(l=>l.pod_id===n&&l.is_failed_experiment).length;
-      const ch=C.filter(c=>c.pod_id===n).length;
-      const mo=M.filter(m=>pp.some(p=>p.id===m.user_id)).length;
-      return{name:'Pod '+n,pts:uc*5+mo*4+ch*3+fe*2,uc,ch,mo};
-    });
-    const thisMonth=new Date().toLocaleDateString('en-GB',{month:'long',year:'numeric'});
-    const monthStart=new Date();monthStart.setDate(1);monthStart.setHours(0,0,0,0);
-    const rL=L.filter(l=>new Date(l.created_at)>=monthStart&&!l.is_failed_experiment);
-    const rC=C.filter(c=>new Date(c.created_at)>=monthStart);
-    const ucByPod={};rL.forEach(l=>{ucByPod[l.pod_id]=(ucByPod[l.pod_id]||0)+1;});
-    const cfByPod={};rL.forEach(l=>{if(!cfByPod[l.pod_id])cfByPod[l.pod_id]=[];cfByPod[l.pod_id].push(l.confidence_level||0);});
-    const chByPod={};rC.forEach(c=>{chByPod[c.pod_id]=(chByPod[c.pod_id]||0)+1;});
-    const topUC=Object.entries(ucByPod).sort((a,b)=>b[1]-a[1])[0];
-    const topCF=Object.entries(cfByPod).map(([p,s])=>({p,avg:s.reduce((a,b)=>a+b,0)/s.length})).sort((a,b)=>b.avg-a.avg)[0];
-    const topCH=Object.entries(chByPod).sort((a,b)=>b[1]-a[1])[0];
-    el.innerHTML=`
-      <div class="stats-grid">
-        <div class="stat"><div class="stat-n" style="color:var(--blue)">${L.filter(l=>!l.is_failed_experiment).length}</div><div class="stat-l">Approved use cases</div></div>
-        <div class="stat"><div class="stat-n" style="color:var(--amber)">${pendingCount||0}</div><div class="stat-l">Pending review</div></div>
-        <div class="stat"><div class="stat-n" style="color:var(--teal)">${avgConf}</div><div class="stat-l">Avg confidence</div></div>
-        <div class="stat"><div class="stat-n" style="color:var(--purple)">${M.length}</div><div class="stat-l">Module completions</div></div>
-      </div>
-      <div class="sec-label">Pod engagement — points scored vs max possible (${maxPts} pts)</div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:24px">
-        ${podStats.map(p=>`<div style="margin-bottom:16px">
-          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;margin-bottom:4px">
-            <span style="font-size:13px;font-weight:500;color:var(--text)">${p.name}</span>
-            <span style="font-size:11px;color:var(--text3)">${p.pts} pts &nbsp;·&nbsp; ${p.uc} use cases &nbsp;·&nbsp; ${p.ch} challenges &nbsp;·&nbsp; ${p.mo} modules</span>
-          </div>
-          <div style="width:100%;height:7px;background:var(--bg4);border-radius:4px;overflow:hidden">
-            <div style="width:${Math.round(p.pts/maxPts*100)}%;height:100%;background:var(--blue);border-radius:4px"></div>
-          </div>
-        </div>`).join('')}
-      </div>
-      <div class="sec-label">Wall of fame suggestions — ${thisMonth}</div>
-      <div class="dash-grid">
-        <div class="dash-card"><div class="dash-card-title">🏆 Use case of the month</div>${topUC?`<div class="suggest-card"><div class="suggest-label">Auto-suggested</div><div class="suggest-name">Pod ${topUC[0]}</div><div class="suggest-reason">${topUC[1]} use case${topUC[1]>1?'s':''} this month</div><button class="suggest-use-btn" onclick="openHonourModal('use_case','${thisMonth}');document.getElementById('hm-pod').value='Pod ${topUC[0]}'">Use this →</button></div>`:'<p style="font-size:12.5px;color:var(--text3)">No data yet.</p>'}</div>
-        <div class="dash-card"><div class="dash-card-title">🔥 Bravest experiment</div>${topCF?`<div class="suggest-card"><div class="suggest-label">Auto-suggested</div><div class="suggest-name">Pod ${topCF.p}</div><div class="suggest-reason">Avg confidence ${topCF.avg.toFixed(1)}/5 this month</div><button class="suggest-use-btn" onclick="openHonourModal('experiment','${thisMonth}');document.getElementById('hm-pod').value='Pod ${topCF.p}'">Use this →</button></div>`:'<p style="font-size:12.5px;color:var(--text3)">No data yet.</p>'}</div>
-        <div class="dash-card"><div class="dash-card-title">📈 Most improved</div>${topCH?`<div class="suggest-card"><div class="suggest-label">Auto-suggested</div><div class="suggest-name">Pod ${topCH[0]}</div><div class="suggest-reason">${topCH[1]} challenge${topCH[1]>1?'s':''} this month</div><button class="suggest-use-btn" onclick="openHonourModal('improved','${thisMonth}');document.getElementById('hm-pod').value='Pod ${topCH[0]}'">Use this →</button></div>`:'<p style="font-size:12.5px;color:var(--text3)">No data yet.</p>'}</div>
-      </div>
-      <div class="sec-label">Module unlock status</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:28px">
-        ${modulesData.map(m=>{const u=isModuleUnlocked(m.n),co=M.filter(r=>r.module_number===m.n).length;return`<div style="background:var(--bg2);border:1px solid ${u?'rgba(13,158,117,.3)':'var(--border)'};border-radius:var(--r);padding:12px;text-align:center"><div style="font-size:18px;margin-bottom:4px">${u?'🟢':'🔒'}</div><div style="font-size:11px;font-weight:600;color:var(--text)">Mod ${m.n}</div><div style="font-size:10px;color:var(--text3)">${u?co+' completions':'Unlocks '+getUnlockDateForModule(m.n)}</div></div>`;}).join('')}
-      </div>
-      <div class="sec-label">Quick actions</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="submit-btn" style="background:var(--amber)" onclick="go('approvals',document.querySelector('.nav[onclick*=approvals]'))">Review ${pendingCount||0} pending →</button>
-        <button class="submit-btn" style="background:var(--purple)" onclick="go('honours',document.querySelector('.nav[onclick*=honours]'))">Update Wall of Fame →</button>
-      </div>`;
-  }catch(e){el.innerHTML=`<div class="empty-state">Could not load dashboard — ${e.message}</div>`;}
-}
-
-// ── MY POD ──
-async function loadMyPod(){
-  const podNum=currentProfile.pod_id;
-  if(!podNum){document.getElementById('mypod-crumb').textContent='proicere-academy / admin';document.getElementById('mypod-title').innerHTML='Admin <span class="hl">Overview</span>';document.getElementById('mypod-content').innerHTML='<p style="color:var(--text2);font-size:13px">As admin you can see all pod data in the Leaderboard and Admin Dashboard.</p>';return;}
-  document.getElementById('mypod-crumb').textContent=`proicere-academy / pod-${podNum}`;
-  document.getElementById('mypod-title').innerHTML=`Pod <span class="hl">${podNum}</span>`;
-  const podName='Pod '+podNum,members=podAssignments[podName]?.members||[];
-  const colours=['var(--blue)','var(--teal)','var(--amber)','var(--purple)','var(--coral)','var(--green)'];
-  const col=colours[(podNum-1)%colours.length],roles=['Digital Lead','Specialist','Willing Learner'];
-  document.getElementById('mypod-content').innerHTML=`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:20px"><div class="sec-label" style="margin-bottom:12px">Members</div><div class="member-list">${members.map((name,i)=>{const init=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();const isLead=podAssignments[podName]?.lead.includes(name);return`<div class="member-item"><div class="av" style="background:${col}20;color:${col}">${init}</div><div style="flex:1;font-size:13px;color:var(--text)">${name}</div><span class="badge" style="background:${col}15;color:${col};font-size:10px">${isLead?'Pod Lead':roles[i]||'Member'}</span></div>`;}).join('')}</div></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px" id="pod-stats"><div class="stat"><div class="stat-n" style="color:var(--teal)">—</div><div class="stat-l">Approved use cases</div></div><div class="stat"><div class="stat-n" style="color:var(--blue)">—</div><div class="stat-l">Challenges done</div></div><div class="stat"><div class="stat-n" style="color:var(--purple)">${members.length}</div><div class="stat-l">Members</div></div></div><div id="pod-usecases"><div class="loading"><div class="spinner"></div>Loading…</div></div>`;
-  try{
-    const[{data:logs},{data:chals}]=await Promise.all([sb.from([sb.from(''learning_log').select('*',{count:'exact',head:true}).eq('status','approved'),sb.from('module_progress').select('*',{count:'exact',head:true}).eq('quiz_passed',true)]);
   document.getElementById('home-uc-count').textContent=uc||0;document.getElementById('home-mods-count').textContent=mods||0;
 }
 async function loadPendingCount(){
@@ -1832,5 +1326,3 @@ function go(id,el){
 </script>
 </body>
 </html>
-
-
