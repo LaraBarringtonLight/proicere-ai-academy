@@ -452,7 +452,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   <h1 class="ptitle">Learning <span class="hl">Log</span></h1>
   <p class="psub" style="margin-bottom:28px">Record what you tested. Approved entries earn your pod <strong>+5 points</strong>. Failed experiments earn <strong>+2 points</strong> automatically.</p>
   <div class="log-form">
-    <div class="log-form-header"><div class="log-form-title" id="log-form-title">New entry</div><div class="week-selector" id="week-sel"></div></div>
+    <div class="log-form-header"><div class="log-form-title" id="log-form-title">New entry</div></div>
     <div class="log-body">
       <div class="form-row">
         <div class="form-group"><label class="form-label">AI tool used</label><select class="form-select" id="log-tool"><option value="">— Select —</option><option>Claude (Anthropic)</option><option>ChatGPT</option><option>Copilot / Microsoft 365</option><option>Gemini</option><option>Other</option></select></div>
@@ -1126,10 +1126,8 @@ async function checkQuizComplete(modN){
 
 // ── LEARNING LOG ──
 function renderWeekSelector(){
-  document.getElementById('week-sel').innerHTML=[1,2,3,4].map(w=>`<button class="week-btn${w===selectedWeekNum?' active':''}" onclick="selWeek(this,${w})">Wk ${w}</button>`).join('');
-  document.getElementById('log-form-title').textContent=`New entry — ${currentProfile?.full_name||''} · ${currentProfile?.pod_id?'Pod '+currentProfile.pod_id:'Admin'}`;
-}
-function selWeek(btn,w){document.querySelectorAll('.week-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');selectedWeekNum=w;loadMyLogEntries();}
+    document.getElementById('log-form-title').textContent=`New entry — ${currentProfile?.full_name||''} · ${currentProfile?.pod_id?'Pod '+currentProfile.pod_id:'Admin'}`;
+  }
 function selRating(btn,n){selectedRating=n;document.querySelectorAll('.rating-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
 
 async function submitLog(){
@@ -1150,7 +1148,7 @@ async function submitLog(){
 async function loadMyLogEntries(){
   const el=document.getElementById('my-log-entries');
   el.innerHTML='<div class="loading"><div class="spinner"></div>Loading…</div>';
-  const{data,error}=await sb.from('learning_log').select('*').eq('user_id',currentUser.id).eq('week_number',selectedWeekNum).order('created_at',{ascending:false});
+  const{data,error}=await sb.from('learning_log').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false});
   if(error||!data?.length){el.innerHTML='<div class="empty-state">No entries for this week yet.</div>';return;}
   const sc={pending:'amber',approved:'teal',rejected:'red'};
   el.innerHTML=data.map(e=>`<div class="log-entry"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:11.5px;color:var(--text3);flex-wrap:wrap">Week ${e.week_number} · ${e.tool_used} · <span class="badge b-${sc[e.status]||'blue'}">${e.status}</span>${e.is_failed_experiment?'<span class="badge b-amber" style="font-size:10px">+2 pts</span>':''}<span style="margin-left:auto">${new Date(e.created_at).toLocaleDateString('en-GB')}</span></div><div style="font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:4px">${e.use_case}</div><div style="font-size:13px;color:var(--text2)">${e.what_happened}</div><div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center"><span class="badge b-teal" style="font-size:10px">${e.time_saved}</span><span class="badge b-amber" style="font-size:10px">Confidence: ${e.confidence_level}/5</span>${e.video_url?`<a href="${e.video_url}" target="_blank" style="font-size:10px;padding:2px 8px;border-radius:4px;background:var(--purple-bg);color:var(--purple);text-decoration:none">▶ Video</a>`:''}${e.status==='pending'?`<button class="btn-edit" style="margin-left:auto;padding:4px 10px;font-size:11px" onclick="openEditModal('${e.id}','${(e.use_case||'').replace(/'/g,"\\'")}','${(e.what_happened||'').replace(/'/g,"\\'")}','${e.tool_used||''}','${e.time_saved||''}','${(e.prompt_used||'').replace(/'/g,"\\'")}','${e.video_url||''}')">Edit</button><button class="btn-delete" style="padding:4px 10px;font-size:11px" onclick="deleteLog('${e.id}')">Delete</button>`:''}</div><div style="font-size:11.5px;margin-top:6px;color:${e.status==='approved'?'var(--teal)':e.status==='rejected'?'var(--red)':'var(--text3)'}">${e.status==='pending'?'⏳ Awaiting review':e.status==='approved'?'✓ Approved':'✗ Not approved'}</div></div>`).join('');
