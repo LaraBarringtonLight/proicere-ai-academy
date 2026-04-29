@@ -485,13 +485,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   <h1 class="ptitle">Use Case <span class="hl">Library</span></h1>
   <p class="psub" style="margin-bottom:28px">All approved use cases from across the pods.</p>
 <div class="filter-bar">
-    <button class="filter-pill active">All</button>
-    <button class="filter-pill">Foundations</button>
-    <button class="filter-pill">Prompting</button>
-    <button class="filter-pill">Microsoft 365</button>
-    <button class="filter-pill">Project Mgmt</button>
-    <button class="filter-pill">Risk</button>
-    <button class="filter-pill">Claude</button>
+    <button class="filter-pill active" onclick="filterUC(this,'all')">All</button>
+    <button class="filter-pill" onclick="filterUC(this,'Controls')">Controls</button>
+    <button class="filter-pill" onclick="filterUC(this,'Comms')">Comms</button>
+    <button class="filter-pill" onclick="filterUC(this,'Data')">Data</button>
+    <button class="filter-pill" onclick="filterUC(this,'Reporting')">Reporting</button>
+    <input class="search-input" type="text" placeholder="Search use cases…" oninput="searchUC(this.value)">
   </div>
   <table class="uc-table"><thead><tr><th style="width:42%">Use case</th><th style="width:12%">Tool</th><th style="width:13%">Time saved</th><th style="width:10%">Pod</th><th style="width:10%">Video</th><th style="width:13%">Status</th></tr></thead><tbody id="uc-body"></tbody></table>
 </div>
@@ -624,11 +623,13 @@ Do not add information not present in the report. Use plain, non-jargon language
   <h1 class="ptitle">Tutorial <span class="hl">Videos</span></h1>
   <p class="psub" style="margin-bottom:24px">Academy walkthroughs and team recordings.</p>
   <div class="filter-bar">
-    <button class="filter-pill active" onclick="filterVids(this,'all')">All</button>
-    <button class="filter-pill" onclick="filterVids(this,'Foundations')">Foundations</button>
-    <button class="filter-pill" onclick="filterVids(this,'Controls')">Controls</button>
-    <button class="filter-pill" onclick="filterVids(this,'Comms')">Comms</button>
-    <button class="filter-pill" onclick="filterVids(this,'Data')">Data</button>
+    <button class="filter-pill active" onclick="filterVideos(this,'all')">All</button>
+    <button class="filter-pill" onclick="filterVideos(this,'Foundations')">Foundations</button>
+    <button class="filter-pill" onclick="filterVideos(this,'Prompting')">Prompting</button>
+    <button class="filter-pill" onclick="filterVideos(this,'Microsoft 365')">Microsoft 365</button>
+    <button class="filter-pill" onclick="filterVideos(this,'Project Mgmt')">Project Mgmt</button>
+    <button class="filter-pill" onclick="filterVideos(this,'Risk')">Risk</button>
+    <button class="filter-pill" onclick="filterVideos(this,'Claude')">Claude</button>
   </div>
   <div class="sec-label" id="vid-sec-academy">Academy starter videos</div>
 <div class="vid-grid" id="vid-academy-grid">
