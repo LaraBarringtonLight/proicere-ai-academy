@@ -622,7 +622,7 @@ Do not add information not present in the report. Use plain, non-jargon language
   <div class="crumb">proicere-academy / tutorial-videos</div>
   <h1 class="ptitle">Tutorial <span class="hl">Videos</span></h1>
   <p class="psub" style="margin-bottom:24px">Academy walkthroughs and team recordings.</p>
-  <div class="filter-bar">
+ <div class="filter-bar">
     <button class="filter-pill active" onclick="filterVideos(this,'all')">All</button>
     <button class="filter-pill" onclick="filterVideos(this,'Foundations')">Foundations</button>
     <button class="filter-pill" onclick="filterVideos(this,'Prompting')">Prompting</button>
@@ -1493,6 +1493,13 @@ async function submitVideo(){
   showToast('Video submitted — your pod lead will review it shortly');
 }
 function openVideo(url){if(!url)return;document.getElementById('vid-iframe').src=url;document.getElementById('vid-modal').classList.add('open');}
+  function filterVideos(btn,category){
+  document.querySelectorAll('#page-tutorials .filter-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#vid-academy-grid .vid-card').forEach(card=>{
+    const tag=card.querySelector('.vid-tag')?.textContent.trim();
+    card.style.display=(category==='all'||tag===category)?'':'none';
+  });
 function closeVideo(){document.getElementById('vid-modal').classList.remove('open');document.getElementById('vid-iframe').src='';}
 
 // ── PROMPTS ──
