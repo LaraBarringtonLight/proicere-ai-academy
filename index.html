@@ -1499,9 +1499,9 @@ function openVideo(url){if(!url)return;document.getElementById('vid-iframe').src
   document.querySelectorAll('#vid-academy-grid .vid-card').forEach(card=>{
     const tag=card.querySelector('.vid-tag')?.textContent.trim();
     card.style.display=(category==='all'||tag===category)?'':'none';
-  });
 function closeVideo(){document.getElementById('vid-modal').classList.remove('open');document.getElementById('vid-iframe').src='';}
-
+  });
+    
 // ── PROMPTS ──
 function filterPrompts(btn,domain){
   document.querySelectorAll('#page-prompts .filter-pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');
