@@ -484,13 +484,14 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   <div class="crumb">proicere-academy / use-case-library</div>
   <h1 class="ptitle">Use Case <span class="hl">Library</span></h1>
   <p class="psub" style="margin-bottom:28px">All approved use cases from across the pods.</p>
-  <div class="filter-bar">
-    <button class="filter-pill active" onclick="filterUC(this,'all')">All</button>
-    <button class="filter-pill" onclick="filterUC(this,'Controls')">Controls</button>
-    <button class="filter-pill" onclick="filterUC(this,'Comms')">Comms</button>
-    <button class="filter-pill" onclick="filterUC(this,'Data')">Data</button>
-    <button class="filter-pill" onclick="filterUC(this,'Reporting')">Reporting</button>
-    <input class="search-input" type="text" placeholder="Search use cases…" oninput="searchUC(this.value)">
+<div class="filter-bar">
+    <button class="filter-pill active">All</button>
+    <button class="filter-pill">Foundations</button>
+    <button class="filter-pill">Prompting</button>
+    <button class="filter-pill">Microsoft 365</button>
+    <button class="filter-pill">Project Mgmt</button>
+    <button class="filter-pill">Risk</button>
+    <button class="filter-pill">Claude</button>
   </div>
   <table class="uc-table"><thead><tr><th style="width:42%">Use case</th><th style="width:12%">Tool</th><th style="width:13%">Time saved</th><th style="width:10%">Pod</th><th style="width:10%">Video</th><th style="width:13%">Status</th></tr></thead><tbody id="uc-body"></tbody></table>
 </div>
@@ -630,11 +631,97 @@ Do not add information not present in the report. Use plain, non-jargon language
     <button class="filter-pill" onclick="filterVids(this,'Data')">Data</button>
   </div>
   <div class="sec-label" id="vid-sec-academy">Academy starter videos</div>
-  <div class="vid-grid" id="vid-academy-grid">
-    <div class="vid-card"><div class="vid-thumb" onclick="showToast('Replace with your Loom embed link')"><div class="vid-tag">Module 01</div><div class="vid-play"><div class="vid-tri"></div></div></div><div class="vid-info"><div class="vid-title">AI Foundations — what it is and how to use it safely</div><div class="vid-meta"><span class="badge b-blue">Foundations</span><span>Academy Lead · ~15 min</span></div></div></div>
-    <div class="vid-card"><div class="vid-thumb" onclick="showToast('Replace with your Loom embed link')"><div class="vid-tag">Module 02</div><div class="vid-play"><div class="vid-tri"></div></div></div><div class="vid-info"><div class="vid-title">Prompting basics — writing prompts that actually work</div><div class="vid-meta"><span class="badge b-blue">Foundations</span><span>Academy Lead · ~20 min</span></div></div></div>
-    <div class="vid-card"><div class="vid-thumb" onclick="showToast('Replace with your Loom embed link')"><div class="vid-tag">Demo</div><div class="vid-play"><div class="vid-tri"></div></div></div><div class="vid-info"><div class="vid-title">Live demo — risk register from a meeting transcript</div><div class="vid-meta"><span class="badge b-teal">Controls</span><span>Academy Lead · ~5 min</span></div></div></div>
+<div class="vid-grid" id="vid-academy-grid">
+ 
+  <div class="vid-card">
+    <div class="vid-thumb" onclick="openVideo('https://www.youtube.com/embed/dVQgcuh4uPU')">
+      <div class="vid-tag">Foundations</div>
+      <div class="vid-play"><div class="vid-tri"></div></div>
+    </div>
+    <div class="vid-info">
+      <div class="vid-title">How ChatGPT Works — LLMs Explained in 8 Minutes</div>
+      <div class="vid-meta"><span class="badge b-blue">Foundations</span><span>8 mins</span></div>
+    </div>
   </div>
+ 
+  <div class="vid-card">
+    <div class="vid-thumb" onclick="openVideo('https://www.youtube.com/embed/_ZvnD73m40o')">
+      <div class="vid-tag">Prompting</div>
+      <div class="vid-play"><div class="vid-tri"></div></div>
+    </div>
+    <div class="vid-info">
+      <div class="vid-title">Prompt Engineering Tutorial — Master ChatGPT and LLM Responses</div>
+      <div class="vid-meta"><span class="badge b-purple">Prompting</span><span>41 mins · freeCodeCamp</span></div>
+    </div>
+  </div>
+ 
+  <div class="vid-card">
+    <div class="vid-thumb" onclick="openVideo('https://www.youtube.com/embed/jNqhRJ47xsI')">
+      <div class="vid-tag">Project Mgmt</div>
+      <div class="vid-play"><div class="vid-tri"></div></div>
+    </div>
+    <div class="vid-info">
+      <div class="vid-title">Unlock the Power of ChatGPT for Effective Project Management</div>
+      <div class="vid-meta"><span class="badge b-coral">Project Mgmt</span><span>52 mins · PMI</span></div>
+    </div>
+  </div>
+ 
+  <div class="vid-card">
+    <div class="vid-thumb" onclick="openVideo('https://www.youtube.com/embed/xVm4Kruu02k')">
+      <div class="vid-tag">Risk</div>
+      <div class="vid-play"><div class="vid-tri"></div></div>
+    </div>
+    <div class="vid-info">
+      <div class="vid-title">Build a Risk Management Plan with AI</div>
+      <div class="vid-meta"><span class="badge b-amber">Risk</span><span>4 mins · PMI Infinity</span></div>
+    </div>
+  </div>
+ 
+  <div class="vid-card">
+    <div class="vid-thumb" onclick="openVideo('https://www.youtube.com/embed/mV7J6b0Oyuk')">
+      <div class="vid-tag">Microsoft 365</div>
+      <div class="vid-play"><div class="vid-tri"></div></div>
+    </div>
+    <div class="vid-info">
+      <div class="vid-title">How to Use Copilot in Excel for Data Analysis (Step-by-Step)</div>
+      <div class="vid-meta"><span class="badge b-amber">Microsoft 365</span><span>10 mins · practical</span></div>
+    </div>
+  </div>
+ 
+  <div class="vid-card">
+    <div class="vid-thumb" onclick="openVideo('https://www.youtube.com/embed/47xWVGluLmg')">
+      <div class="vid-tag">Microsoft 365</div>
+      <div class="vid-play"><div class="vid-tri"></div></div>
+    </div>
+    <div class="vid-info">
+      <div class="vid-title">Create Awesome Presentations FAST with Copilot in PowerPoint</div>
+      <div class="vid-meta"><span class="badge b-amber">Microsoft 365</span><span>8 mins · practical</span></div>
+    </div>
+  </div>
+ 
+  <div class="vid-card">
+    <div class="vid-thumb" onclick="openVideo('https://www.youtube.com/embed/8h-G_mV4Ovs')">
+      <div class="vid-tag">Microsoft 365</div>
+      <div class="vid-play"><div class="vid-tri"></div></div>
+    </div>
+    <div class="vid-info">
+      <div class="vid-title">Use Copilot in Word to Search, Summarise & Simplify Documents</div>
+      <div class="vid-meta"><span class="badge b-amber">Microsoft 365</span><span>6 mins · practical</span></div>
+    </div>
+  </div>
+ 
+  <div class="vid-card">
+    <div class="vid-thumb" onclick="openVideo('https://www.youtube.com/embed/fOnKo_Hole8')">
+      <div class="vid-tag">Claude</div>
+      <div class="vid-play"><div class="vid-tri"></div></div>
+    </div>
+    <div class="vid-info">
+      <div class="vid-title">Full Claude Projects Guide for Beginners</div>
+      <div class="vid-meta"><span class="badge b-teal">Claude</span><span>15 mins · workflow</span></div>
+    </div>
+  </div>
+ 
+</div>
   <div class="divider" id="vid-divider-team"></div>
   <div class="sec-label" id="vid-sec-team">From the team</div>
   <div id="team-vids-grid" class="vid-grid"></div>
