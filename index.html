@@ -364,7 +364,18 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   <div class="modal-actions"><button class="btn-secondary" onclick="closeEditModal()">Cancel</button><button class="submit-btn" style="margin:0" onclick="saveEditedLog()">Save changes</button></div>
 </div></div>
 
-<div class="modal-wrap" id="pod-modal"><div class="modal-wrap" id="uc-detail-modal"><div class="modal-card" style="max-width:640px">
+  <div class="modal-wrap" id="pod-modal"><div class="modal-card" style="max-width:400px">
+  <div class="modal-title">Change your pod</div>
+  <div class="modal-sub">Contact your Academy Lead if you're unsure which pod you're in.</div>
+  <div class="fld"><label>Select your pod</label><select id="pod-select" class="form-select"><option value="1">Pod 1</option><option value="2">Pod 2</option><option value="3">Pod 3</option><option value="4">Pod 4</option><option value="5">Pod 5</option><option value="6">Pod 6</option></select></div>
+  <div class="modal-actions"><button class="btn-secondary" onclick="closePodModal()">Cancel</button><button class="submit-btn" style="margin:0" onclick="savePod()">Save</button></div>
+  </div></div>
+ 
+  <div class="modal-wrap" id="uc-detail-modal"><div class="modal-card" style="max-width:640px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div class="modal-title" id="ucd-title">Use case</div>
+      <span class="badge b-green">Approved</span>
+    </div>
   <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
     <div class="modal-title" id="ucd-title">Use case</div>
     <span class="badge b-green">Approved</span>
@@ -1339,6 +1350,26 @@ function searchUC(v){ucSearch=v;renderUCTable();}
   document.getElementById('uc-detail-modal').classList.add('open');
 }
 function closeUCModal(){document.getElementById('uc-detail-modal').classList.remove('open');}
+  async function openSuccessStory(logEntryId,fallbackTitle){
+  if(!logEntryId){showToast('No detail available for this story');return;}
+  const{data,error}=await sb.from('learning_log').select('*').eq('id',logEntryId).single();
+  if(error||!data){showToast('Could not load story details');return;}
+  document.getElementById('ucd-title').textContent=data.use_case||fallbackTitle||'Success story';
+  document.getElementById('ucd-what').textContent=data.what_happened||'';
+  const badges=[];
+  if(data.tool_used)badges.push(`<span class="badge b-blue">${data.tool_used}</span>`);
+  if(data.time_saved)badges.push(`<span class="badge b-teal">${data.time_saved} saved</span>`);
+  if(data.pod_id)badges.push(`<span class="badge b-purple">Pod ${data.pod_id}</span>`);
+  if(data.confidence_level)badges.push(`<span class="badge b-amber">Confidence: ${data.confidence_level}/5</span>`);
+  document.getElementById('ucd-badges').innerHTML=badges.join('');
+  const promptWrap=document.getElementById('ucd-prompt-wrap');
+  if(data.prompt_used){document.getElementById('ucd-prompt').textContent=data.prompt_used;promptWrap.style.display='';}
+  else promptWrap.style.display='none';
+  const videoWrap=document.getElementById('ucd-video-wrap');
+  if(data.video_url){document.getElementById('ucd-video').href=data.video_url;videoWrap.style.display='';}
+  else videoWrap.style.display='none';
+  document.getElementById('uc-detail-modal').classList.add('open');
+}
 function copyUCPrompt(){const t=document.getElementById('ucd-prompt').textContent;if(t)navigator.clipboard.writeText(t).then(()=>showToast('Prompt copied'));}
 
 // ── APPROVALS ──
@@ -1629,7 +1660,7 @@ async function loadSuccessStories(){
   try{
     const{data,error}=await Promise.race([sb.from('success_stories').select('*').order('created_at',{ascending:false}),new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),4000))]);
     if(error||!data?.length){el.innerHTML=`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:32px;margin-bottom:16px"><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px">How Success Stories work</div><div style="font-size:13px;color:var(--text2);line-height:1.7">When approving a learning log entry, tick <strong>"Success Stories"</strong> to feature it here.</div></div><div class="empty-state">No success stories yet.</div>`;return;}
-    el.innerHTML=data.map(s=>`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px;display:flex;gap:16px"><div style="font-size:10px;color:var(--text3);writing-mode:vertical-rl;transform:rotate(180deg);min-width:20px">${s.presented_month||'—'}</div><div style="flex:1"><div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px">${s.title}</div>${s.description?`<div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px">${s.description}</div>`:''}<div style="display:flex;gap:6px;flex-wrap:wrap">${s.time_saved&&s.time_saved!=='N/A'?`<span class="badge b-teal">${s.time_saved} saved</span>`:''}${s.pod_id?`<span class="badge b-blue">Pod ${s.pod_id}</span>`:''}${s.tool_used?`<span class="badge b-amber">${s.tool_used}</span>`:''}${s.video_url?`<a href="${s.video_url}" target="_blank" style="font-size:11px;padding:2px 8px;border-radius:4px;background:var(--purple-bg);color:var(--purple);text-decoration:none">▶ Watch</a>`:''}</div></div></div>`).join('');
+    el.innerHTML=data.map(s=>`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px;display:flex;gap:16px;cursor:pointer;transition:all .15s" onclick="openSuccessStory('${s.log_entry_id||''}','${(s.title||'').replace(/'/g,"\\'")}')" onmouseover="this.style.borderColor='var(--blue)';this.style.background='var(--bg3)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--bg2)'"><div style="font-size:10px;color:var(--text3);writing-mode:vertical-rl;transform:rotate(180deg);min-width:20px">${s.presented_month||'—'}</div><div style="flex:1"><div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px">${s.title}</div>${s.description?`<div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px">${s.description}</div>`:''}<div style="display:flex;gap:6px;flex-wrap:wrap">${s.time_saved&&s.time_saved!=='N/A'?`<span class="badge b-teal">${s.time_saved} saved</span>`:''}${s.pod_id?`<span class="badge b-blue">Pod ${s.pod_id}</span>`:''}${s.tool_used?`<span class="badge b-amber">${s.tool_used}</span>`:''}${s.video_url?`<a href="${s.video_url}" target="_blank" onclick="event.stopPropagation()" style="font-size:11px;padding:2px 8px;border-radius:4px;background:var(--purple-bg);color:var(--purple);text-decoration:none">▶ Watch</a>`:''}</div></div></div>`).join('');
   }catch(e){el.innerHTML='<div class="empty-state">Could not load — please refresh.</div>';}
 }
 
