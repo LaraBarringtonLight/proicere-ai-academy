@@ -1304,8 +1304,8 @@ function searchUC(v){ucSearch=v;renderUCTable();}
 async function loadApprovals(){
   const el=document.getElementById('approvals-content');
   el.innerHTML='<div class="loading"><div class="spinner"></div>Loading…</div>';
-  const qp=currentProfile.role==='admin'?sb.from('learning_log').select('*,profiles(full_name)').eq('status','pending').order('created_at',{ascending:false}):sb.from('learning_log').select('*,profiles(full_name)').eq('pod_id',currentProfile.pod_id).eq('status','pending').order('created_at',{ascending:false});
-  const qr=currentProfile.role==='admin'?sb.from('learning_log').select('*,profiles(full_name)').neq('status','pending').order('created_at',{ascending:false}).limit(30):sb.from('learning_log').select('*,profiles(full_name)').eq('pod_id',currentProfile.pod_id).neq('status','pending').order('created_at',{ascending:false}).limit(30);
+  const qp=currentProfile.role==='admin'?sb.from('learning_log').select('*,profiles!learning_log_user_id_fkey(full_name)').eq('status','pending').order('created_at',{ascending:false}):sb.from('learning_log').select('*,profiles!learning_log_user_id_fkey(full_name)').eq('pod_id',currentProfile.pod_id).eq('status','pending').order('created_at',{ascending:false});
+  const qr=currentProfile.role==='admin'?sb.from('learning_log').select('*,profiles!learning_log_user_id_fkey(full_name)').neq('status','pending').order('created_at',{ascending:false}).limit(30):sb.from('learning_log').select('*,profiles!learning_log_user_id_fkey(full_name)').eq('pod_id',currentProfile.pod_id).neq('status','pending').order('created_at',{ascending:false}).limit(30);
   const[{data:pending},{data:reviewed}]=await Promise.all([qp,qr]);
   el.innerHTML=`<div class="sec-label">Pending review (${pending?.length||0})</div>${pending?.length?pending.map(e=>approvalCard(e,true)).join(''):'<div class="empty-state" style="margin-bottom:24px">Nothing pending ✓</div>'}<div class="divider"></div><div class="sec-label">Previously reviewed (${reviewed?.length||0})</div>${reviewed?.length?reviewed.map(e=>approvalCard(e,false)).join(''):'<div class="empty-state">No reviewed entries yet.</div>'}`;
 }
@@ -1333,7 +1333,7 @@ async function reviewLog(id,status,title='',podId='',tool='',timeSaved='',videoU
 async function renderChallenges(filter){
   currentChalFilter=filter;
   document.querySelectorAll('#chal-tabs .tab').forEach(t=>t.classList.toggle('active',t.dataset.filter===filter));
-  const{data:allSubs}=await sb.from('challenge_submissions').select('*,profiles(full_name)').order('created_at',{ascending:false});
+  const{data:allSubs}=await sb.from('challenge_submissions').select('*,profiles!challenge_submissions_user_id_fkey(full_name)').order('created_at',{ascending:false});
   const tagMap={done:'b-teal',active:'b-blue',upcoming:'b-amber'},tagLabel={done:'Completed',active:'Active now',upcoming:'Upcoming'};
   const filtered=challengesBase.filter(c=>{const eff=chalCompletedByUser[c.id]?'done':getChallengeStatus(c.id);return filter==='all'||eff===filter;});
   if(!filtered.length){document.getElementById('chal-list').innerHTML='<div class="empty-state">No challenges in this category yet.</div>';return;}
