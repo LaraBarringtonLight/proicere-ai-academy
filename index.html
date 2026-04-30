@@ -1362,9 +1362,26 @@ async function reviewLog(id,status,title='',podId='',tool='',timeSaved='',videoU
     const dest=[];
     const ucCb=document.getElementById('opt-uc-'+id);if(!ucCb||ucCb.checked)dest.push('use case library');
     const stCb=document.getElementById('opt-story-'+id);
-    if(stCb?.checked){dest.push('success stories');const month=new Date().toLocaleDateString('en-GB',{month:'long',year:'numeric'});await sb.from('success_stories').insert({log_entry_id:id,pod_id:podId?parseInt(podId):null,title:title||'Use case',tool_used:tool,time_saved:timeSaved,video_url:videoUrl||null,presented_month:month}).catch(()=>{});}
+    f(stCb?.checked){
+      dest.push('success stories');
+      const month=new Date().toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+      try{
+        const{error:ssErr}=await sb.from('success_stories').insert({log_entry_id:id,pod_id:podId?parseInt(podId):null,title:title||'Use case',tool_used:tool,time_saved:timeSaved,video_url:videoUrl||null,presented_month:month});
+        if(ssErr)console.warn('Success story insert failed:',ssErr.message);
+      }catch(e){console.warn('Success story exception:',e);}
+    }
     const prCb=document.getElementById('opt-prompt-'+id);
-    if(prCb?.checked){dest.push('prompt pack');const domain=document.getElementById('prompt-domain-sel-'+id)?.value||'General';const{data:entry}=await sb.from('learning_log').select('*').eq('id',id).single();if(entry?.prompt_used){await sb.from('community_prompts').insert({log_entry_id:id,submitted_by:entry.user_id,pod_id:podId?parseInt(podId):null,domain,title:title||entry.use_case||'Prompt',prompt_text:entry.prompt_used,notes:entry.what_happened,time_saved:timeSaved,approved_by:currentUser.id}).catch(()=>{});}}
+    if(prCb?.checked){
+      dest.push('prompt pack');
+      const domain=document.getElementById('prompt-domain-sel-'+id)?.value||'General';
+      const{data:entry}=await sb.from('learning_log').select('*').eq('id',id).single();
+      if(entry?.prompt_used){
+        try{
+          const{error:cpErr}=await sb.from('community_prompts').insert({log_entry_id:id,submitted_by:entry.user_id,pod_id:podId?parseInt(podId):null,domain,title:title||entry.use_case||'Prompt',prompt_text:entry.prompt_used,notes:entry.what_happened,time_saved:timeSaved,approved_by:currentUser.id});
+          if(cpErr)console.warn('Prompt pack insert failed:',cpErr.message);
+        }catch(e){console.warn('Prompt pack exception:',e);}
+      }
+    }
     showToast('Approved — added to: '+dest.join(', ')+' · +5 pts to pod');
   }else showToast('Entry not approved');
   loadApprovals();loadPendingCount();loadLeaderboard();initUCLibrary();loadTeamVideos();loadHomeStats();
