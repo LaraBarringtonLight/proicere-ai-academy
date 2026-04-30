@@ -1363,7 +1363,7 @@ async function reviewLog(id,status,title='',podId='',tool='',timeSaved='',videoU
     const dest=[];
     const ucCb=document.getElementById('opt-uc-'+id);if(!ucCb||ucCb.checked)dest.push('use case library');
     const stCb=document.getElementById('opt-story-'+id);
-    f(stCb?.checked){
+    if(stCb?.checked){
       dest.push('success stories');
       const month=new Date().toLocaleDateString('en-GB',{month:'long',year:'numeric'});
       try{
