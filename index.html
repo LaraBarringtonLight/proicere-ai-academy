@@ -297,6 +297,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .suggest-use-btn{margin-top:8px;background:var(--amber);color:#fff;border:none;border-radius:var(--rs);padding:5px 12px;font-size:11.5px;font-family:var(--font);cursor:pointer;}
 ::-webkit-scrollbar{width:5px;}
 ::-webkit-scrollbar-thumb{background:#c8d0dc;border-radius:3px;}
+@keyframes pulseHighlight{0%,100%{background:transparent}50%{background:rgba(26,107,255,.18)}}
+.row-highlight{animation:pulseHighlight 1s ease-in-out 2;}
 </style>
 </head>
 <body>
@@ -348,6 +350,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   <div class="fld"><label>Winner name</label><input type="text" id="hm-winner" class="form-input" placeholder="Full name"></div>
   <div class="fld"><label>Winner's pod</label><input type="text" id="hm-pod" class="form-input" placeholder="e.g. Pod 1"></div>
   <div class="fld"><label>Description</label><textarea id="hm-desc" class="form-textarea" placeholder="Brief description"></textarea></div>
+  <div class="fld" id="hm-link-wrap"><label>Link to (optional)</label><select id="hm-link" class="form-select"><option value="">— No link —</option></select><div style="font-size:11px;color:var(--text3);margin-top:4px">Click on the card from the wall of fame will take people to this entry.</div></div>
   <div class="modal-actions"><button class="btn-secondary" onclick="closeHonourModal()">Cancel</button><button class="submit-btn" style="margin:0" onclick="saveHonour()">Save award</button></div>
 </div></div>
 
@@ -987,6 +990,7 @@ async function showApp(){
   await Promise.all([loadModuleProgress(),loadChalSubmissions(),loadHomeStats(),loadChallengeStatuses()]);
   renderHomeModules();renderModules();renderWeekSelector();
   renderChallenges('all');loadWallOfFame();loadLeaderboard();loadTeamVideos();
+  loadCommunityPrompts();
   if(isAdmin())renderChalAdminPanel();
   lbPollInterval=setInterval(()=>{if(document.getElementById('page-leaderboard').classList.contains('active'))loadLeaderboard();},60000);
 }
@@ -1018,24 +1022,82 @@ function renderWallOfFame(){
   const months=[...new Set(Object.values(wofEntries).map(e=>e.month_label))];
   if(!months.length)months.push('April 2026');
   const el=document.getElementById('wof-content');
-  el.innerHTML=months.map(month=>`<div class="sec-label" style="display:flex;align-items:center;justify-content:space-between">${month}${isAdmin()?'<span style="font-size:11px;color:var(--text3)">Click ✏ to edit</span>':''}</div><div class="honour-grid" style="margin-bottom:32px">${awardTypes.map(a=>{const entry=wofEntries[month+'|'+a.type];return`<div class="honour-card" style="border-color:${a.borderColor}">${isAdmin()?`<button class="honour-edit-btn" onclick="openHonourModal('${a.type}','${month}')">✏ Edit</button>`:''}<div style="width:32px;height:32px;border-radius:8px;background:${a.iconBg};display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:16px">${a.icon}</div><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:6px">${a.label}</div><div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:4px">${entry?entry.winner_name:'To be announced'}</div><div style="font-size:12.5px;color:var(--text2);line-height:1.5">${entry?entry.description:'Awarded at the end of the month.'}</div><div style="font-size:11px;color:var(--text3);margin-top:8px">${entry&&entry.winner_pod?entry.winner_pod:'—'}</div></div>`;}).join('')}</div>`).join('');
+  el.innerHTML=months.map(month=>`<div class="sec-label" style="display:flex;align-items:center;justify-content:space-between">${month}${isAdmin()?'<span style="font-size:11px;color:var(--text3)">Click ✏ to edit</span>':''}</div><div class="honour-grid" style="margin-bottom:32px">${awardTypes.map(a=>{const entry=wofEntries[month+'|'+a.type];const hasLink=entry&&entry.linked_id&&entry.linked_type;const clickAttr=hasLink?`onclick="openLinkedAward('${entry.linked_type}','${entry.linked_id}')"`:'';const cursorStyle=hasLink?'cursor:pointer;':'';const hoverAttrs=hasLink?'onmouseover="this.style.transform=\'translateY(-1px)\';this.style.boxShadow=\'0 4px 12px rgba(0,0,0,.06)\'" onmouseout="this.style.transform=\'\';this.style.boxShadow=\'\'"':'';const linkHint=hasLink?'<div style="font-size:11px;color:var(--blue);margin-top:6px">Click to view →</div>':'';return`<div class="honour-card" style="border-color:${a.borderColor};${cursorStyle}position:relative" ${clickAttr} ${hoverAttrs}>${isAdmin()?`<button class="honour-edit-btn" onclick="event.stopPropagation();openHonourModal('${a.type}','${month}')">✏ Edit</button>`:''}<div style="width:32px;height:32px;border-radius:8px;background:${a.iconBg};display:flex;align-items:center;ju
   if(isAdmin()){const nm=new Date();nm.setMonth(nm.getMonth()+1);const s=nm.toLocaleDateString('en-GB',{month:'long',year:'numeric'});el.innerHTML+=`<button onclick="openNewMonthModal('${s}')" style="background:transparent;border:1px dashed var(--border2);border-radius:var(--r);padding:14px 20px;color:var(--text3);font-size:13px;cursor:pointer;width:100%;font-family:var(--font)">+ Add awards for a new month</button>`;}
 }
 function openNewMonthModal(s){openHonourModal('use_case',s);document.getElementById('hm-sub').textContent='Start with Use Case of the Month, then edit each award in turn.';}
-function openHonourModal(type,month){
+async function openHonourModal(type,month){
   const a=awardTypes.find(x=>x.type===type);
   document.getElementById('hm-title').textContent='Edit — '+(a?.label||'Award');
   document.getElementById('hm-sub').textContent='Update the winner for '+(month||'this month')+'.';
-  document.getElementById('hm-award-type').value=type;document.getElementById('hm-month').value=month||'April 2026';
+  document.getElementById('hm-award-type').value=type;
+  document.getElementById('hm-month').value=month||'April 2026';
   const e=wofEntries[month+'|'+type];
-  document.getElementById('hm-winner').value=e?.winner_name||'';document.getElementById('hm-pod').value=e?.winner_pod||'';document.getElementById('hm-desc').value=e?.description||'';
+  document.getElementById('hm-winner').value=e?.winner_name||'';
+  document.getElementById('hm-pod').value=e?.winner_pod||'';
+  document.getElementById('hm-desc').value=e?.description||'';
+  await populateLinkDropdown(type,e?.linked_id);
   document.getElementById('honour-modal').classList.add('open');
 }
+ 
+async function populateLinkDropdown(awardType,currentLinkedId){
+  const sel=document.getElementById('hm-link');
+  if(!sel)return;
+  sel.innerHTML='<option value="">— No link —</option>';
+  // Best prompt → community_prompts; everything else → learning_log
+  if(awardType==='prompt'){
+    const{data}=await sb.from('community_prompts').select('id,title,domain').order('created_at',{ascending:false});
+    (data||[]).forEach(p=>{
+      const opt=document.createElement('option');
+      opt.value='prompt:'+p.id;
+      opt.textContent=`${p.domain||'General'} — ${p.title}`;
+      if(currentLinkedId===p.id)opt.selected=true;
+      sel.appendChild(opt);
+    });
+  }else{
+    const{data}=await sb.from('learning_log').select('id,use_case,pod_id,is_failed_experiment').eq('status','approved').order('created_at',{ascending:false});
+    (data||[]).forEach(l=>{
+      const opt=document.createElement('option');
+      opt.value='use_case:'+l.id;
+      const tag=l.is_failed_experiment?' [failed exp]':'';
+      opt.textContent=`Pod ${l.pod_id} — ${l.use_case}${tag}`;
+      if(currentLinkedId===l.id)opt.selected=true;
+      sel.appendChild(opt);
+    });
+  }
+}
 function closeHonourModal(){document.getElementById('honour-modal').classList.remove('open');}
+function openLinkedAward(type,id){
+  if(type==='use_case'){
+    go('usecases',document.querySelector('.nav[onclick*="usecases"]'));
+    setTimeout(()=>{
+      const row=document.querySelector(`#uc-body tr[onclick*="${id}"]`);
+      if(row){row.scrollIntoView({behavior:'smooth',block:'center'});row.classList.add('row-highlight');setTimeout(()=>row.classList.remove('row-highlight'),2500);}
+      else showToast('Linked use case is not visible — check filters');
+    },300);
+  }else if(type==='prompt'){
+    go('prompts',document.querySelector('.nav[onclick*="prompts"]'));
+    setTimeout(()=>{
+      const card=document.getElementById('cp-'+id);
+      if(card){card.scrollIntoView({behavior:'smooth',block:'center'});card.classList.add('open');card.classList.add('row-highlight');setTimeout(()=>card.classList.remove('row-highlight'),2500);}
+      else showToast('Linked prompt is not in the pack — it may have been removed');
+    },500);
+  }
+}
 async function saveHonour(){
-  const type=document.getElementById('hm-award-type').value,month=document.getElementById('hm-month').value.trim(),winner=document.getElementById('hm-winner').value.trim(),pod=document.getElementById('hm-pod').value.trim(),desc=document.getElementById('hm-desc').value.trim();
+  const type=document.getElementById('hm-award-type').value;
+  const month=document.getElementById('hm-month').value.trim();
+  const winner=document.getElementById('hm-winner').value.trim();
+  const pod=document.getElementById('hm-pod').value.trim();
+  const desc=document.getElementById('hm-desc').value.trim();
+  const linkRaw=document.getElementById('hm-link')?.value||'';
+  let linked_id=null,linked_type=null;
+  if(linkRaw){
+    const[t,id]=linkRaw.split(':');
+    linked_type=t;linked_id=id;
+  }
   if(!month||!winner){showToast('Please fill in the month and winner name.');return;}
-  const{error}=await sb.from('wall_of_fame').insert({month_label:month,award_type:type,winner_name:winner,winner_pod:pod,description:desc});
+  const{error}=await sb.from('wall_of_fame').insert({month_label:month,award_type:type,winner_name:winner,winner_pod:pod,description:desc,linked_id,linked_type});
   if(error){showToast('Error: '+error.message);return;}
   closeHonourModal();showToast('Award saved!');loadWallOfFame();
 }
