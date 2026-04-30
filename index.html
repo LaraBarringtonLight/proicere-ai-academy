@@ -1340,6 +1340,7 @@ function searchUC(v){ucSearch=v;renderUCTable();}
 }
 function closeUCModal(){document.getElementById('uc-detail-modal').classList.remove('open');}
 function copyUCPrompt(){const t=document.getElementById('ucd-prompt').textContent;if(t)navigator.clipboard.writeText(t).then(()=>showToast('Prompt copied'));}
+}
 
 // ── APPROVALS ──
 async function loadApprovals(){
