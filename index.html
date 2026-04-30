@@ -1191,19 +1191,22 @@ function toggleMod(n){const c=document.getElementById('mod-'+n),b=document.getEl
 function goToModule(n){go('modules',document.querySelector('.nav[onclick*="modules"]'));setTimeout(()=>{const c=document.getElementById('mod-'+n),b=document.getElementById('modb-'+n);if(c&&b){c.classList.add('open');b.style.display='block';c.scrollIntoView({behavior:'smooth',block:'start'});}},60);}
 
 async function quizAnswer(modN,qi,el,correct){
-  const key=`m${modN}q${qi}`;if(quizState[key])return;quizState[key]=true;
+  const key=`m${modN}q${qi}`;if(quizState[key])return;
+  quizState[key]={answered:true,correct:correct};
   const opts=el.closest('.mod-options').querySelectorAll('.mod-opt');
-  opts.forEach(o=>o.classList.add('disabled'));el.classList.add(correct?'correct':'wrong');
+  opts.forEach(o=>o.classList.add('disabled'));
+  el.classList.add(correct?'correct':'wrong');
   if(!correct)opts.forEach(o=>{if(o.getAttribute('onclick')?.includes(',true)'))o.classList.add('correct');});
   await checkQuizComplete(modN);
 }
 async function checkQuizComplete(modN){
   const mod=modulesData.find(m=>m.n===modN);if(!mod?.quiz.length)return;
-  if(mod.quiz.filter((_,qi)=>quizState[`m${modN}q${qi}`]).length<mod.quiz.length)return;
-  const cc=mod.quiz.filter((_,qi)=>!!document.querySelector(`#quiz-mod-${modN} .mod-q:nth-child(${qi+1}) .correct`)).length;
+  const answers=mod.quiz.map((_,qi)=>quizState[`m${modN}q${qi}`]);
+  if(answers.some(a=>!a||!a.answered))return;
+  const cc=answers.filter(a=>a.correct).length;
   const rEl=document.getElementById(`qr-mod-${modN}`),passed=cc===mod.quiz.length;
   rEl.style.display='block';rEl.className='mod-quiz-result '+(passed?'pass':'retry');
-  rEl.textContent=passed?`All ${cc}/${mod.quiz.length} correct — module complete! +4 points added to your pod.`:`${cc}/${mod.quiz.length} correct. Review the highlighted answers above.`;
+  rEl.textContent=passed?`All ${cc}/${mod.quiz.length} correct — module complete! +4 points added to your pod.`:`${cc}/${mod.quiz.length} correct. Review the highlighted answers above, then refresh the page to try again.`;
   if(passed&&!userModuleProgress[modN]){
     await sb.from('module_progress').upsert({user_id:currentUser.id,module_number:modN,quiz_passed:true,quiz_score:cc,completed_at:new Date().toISOString()},{onConflict:'user_id,module_number'});
     userModuleProgress[modN]={quiz_passed:true,completed_at:new Date().toISOString()};
