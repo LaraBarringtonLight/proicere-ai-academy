@@ -1183,13 +1183,34 @@ function renderModules(){
     const videoHTML=m.videoEmbed?`<div class="mod-video-wrap"><iframe src="${m.videoEmbed}" allowfullscreen></iframe></div>${m.videoCaption?`<div class="mod-video-caption">${m.videoCaption}</div>`:''}`:m.videoCaption?`<div class="mod-extra-video" style="margin:0 0 16px">${m.videoCaption}</div>`:'';
     const extraH=m.extraVideos&&m.extraVideos.length?`<div class="mod-section-title">Further watching</div>${m.extraVideos.map(v=>`<div class="mod-extra-video"><a href="${v.url}" target="_blank" rel="noopener">${v.title} ↗</a><div class="mod-extra-video-desc">${v.desc}</div></div>`).join('')}`:'';
     const qH=m.quiz.length?`<div class="mod-section-title">Reflection quiz — pass all questions to earn your pod +4 points</div><div id="quiz-mod-${m.n}">${m.quiz.map((q,qi)=>`<div class="mod-q"><div class="mod-q-text">${qi+1}. ${q.q}</div><div class="mod-options">${q.opts.map((o,oi)=>`<div class="mod-opt${done?' disabled':''}" onclick="quizAnswer(${m.n},${qi},this,${oi===q.correct})">${o}</div>`).join('')}</div></div>`).join('')}<div class="mod-quiz-result" id="qr-mod-${m.n}" style="display:none"></div>${done?`<div class="mod-done-banner">✓ You completed this module${prog?.completed_at?' on '+new Date(prog.completed_at).toLocaleDateString('en-GB'):''}. Your pod earned +4 points.</div>`:''}</div>`:'';
-    return`<div class="mod-card${done?' open':''}" id="mod-${m.n}"><div class="mod-header" onclick="toggleMod(${m.n})"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">${sb2}<span style="font-size:11px;color:var(--text3);font-weight:600">MODULE ${String(m.n).padStart(2,'0')}</span><span style="font-size:14px;font-weight:500;color:var(--text)">${m.name}</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;color:var(--text3)">${m.weeks}</span><span class="mod-chevron">▼</span></div></div><div class="mod-body" id="modb-${m.n}" style="display:${done?'block':'none'}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px"><span class="badge b-teal">All pods</span><span class="badge b-amber">${m.quiz.length} quiz questions</span><span class="badge b-blue">+4 pts on completion</span></div>${videoHTML}<p class="mod-intro">${m.intro}</p>${m.learns.length?`<div class="mod-section-title">What you will learn</div><div class="mod-learn-grid">${lH}</div>`:''}<div class="mod-section-title">Lesson</div><div class="mod-lesson">${m.lesson}</div>${extraH}${qH}</div></div>`;
+    const isLocked=!unlocked&&!done;
+    return`<div class="mod-card${done?' open':''}${isLocked?' locked':''}" id="mod-${m.n}" style="${isLocked?'opacity:.55':''}"><div class="mod-header" onclick="toggleMod(${m.n})"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">${sb2}<span style="font-size:11px;color:var(--text3);font-weight:600">MODULE ${String(m.n).padStart(2,'0')}</span><span style="font-size:14px;font-weight:500;color:var(--text)">${m.name}${isLocked?' 🔒':''}</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;color:var(--text3)">${m.weeks}</span><span class="mod-chevron">▼</span></div></div><div class="mod-body" id="modb-${m.n}" style="display:${done?'block':'none'}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px"><span class="badge b-teal">All pods</span><span class="badge b-amber">${m.quiz.length} quiz questions</span><span class="badge b-blue">+4 pts on completion</span></div>${videoHTML}<p class="mod-intro">${m.intro}</p>${m.learns.length?`<div class="mod-section-title">What you will learn</div><div class="mod-learn-grid">${lH}</div>`:''}<div class="mod-section-title">Lesson</div><div class="mod-lesson">${m.lesson}</div>${extraH}${qH}</div></div>`;
   }).join('');
 }
 
-function toggleMod(n){const c=document.getElementById('mod-'+n),b=document.getElementById('modb-'+n);if(!c||!b)return;const o=c.classList.toggle('open');b.style.display=o?'block':'none';}
-function goToModule(n){go('modules',document.querySelector('.nav[onclick*="modules"]'));setTimeout(()=>{const c=document.getElementById('mod-'+n),b=document.getElementById('modb-'+n);if(c&&b){c.classList.add('open');b.style.display='block';c.scrollIntoView({behavior:'smooth',block:'start'});}},60);}
-
+function toggleMod(n){
+  const done=userModuleProgress[n]?.quiz_passed;
+  if(!isModuleUnlocked(n)&&!done){
+    showToast(`Module ${n} unlocks on ${getUnlockDateForModule(n)}`);
+    return;
+  }
+  const c=document.getElementById('mod-'+n),b=document.getElementById('modb-'+n);
+  if(!c||!b)return;
+  const o=c.classList.toggle('open');
+  b.style.display=o?'block':'none';
+}
+function goToModule(n){
+  const done=userModuleProgress[n]?.quiz_passed;
+  if(!isModuleUnlocked(n)&&!done){
+    showToast(`Module ${n} unlocks on ${getUnlockDateForModule(n)}`);
+    return;
+  }
+  go('modules',document.querySelector('.nav[onclick*="modules"]'));
+  setTimeout(()=>{
+    const c=document.getElementById('mod-'+n),b=document.getElementById('modb-'+n);
+    if(c&&b){c.classList.add('open');b.style.display='block';c.scrollIntoView({behavior:'smooth',block:'start'});}
+  },60);
+}
 async function quizAnswer(modN,qi,el,correct){
   const key=`m${modN}q${qi}`;if(quizState[key])return;
   quizState[key]={answered:true,correct:correct};
