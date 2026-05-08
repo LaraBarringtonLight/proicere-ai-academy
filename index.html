@@ -906,7 +906,11 @@ async function signUp(){
   document.getElementById('auth-ok').textContent='Account created! Please sign in.';
   setTimeout(()=>switchAuthTab('signin'),2500);
 }
-
+function formatNameFromEmail(email){
+  if(!email)return 'User';
+  const local=email.split('@')[0]||'';
+  return local.split(/[.\-_]/).filter(Boolean).map(part=>part.charAt(0).toUpperCase()+part.slice(1).toLowerCase()).join(' ')||'User';
+}
 function getAIRole(name){
   for(const[pod,data]of Object.entries(podAssignments)){if(data.lead.includes(name))return'Digital Lead';const idx=data.members.indexOf(name);if(idx===1)return'Specialist';if(idx===2)return'Willing Learner';}
   return'Member';
@@ -966,14 +970,13 @@ async function tryLoadAndShow(){
       }
       if(error?.code==='PGRST116'){
         const isAdm=ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((currentUser.email||'').toLowerCase());
-        const{data:np}=await sb.from('profiles').insert({id:currentUser.id,full_name:currentUser.email?.split('@')[0]||'User',email:currentUser.email||'',pod_id:null,role:isAdm?'admin':'member',ai_role:'Member'}).select().single();
+        const{data:np}=await sb.from('profiles').insert({id:currentUser.id,full_name:formatNameFromEmail(currentUser.email),email:currentUser.email||'',pod_id:null,role:isAdm?'admin':'member',ai_role:'Member'}).select().single();
         if(np){currentProfile=np;showApp();showToast('Profile created — set your pod using "Change my pod"');return;}
       }
     }catch(e){console.warn('Profile attempt',attempt+1,e);}
     if(attempt<2)await new Promise(r=>setTimeout(r,1000*(attempt+1)));
   }
-  currentProfile={id:currentUser.id,full_name:currentUser.email?.split('@')[0]||'User',email:currentUser.email||'',pod_id:null,role:ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((currentUser.email||'').toLowerCase())?'admin':'member',ai_role:'Member'};
-  showApp();
+  currentProfile={id:currentUser.id,full_name:formatNameFromEmail(currentUser.email),email:currentUser.email||'',pod_id:null,role:ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((currentUser.email||'').toLowerCase())?'admin':'member',ai_role:'Member'};
 }
 
 async function showApp(){
