@@ -247,6 +247,33 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .vid-info{padding:12px 14px;}
 .vid-title{font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:4px;}
 .vid-meta{font-size:11.5px;color:var(--text3);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.uc-card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:32px;}
+@media(max-width:1100px){.uc-card-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:700px){.uc-card-grid{grid-template-columns:1fr;}}
+
+.uc-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;}
+.uc-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(10,25,60,.08);border-color:var(--border2);}
+
+.uc-stripe{height:5px;flex-shrink:0;}
+.uc-card-body{padding:18px;display:flex;flex-direction:column;gap:10px;flex:1;}
+
+.uc-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.uc-card-title{font-size:14.5px;font-weight:600;color:var(--text);line-height:1.4;flex:1;}
+.uc-card-logo{width:34px;height:34px;border-radius:8px;background:var(--bg3);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--border);overflow:hidden;}
+.uc-card-logo img{width:22px;height:22px;object-fit:contain;}
+.uc-card-logo-fallback{font-size:11px;font-weight:700;color:var(--text2);}
+
+.uc-card-snippet{font-size:12.5px;color:var(--text2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+
+.uc-card-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:10px;border-top:1px solid var(--border);}
+.uc-card-pod{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:500;}
+.uc-card-pod-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+.uc-domain-controls{background:var(--blue);}
+.uc-domain-comms{background:var(--purple);}
+.uc-domain-data{background:var(--red);}
+.uc-domain-reporting{background:var(--amber);}
+.uc-domain-general{background:var(--teal);}
 .honour-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:28px;}
 .honour-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px;position:relative;}
 .honour-edit-btn{position:absolute;top:12px;right:12px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text3);font-size:11px;padding:3px 8px;cursor:pointer;font-family:var(--font);}
@@ -514,13 +541,14 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   <p class="psub" style="margin-bottom:28px">All approved use cases from across the pods.</p>
 <div class="filter-bar">
     <button class="filter-pill active" onclick="filterUC(this,'all')">All</button>
-    <button class="filter-pill" onclick="filterUC(this,'Controls')">Controls</button>
-    <button class="filter-pill" onclick="filterUC(this,'Comms')">Comms</button>
-    <button class="filter-pill" onclick="filterUC(this,'Data')">Data</button>
-    <button class="filter-pill" onclick="filterUC(this,'Reporting')">Reporting</button>
+    <button class="filter-pill" onclick="filterUC(this,'controls')">Controls</button>
+    <button class="filter-pill" onclick="filterUC(this,'comms')">Comms</button>
+    <button class="filter-pill" onclick="filterUC(this,'data')">Data</button>
+    <button class="filter-pill" onclick="filterUC(this,'reporting')">Reporting</button>
+    <button class="filter-pill" onclick="filterUC(this,'general')">General</button>
     <input class="search-input" type="text" placeholder="Search use cases…" oninput="searchUC(this.value)">
   </div>
-  <table class="uc-table"><thead><tr><th style="width:42%">Use case</th><th style="width:12%">Tool</th><th style="width:13%">Time saved</th><th style="width:10%">Pod</th><th style="width:10%">Video</th><th style="width:13%">Status</th></tr></thead><tbody id="uc-body"></tbody></table>
+ <div class="uc-card-grid" id="uc-grid"></div>
 </div>
 
 <div class="page" id="page-prompts">
@@ -1394,13 +1422,44 @@ async function initUCLibrary(){
   const{data}=await sb.from('learning_log').select('*').eq('status','approved').neq('is_failed_experiment',true).order('created_at',{ascending:false});
   allUCData=data||[];renderUCTable();
 }
+function getToolLogo(tool){
+  const t=(tool||'').toLowerCase();
+  if(t.includes('claude'))return{url:'https://upload.wikimedia.org/wikipedia/commons/1/14/Claude_AI_symbol.svg',label:'C'};
+  if(t.includes('chatgpt'))return{url:'https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg',label:'GPT'};
+  if(t.includes('copilot')||t.includes('microsoft'))return{url:'https://upload.wikimedia.org/wikipedia/commons/c/c3/Microsoft_365_Copilot_Icon.svg',label:'M'};
+  if(t.includes('gemini'))return{url:'https://upload.wikimedia.org/wikipedia/commons/8/8a/Google_Gemini_logo.svg',label:'G'};
+  return{url:null,label:'AI'};
+}
+ 
+function inferDomain(uc){
+  const text=((uc.use_case||'')+' '+(uc.what_happened||'')).toLowerCase();
+  if(/risk|control|register|compliance|audit|governance|mitigation/.test(text))return'controls';
+  if(/email|client|meeting|comms|message|update|stakeholder|presentation|deck/.test(text))return'comms';
+  if(/data|spreadsheet|excel|chart|csv|analysis|sql|formula|dax/.test(text))return'data';
+  if(/report|summary|summari|executive|brief|status/.test(text))return'reporting';
+  return'general';
+}
+ 
+const podColours=['var(--blue)','var(--teal)','var(--amber)','var(--purple)','var(--coral)','var(--green)'];
+ 
 function renderUCTable(){
   const rows=allUCData.filter(u=>{
     const ms=!ucSearch||(u.use_case||'').toLowerCase().includes(ucSearch.toLowerCase())||(u.what_happened||'').toLowerCase().includes(ucSearch.toLowerCase());
-    const md=ucFilter==='all'||(u.use_case||'').toLowerCase().includes(ucFilter.toLowerCase())||(u.tool_used||'').toLowerCase().includes(ucFilter.toLowerCase());
+    const md=ucFilter==='all'||inferDomain(u)===ucFilter.toLowerCase()||(u.tool_used||'').toLowerCase().includes(ucFilter.toLowerCase());
     return ms&&md;
   });
-  document.getElementById('uc-body').innerHTML=rows.length?rows.map(u=>`<tr style="cursor:pointer" onclick="openUCDetail('${u.id}')" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background=''"><td><div class="uc-name">${u.use_case}</div><div class="uc-detail">${(u.what_happened||'').slice(0,100)}…</div></td><td><span style="font-size:11.5px">${u.tool_used}</span></td><td><span style="color:var(--teal);font-size:12px">${u.time_saved}</span></td><td><span class="badge b-teal">Pod ${u.pod_id}</span></td><td>${u.video_url?`<a href="${u.video_url}" target="_blank" onclick="event.stopPropagation()" style="font-size:11px;color:var(--blue);text-decoration:none">▶ Watch</a>`:'—'}</td><td><span class="badge b-green">Approved</span></td></tr>`).join(''):'<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text3)">No approved use cases yet.</td></tr>';
+  const grid=document.getElementById('uc-grid');
+  if(!rows.length){
+    grid.innerHTML='<div class="empty-state" style="grid-column:1/-1">No approved use cases match your filters.</div>';
+    return;
+  }
+  grid.innerHTML=rows.map(u=>{
+    const domain=inferDomain(u);
+    const logo=getToolLogo(u.tool_used);
+    const podCol=podColours[((u.pod_id||1)-1)%podColours.length];
+    const logoHtml=logo.url?`<img src="${logo.url}" alt="${u.tool_used||''}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="uc-card-logo-fallback" style="display:none">${logo.label}</div>`:`<div class="uc-card-logo-fallback">${logo.label}</div>`;
+    return`<div class="uc-card" onclick="openUCDetail('${u.id}')"><div class="uc-stripe uc-domain-${domain}"></div><div class="uc-card-body"><div class="uc-card-header"><div class="uc-card-title">${u.use_case||'Use case'}</div><div class="uc-card-logo">${logoHtml}</div></div><div class="uc-card-snippet">${u.what_happened||''}</div><div class="uc-card-meta"><span class="uc-card-pod"><span class="uc-card-pod-dot" style="background:${podCol}"></span>Pod ${u.pod_id||'?'}</span><span class="badge b-teal" style="font-size:10.5px">${u.time_saved||''}</span>${u.confidence_level?`<span class="badge b-amber" style="font-size:10.5px">${u.confidence_level}/5</span>`:''}${u.video_url?`<a href="${u.video_url}" target="_blank" onclick="event.stopPropagation()" style="margin-left:auto;font-size:11px;color:var(--blue);text-decoration:none">▶</a>`:''}</div></div></div>`;
+  }).join('');
 }
 function filterUC(btn,domain){document.querySelectorAll('#page-usecases .filter-pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');ucFilter=domain;renderUCTable();}
 function searchUC(v){ucSearch=v;renderUCTable();}
