@@ -861,8 +861,23 @@ async function savePod(){
   if(!pod){showToast('Please select a pod.');return;}
   const{error}=await sb.from('profiles').update({pod_id:pod}).eq('id',currentUser.id);
   if(error){showToast('Error: '+error.message);return;}
-  currentProfile.pod_id=pod;closePodModal();showToast('Pod updated — refreshing…');
-  setTimeout(()=>location.reload(),1000);
+  currentProfile.pod_id=pod;
+  // Update the lead status if their new pod has them as lead
+  const podName='Pod '+pod;
+  const isLead=podAssignments[podName]?.lead.includes(currentProfile.full_name);
+  const isAdminEmail=ADMIN_EMAILS.map(e=>e.toLowerCase()).includes((currentProfile.email||'').toLowerCase());
+  currentProfile.role=isAdminEmail?'admin':isLead?'lead':'member';
+  currentProfile.ai_role=getAIRole(currentProfile.full_name);
+  closePodModal();
+  // Refresh all UI pieces that depend on pod info, without a full reload
+  document.getElementById('s-role').textContent=currentProfile.role==='admin'?'Admin / Observer':currentProfile.role==='lead'?`Pod ${currentProfile.pod_id} Lead`:`Pod ${currentProfile.pod_id} · ${currentProfile.ai_role||'Member'}`;
+  document.getElementById('s-pod-label').textContent=`Pod ${currentProfile.pod_id} · Cycle 1`;
+  document.getElementById('my-pod-nav-label').textContent=`Pod ${currentProfile.pod_id}`;
+  if(isAdmin())document.getElementById('lead-sec').style.display='';
+  await loadLeaderboard();
+  if(document.getElementById('page-mypod').classList.contains('active'))loadMyPod();
+  if(document.getElementById('page-log').classList.contains('active'))renderWeekSelector();
+  showToast(`Pod updated to Pod ${pod}`);
 }
 
 // ── AUTH ──
@@ -1638,7 +1653,8 @@ async function loadMyPod(){
   try{
     const[{data:logs},{data:chals}]=await Promise.all([sb.from('learning_log').select('*').eq('pod_id',podNum).eq('status','approved').neq('is_failed_experiment',true),sb.from('challenge_submissions').select('*').eq('pod_id',podNum)]);
     document.getElementById('pod-stats').innerHTML=`<div class="stat"><div class="stat-n" style="color:var(--teal)">${logs?.length||0}</div><div class="stat-l">Approved use cases</div></div><div class="stat"><div class="stat-n" style="color:var(--blue)">${chals?.length||0}</div><div class="stat-l">Challenges done</div></div><div class="stat"><div class="stat-n" style="color:var(--purple)">${members.length}</div><div class="stat-l">Members</div></div>`;
-    document.getElementById('pod-usecases').innerHTML=logs?.length?`<div class="sec-label">Approved use cases</div>${logs.map(l=>`<div class="log-entry"><div style="font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:4px">${l.use_case}</div><div style="font-size:13px;color:var(--text2)">${l.what_happened}</div><div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap"><span class="badge b-teal" style="font-size:10px">${l.time_saved}</span><span class="badge b-blue" style="font-size:10px">${l.tool_used}</span></div></div>`).join('')}`:'<div class="empty-state">No approved use cases yet.</div>';
+   logs?.forEach(l=>{if(!allUCData.find(x=>x.id===l.id))allUCData.push(l);});
+    document.getElementById('pod-usecases').innerHTML=logs?.length?`<div class="sec-label">Approved use cases</div>${logs.map(l=>`<div class="log-entry" style="cursor:pointer;transition:all .15s" onclick="openUCDetail('${l.id}')" onmouseover="this.style.borderColor='var(--blue)';this.style.background='var(--bg3)'" onmouseout="this.style.borderColor='var(--border)';this.style.background=''"><div style="font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:4px">${l.use_case}</div><div style="font-size:13px;color:var(--text2)">${l.what_happened}</div><div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap"><span class="badge b-teal" style="font-size:10px">${l.time_saved}</span><span class="badge b-blue" style="font-size:10px">${l.tool_used}</span></div></div>`).join('')}`:'<div class="empty-state">No approved use cases yet.</div>';
   }catch(e){document.getElementById('pod-usecases').innerHTML='<div class="empty-state">Could not load — please refresh.</div>';}
 }
 
