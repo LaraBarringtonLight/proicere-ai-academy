@@ -113,7 +113,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .mod-card.open .mod-chevron{transform:rotate(180deg);}
 .mod-body{padding:20px 24px;border-top:1px solid var(--border);}
 .mod-intro{font-size:13.5px;color:var(--text2);line-height:1.7;margin-bottom:16px;}
-.mod-video-wrap{width:100%;max-width:520px;aspect-ratio:16/9;background:var(--navy);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;margin:0 auto 16px;cursor:pointer;overflow:hidden;}
+.mod-video-wrap{width:100%;max-width:420px;aspect-ratio:16/9;background:var(--navy);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;margin:0 auto 16px;cursor:pointer;overflow:hidden;}
   .mod-video-wrap iframe{width:100%;height:100%;border:0;display:block;border-radius:var(--r);}
   .mod-video-caption{font-size:11.5px;color:var(--text3);margin:-8px 0 20px;text-align:center;font-style:italic;}
   .mod-extra-video{margin:10px 0;padding:12px 14px;background:var(--bg3);border-radius:var(--rs);border-left:3px solid var(--blue);}
@@ -1308,21 +1308,31 @@ function renderHomeModules(){
     return`<div class="module-card${done?' done':locked?' locked':''}" onclick="${locked?`showToast('This module unlocks on ${getUnlockDateForModule(m.n)}')`:`goToModule(${m.n})`}"><div class="module-num">MODULE ${String(m.n).padStart(2,'0')} ${done?'✓':locked?'🔒':''}</div><div class="module-name">${m.name}</div><div class="module-desc">${m.desc}</div><div class="progress-bar"><div class="progress-fill" style="width:${done?100:0}%;background:${done?'var(--teal)':'var(--blue)'}"></div></div><div style="font-size:11px;color:${done?'var(--teal)':locked?'var(--text3)':'var(--blue)'};margin-top:6px">${done?'✓ Complete':locked?'Unlocks '+getUnlockDateForModule(m.n):'Available — click to open'}</div></div>`;
   }).join('');
 }
-
+function getNextToDoModule(){
+  for(let i=1;i<=modulesData.length;i++){
+    const unlocked=isModuleUnlocked(i);
+    const done=userModuleProgress[i]?.quiz_passed;
+    if(unlocked&&!done)return i;
+  }
+  return null; // everything done, or nothing unlocked yet
+}
 function renderModules(){
   const nd=getNextUnlockDate();
   document.getElementById('module-unlock-note').textContent=nd?`Module ${getUnlockedModules().length+1} unlocks automatically on ${nd.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}.`:'All modules are now unlocked.';
   document.getElementById('modules-list').innerHTML=modulesData.map(m=>{
     const done=userModuleProgress[m.n]?.quiz_passed,prog=userModuleProgress[m.n],unlocked=isModuleUnlocked(m.n);
+    const nextToDo=getNextToDoModule();
+    const autoOpen=(m.n===nextToDo);
     const sb2=done?'<span class="badge b-teal">✓ Complete</span>':unlocked?'<span class="badge b-blue">Available now</span>':`<span class="badge" style="background:var(--bg4);color:var(--text3)">Unlocks ${getUnlockDateForModule(m.n)}</span>`;
     const lH=m.learns.map(l=>`<div class="mod-learn-item"><div class="mod-learn-dot"></div><div>${l}</div></div>`).join('');
     const videoHTML=m.videoEmbed?`<div class="mod-video-wrap"><iframe src="${m.videoEmbed}" allowfullscreen></iframe></div>${m.videoCaption?`<div class="mod-video-caption">${m.videoCaption}</div>`:''}`:m.videoCaption?`<div class="mod-extra-video" style="margin:0 0 16px">${m.videoCaption}</div>`:'';
     const extraH=m.extraVideos&&m.extraVideos.length?`<div class="mod-section-title">Further watching</div>${m.extraVideos.map(v=>`<div class="mod-extra-video"><a href="${v.url}" target="_blank" rel="noopener">${v.title} ↗</a><div class="mod-extra-video-desc">${v.desc}</div></div>`).join('')}`:'';
     const qH=m.quiz.length?`<div class="mod-section-title">Reflection quiz — pass all questions to earn your pod +4 points</div><div id="quiz-mod-${m.n}">${m.quiz.map((q,qi)=>`<div class="mod-q"><div class="mod-q-text">${qi+1}. ${q.q}</div><div class="mod-options">${q.opts.map((o,oi)=>`<div class="mod-opt${done?' disabled':''}" onclick="quizAnswer(${m.n},${qi},this,${oi===q.correct})">${o}</div>`).join('')}</div></div>`).join('')}<div class="mod-quiz-result" id="qr-mod-${m.n}" style="display:none"></div>${done?`<div class="mod-done-banner">✓ You completed this module${prog?.completed_at?' on '+new Date(prog.completed_at).toLocaleDateString('en-GB'):''}. Your pod earned +4 points.</div>`:''}</div>`:'';
     const isLocked=!unlocked&&!done;
-    return`<div class="mod-card${done?' open':''}${isLocked?' locked':''}" id="mod-${m.n}" style="${isLocked?'opacity:.55':''}"><div class="mod-header" onclick="toggleMod(${m.n})"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">${sb2}<span style="font-size:11px;color:var(--text3);font-weight:600">MODULE ${String(m.n).padStart(2,'0')}</span><span style="font-size:14px;font-weight:500;color:var(--text)">${m.name}${isLocked?' 🔒':''}</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;color:var(--text3)">${m.weeks}</span><span class="mod-chevron">▼</span></div></div><div class="mod-body" id="modb-${m.n}" style="display:${done?'block':'none'}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px"><span class="badge b-teal">All pods</span><span class="badge b-amber">${m.quiz.length} quiz questions</span><span class="badge b-blue">+4 pts on completion</span></div>${videoHTML}<p class="mod-intro">${m.intro}</p>${m.learns.length?`<div class="mod-section-title">What you will learn</div><div class="mod-learn-grid">${lH}</div>`:''}<div class="mod-section-title">Lesson</div><div class="mod-lesson">${m.lesson}</div>${extraH}${qH}</div></div>`;
+    return`<div class="mod-card${autoOpen?' open':''}${isLocked?' locked':''}" id="mod-${m.n}" style="${isLocked?'opacity:.55':''}"><div class="mod-header" onclick="toggleMod(${m.n})"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">${sb2}<span style="font-size:11px;color:var(--text3);font-weight:600">MODULE ${String(m.n).padStart(2,'0')}</span><span style="font-size:14px;font-weight:500;color:var(--text)">${m.name}${isLocked?' 🔒':''}</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;color:var(--text3)">${m.weeks}</span><span class="mod-chevron">▼</span></div></div><div class="mod-body" id="modb-${m.n}" style="display:${autoOpen?'block':'none'}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px"><span class="badge b-teal">All pods</span><span class="badge b-amber">${m.quiz.length} quiz questions</span><span class="badge b-blue">+4 pts on completion</span></div>${videoHTML}<p class="mod-intro">${m.intro}</p>${m.learns.length?`<div class="mod-section-title">What you will learn</div><div class="mod-learn-grid">${lH}</div>`:''}<div class="mod-section-title">Lesson</div><div class="mod-lesson">${m.lesson}</div>${extraH}${qH}</div></div>`;
   }).join('');
 }
+
 
 function toggleMod(n){
   const done=userModuleProgress[n]?.quiz_passed;
@@ -1366,9 +1376,9 @@ async function checkQuizComplete(modN){
   rEl.textContent=passed?`All ${cc}/${mod.quiz.length} correct — module complete! +4 points added to your pod.`:`${cc}/${mod.quiz.length} correct. Review the highlighted answers above, then refresh the page to try again.`;
   if(passed&&!userModuleProgress[modN]){
     await sb.from('module_progress').upsert({user_id:currentUser.id,module_number:modN,quiz_passed:true,quiz_score:cc,completed_at:new Date().toISOString()},{onConflict:'user_id,module_number'});
-    userModuleProgress[modN]={quiz_passed:true,completed_at:new Date().toISOString()};
-    showToast(`Module ${modN} complete! +4 points added to Pod ${currentProfile.pod_id} 🎉`);
-    renderHomeModules();loadHomeStats();loadLeaderboard();
+      userModuleProgress[modN]={quiz_passed:true,completed_at:new Date().toISOString()};
+      showToast(`Module ${modN} complete! +4 points added to Pod ${currentProfile.pod_id} 🎉`);
+      renderHomeModules();renderModules();loadHomeStats();loadLeaderboard();;
   }
 }
 
