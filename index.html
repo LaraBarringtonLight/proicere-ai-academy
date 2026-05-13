@@ -239,7 +239,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;margin-bottom:28px;}
 .vid-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:all .15s;}
 .vid-card:hover{border-color:var(--border2);transform:translateY(-2px);}
-.vid-thumb{width:100%;aspect-ratio:16/9;background:var(--navy);display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;}
+.vid-thumb{width:100%;aspect-ratio:16/9;background:var(--navy);background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;transition:all .2s;}
+.vid-thumb::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.1) 0%,rgba(0,0,0,.5) 100%);transition:opacity .2s;}
+.vid-card:hover .vid-thumb::before{opacity:.3;}
+.vid-thumb>*{position:relative;z-index:1;}
 .vid-play{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;}
 .vid-card:hover .vid-play{background:rgba(26,107,255,.7);border-color:var(--blue);}
 .vid-tri{width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:13px solid #fff;margin-left:2px;}
@@ -622,7 +625,6 @@ Do not add information not present in the report. Use plain, non-jargon language
 
 [PASTE REPORT TEXT OR UPLOAD PDF]
 <button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div><div class="prompt-note">For very long reports, split into sections and summarise each, then combine.</div></div></div>
-    <div class="add-prompt-card" onclick="showToast('Prompt submission coming soon')">+ Submit a new prompt to the pack</div>
   </div>
 </div>
 
@@ -1039,6 +1041,7 @@ async function showApp(){
   loadCommunityPrompts();
   if(isAdmin())renderChalAdminPanel();
   lbPollInterval=setInterval(()=>{if(document.getElementById('page-leaderboard').classList.contains('active'))loadLeaderboard();},60000);
+  setTimeout(()=>{document.querySelectorAll('#vid-academy-grid .vid-thumb').forEach(t=>{const onclick=t.getAttribute('onclick')||'';const match=onclick.match(/embed\/([^']+)'/);if(match)t.style.backgroundImage=`url('https://img.youtube.com/vi/${match[1]}/hqdefault.jpg')`;});},200);
 }
 
 async function loadModuleProgress(){const{data}=await sb.from('module_progress').select('*').eq('user_id',currentUser.id);userModuleProgress={};(data||[]).forEach(r=>userModuleProgress[r.module_number]=r);}
@@ -1485,23 +1488,35 @@ function searchUC(v){ucSearch=v;renderUCTable();}
 function closeUCModal(){document.getElementById('uc-detail-modal').classList.remove('open');}
   async function openSuccessStory(logEntryId,fallbackTitle){
   if(!logEntryId){showToast('No detail available for this story');return;}
-  const{data,error}=await sb.from('learning_log').select('*').eq('id',logEntryId).single();
-  if(error||!data){showToast('Could not load story details');return;}
-  document.getElementById('ucd-title').textContent=data.use_case||fallbackTitle||'Success story';
-  document.getElementById('ucd-what').textContent=data.what_happened||'';
-  const badges=[];
-  if(data.tool_used)badges.push(`<span class="badge b-blue">${data.tool_used}</span>`);
-  if(data.time_saved)badges.push(`<span class="badge b-teal">${data.time_saved} saved</span>`);
-  if(data.pod_id)badges.push(`<span class="badge b-purple">Pod ${data.pod_id}</span>`);
-  if(data.confidence_level)badges.push(`<span class="badge b-amber">Confidence: ${data.confidence_level}/5</span>`);
-  document.getElementById('ucd-badges').innerHTML=badges.join('');
-  const promptWrap=document.getElementById('ucd-prompt-wrap');
-  if(data.prompt_used){document.getElementById('ucd-prompt').textContent=data.prompt_used;promptWrap.style.display='';}
-  else promptWrap.style.display='none';
-  const videoWrap=document.getElementById('ucd-video-wrap');
-  if(data.video_url){document.getElementById('ucd-video').href=data.video_url;videoWrap.style.display='';}
-  else videoWrap.style.display='none';
-  document.getElementById('uc-detail-modal').classList.add('open');
+  // Navigate to Use Case Library so the source page is visible behind
+  go('usecases',document.querySelector('.nav[onclick*="usecases"]'));
+  // Then open the detail modal on top after a short delay so the page renders first
+  setTimeout(async()=>{
+    const{data,error}=await sb.from('learning_log').select('*').eq('id',logEntryId).single();
+    if(error||!data){showToast('Could not load story details');return;}
+    // Add to allUCData so navigation/highlight works
+    if(!allUCData.find(x=>x.id===data.id))allUCData.push(data);
+    document.getElementById('ucd-title').textContent=data.use_case||fallbackTitle||'Success story';
+    document.getElementById('ucd-what').textContent=data.what_happened||'';
+    const badges=[];
+    if(data.tool_used)badges.push(`<span class="badge b-blue">${data.tool_used}</span>`);
+    if(data.time_saved)badges.push(`<span class="badge b-teal">${data.time_saved} saved</span>`);
+    if(data.pod_id)badges.push(`<span class="badge b-purple">Pod ${data.pod_id}</span>`);
+    if(data.confidence_level)badges.push(`<span class="badge b-amber">Confidence: ${data.confidence_level}/5</span>`);
+    document.getElementById('ucd-badges').innerHTML=badges.join('');
+    const promptWrap=document.getElementById('ucd-prompt-wrap');
+    if(data.prompt_used){document.getElementById('ucd-prompt').textContent=data.prompt_used;promptWrap.style.display='';}
+    else promptWrap.style.display='none';
+    const videoWrap=document.getElementById('ucd-video-wrap');
+    if(data.video_url){document.getElementById('ucd-video').href=data.video_url;videoWrap.style.display='';}
+    else videoWrap.style.display='none';
+    document.getElementById('uc-detail-modal').classList.add('open');
+    // Also scroll to and pulse the card in the library
+    setTimeout(()=>{
+      const card=document.querySelector(`.uc-card[onclick*="${data.id}"]`);
+      if(card){card.scrollIntoView({behavior:'smooth',block:'center'});card.classList.add('row-highlight');setTimeout(()=>card.classList.remove('row-highlight'),2500);}
+    },400);
+  },300);
 }
 function copyUCPrompt(){const t=document.getElementById('ucd-prompt').textContent;if(t)navigator.clipboard.writeText(t).then(()=>showToast('Prompt copied'));}
 
