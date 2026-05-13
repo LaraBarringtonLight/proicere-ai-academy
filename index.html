@@ -355,7 +355,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
       <div class="fld" style="margin-top:12px"><label>Password</label><input type="password" id="su-pw" placeholder="At least 8 characters"></div>
       <div class="fld" style="margin-top:12px">
         <label>Your pod</label>
-        <select id="su-pod"><option value="">— Select your pod —</option><option value="1">Pod 1</option><option value="2">Pod 2</option><option value="3">Pod 3</option><option value="4">Pod 4</option><option value="5">Pod 5</option><option value="6">Pod 6</option><option value="none">No pod (admin / observer)</option></select>
+        <select id="su-pod"><option value="">— Select your pod —</option><option value="1">Pod 1</option><option value="2">Pod 2</option><option value="3">Pod 3</option><option value="4">Pod 4</option><option value="5">Pod 5</option><option value="6">Pod 6</option><option value="7">Pod 7</option><option value="8">Pod 8</option><option value="none">No pod (admin / observer)</option></select>
       </div>
       <button class="auth-btn" style="margin-top:16px" onclick="signUp()" id="su-btn">Create account</button>
     </div>
@@ -400,7 +400,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   <div class="modal-wrap" id="pod-modal"><div class="modal-card" style="max-width:400px">
   <div class="modal-title">Change your pod</div>
   <div class="modal-sub">Contact your Academy Lead if you're unsure which pod you're in.</div>
-  <div class="fld"><label>Select your pod</label><select id="pod-select" class="form-select"><option value="1">Pod 1</option><option value="2">Pod 2</option><option value="3">Pod 3</option><option value="4">Pod 4</option><option value="5">Pod 5</option><option value="6">Pod 6</option></select></div>
+  <div class="fld"><label>Select your pod</label><select id="pod-select" class="form-select"><option value="1">Pod 1</option><option value="2">Pod 2</option><option value="3">Pod 3</option><option value="4">Pod 4</option><option value="5">Pod 5</option><option value="6">Pod 6</option><option value="7">Pod 7</option><option value="8">Pod 8</option></select>
   <div class="modal-actions"><button class="btn-secondary" onclick="closePodModal()">Cancel</button><button class="submit-btn" style="margin:0" onclick="savePod()">Save</button></div>
   </div></div>
  
@@ -484,7 +484,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   <p class="psub">Your internal hub for AI learning, shared knowledge, and practical toolkits — built by the team, for the team.</p>
   <div class="mission-card"><div class="mission-label">Our mission</div><div class="mission-text">"To make every person in the business confident, capable, and responsible in using AI to improve delivery, decision-making, and innovation."</div></div>
   <div class="stats-grid">
-    <div class="stat"><div class="stat-n" style="color:var(--blue)">6</div><div class="stat-l">Active pods</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--blue)">8</div><div class="stat-l">Active pods</div></div>
     <div class="stat"><div class="stat-n" style="color:var(--teal)" id="home-uc-count">0</div><div class="stat-l">Use cases logged</div></div>
     <div class="stat"><div class="stat-n" style="color:var(--purple)">4</div><div class="stat-l">Prompts shared</div></div>
     <div class="stat"><div class="stat-n" style="color:var(--amber)" id="home-mods-count">0</div><div class="stat-l">Modules completed</div></div>
@@ -846,12 +846,14 @@ let currentUser=null,currentProfile=null,selectedRating=0,selectedWeekNum=1,
     challengeStatuses={},wofEntries={},lbPollInterval=null;
 
 const podAssignments={
-  'Pod 1':{lead:['Dan Harland'],members:['Dan Harland','James Amankwaa','Zak Davies']},
-  'Pod 2':{lead:['Adam Myers'],members:['Adam Myers','Lewis Yates','Lara Barrington-Light']},
-  'Pod 3':{lead:['Felipe Flauzino'],members:['Felipe Flauzino','Noel Urbain','Matthew Hanks']},
+  'Pod 1':{lead:['Dan Harland'],members:['Dan Harland','Mohamed Ashaibani','Zak Davies']},
+  'Pod 2':{lead:['James Amankwaa'],members:['James Amankwaa','Adam Myers','Matthew Hanks']},
+  'Pod 3':{lead:['Felipe Flauzino'],members:['Felipe Flauzino','Lewis Yates','Noel Urbain']},
   'Pod 4':{lead:['Daniel Wimpress'],members:['Daniel Wimpress','Thomas Royle','Jacob Maciejewski']},
-  'Pod 5':{lead:['William Finch'],members:['William Finch','Georgia Eaton','Adam Royle-Pryor']},
-  'Pod 6':{lead:['Matthew Seddon'],members:['Matthew Seddon','Dimitrios Savvopoulos','Canice Murray']}
+  'Pod 5':{lead:['Will Finch'],members:['Will Finch','Joseph Sunderland','Georgia Eaton']},
+  'Pod 6':{lead:['Matthew Seddon'],members:['Matthew Seddon','Jamie Mison','Adam Royle-Pryor']},
+  'Pod 7':{lead:['Scott Ferguson'],members:['Scott Ferguson','Ebere Okwor','Canice Murray']},
+  'Pod 8':{lead:['Claudia Lewis'],members:['Claudia Lewis','George Pennells','Dimitrios Savvopoulos']}
 };
 
 const challengesBase=[
@@ -957,7 +959,9 @@ function formatNameFromEmail(email){
   return local.split(/[.\-_]/).filter(Boolean).map(part=>part.charAt(0).toUpperCase()+part.slice(1).toLowerCase()).join(' ')||'User';
 }
 function getAIRole(name){
-  for(const[pod,data]of Object.entries(podAssignments)){if(data.lead.includes(name))return'Digital Lead';const idx=data.members.indexOf(name);if(idx===1)return'Specialist';if(idx===2)return'Willing Learner';}
+  for(const[pod,data]of Object.entries(podAssignments)){
+    if(data.lead.includes(name))return'Pod Lead';
+  }
   return'Member';
 }
 
@@ -1623,7 +1627,7 @@ async function loadLeaderboard(){
   ]);
   const userPodMap={};(allProfiles||[]).forEach(p=>{if(p.pod_id)userPodMap[p.id]=p.pod_id;});
   podData=[];
-  for(let i=1;i<=6;i++){
+  for(let i=1;i<=8;i++){
     const uc=(allLogs||[]).filter(l=>l.pod_id===i&&!l.is_failed_experiment).length;
     const fe=(allLogs||[]).filter(l=>l.pod_id===i&&l.is_failed_experiment).length;
     const ch=(allChals||[]).filter(c=>c.pod_id===i).length;
