@@ -1727,8 +1727,13 @@ async function loadAdminDash(){
 // ── MY POD ──
 async function loadMyPod(){
   const podNum=currentProfile.pod_id;
-  if(!podNum){document.getElementById('mypod-crumb').textContent='proicere-academy / admin';document.getElementById('mypod-title').innerHTML='Admin <span class="hl">Overview</span>';document.getElementById('mypod-content').innerHTML='<p style="color:var(--text2);font-size:13px">As admin you can see all pod data in the Leaderboard and Admin Dashboard.</p>';return;}
-  document.getElementById('mypod-crumb').textContent=`proicere-academy / pod-${podNum}`;
+  if(!podNum){
+    document.getElementById('mypod-crumb').textContent='proicere-academy / admin';
+    document.getElementById('mypod-title').innerHTML='Admin <span class="hl">Overview</span>';
+    document.getElementById('mypod-content').innerHTML='<div class="loading"><div class="spinner"></div>Loading admin overview…</div>';
+    await loadAdminOverview();
+    return;
+  }
   document.getElementById('mypod-title').innerHTML=`Pod <span class="hl">${podNum}</span>`;
   const podName='Pod '+podNum,members=podAssignments[podName]?.members||[];
   const colours=['var(--blue)','var(--teal)','var(--amber)','var(--purple)','var(--coral)','var(--green)'];
@@ -1740,6 +1745,69 @@ async function loadMyPod(){
    logs?.forEach(l=>{if(!allUCData.find(x=>x.id===l.id))allUCData.push(l);});
     document.getElementById('pod-usecases').innerHTML=logs?.length?`<div class="sec-label">Approved use cases</div>${logs.map(l=>`<div class="log-entry" style="cursor:pointer;transition:all .15s" onclick="openUCDetail('${l.id}')" onmouseover="this.style.borderColor='var(--blue)';this.style.background='var(--bg3)'" onmouseout="this.style.borderColor='var(--border)';this.style.background=''"><div style="font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:4px">${l.use_case}</div><div style="font-size:13px;color:var(--text2)">${l.what_happened}</div><div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap"><span class="badge b-teal" style="font-size:10px">${l.time_saved}</span><span class="badge b-blue" style="font-size:10px">${l.tool_used}</span></div></div>`).join('')}`:'<div class="empty-state">No approved use cases yet.</div>';
   }catch(e){document.getElementById('pod-usecases').innerHTML='<div class="empty-state">Could not load — please refresh.</div>';}
+}
+  async function loadAdminOverview(){
+  try{
+    const[{data:profiles},{data:logs},{data:chals},{data:mods},{count:pendingCount}]=await Promise.all([
+      sb.from('profiles').select('id,full_name,pod_id,role'),
+      sb.from('learning_log').select('*,profiles!learning_log_user_id_fkey(full_name)').order('created_at',{ascending:false}).limit(20),
+      sb.from('challenge_submissions').select('*,profiles(full_name)').order('created_at',{ascending:false}).limit(10),
+      sb.from('module_progress').select('*,profiles(full_name)').eq('quiz_passed',true).order('completed_at',{ascending:false}).limit(10),
+      sb.from('learning_log').select('*',{count:'exact',head:true}).eq('status','pending')
+    ]);
+    const P=profiles||[],L=logs||[],C=chals||[],M=mods||[];
+    const colours=['var(--blue)','var(--teal)','var(--amber)','var(--purple)','var(--coral)','var(--green)','var(--red)','var(--gold)'];
+    
+    // 8-pod snapshot
+    const podStats=Array.from({length:8},(_,i)=>{
+      const n=i+1;
+      const podMembers=P.filter(p=>p.pod_id===n);
+      const uc=L.filter(l=>l.pod_id===n&&l.status==='approved'&&!l.is_failed_experiment).length;
+      const fe=L.filter(l=>l.pod_id===n&&l.is_failed_experiment).length;
+      const ch=C.filter(c=>c.pod_id===n).length;
+      const mo=M.filter(m=>podMembers.some(p=>p.id===m.user_id)).length;
+      const points=uc*5+mo*4+ch*3+fe*2;
+      const lead=podAssignments['Pod '+n]?.lead[0]||'—';
+      return{n,members:podMembers.length,points,uc,ch,mo,lead};
+    });
+    
+    const podGrid=podStats.map((p,i)=>`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px"><div style="width:10px;height:10px;border-radius:50%;background:${colours[i]}"></div><div style="font-size:13px;font-weight:600;color:var(--text)">Pod ${p.n}</div></div><div style="font-size:14px;font-weight:600;color:var(--text)">${p.points} pts</div></div><div style="font-size:11.5px;color:var(--text3);margin-bottom:8px">Lead: ${p.lead}</div><div style="display:flex;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--text2)"><span>${p.members}/3 members</span><span>·</span><span>${p.uc} use cases</span><span>·</span><span>${p.ch} challenges</span><span>·</span><span>${p.mo} modules</span></div></div>`).join('');
+    
+    // Recent activity feed - combine logs, challenges, modules into one sorted feed
+    const activity=[];
+    L.slice(0,10).forEach(l=>{
+      const action=l.status==='approved'?'submitted an approved use case':l.status==='pending'?'submitted a learning log':l.status==='rejected'?'had a learning log not approved':'logged a failed experiment';
+      activity.push({date:l.created_at,who:l.profiles?.full_name||'Someone',pod:l.pod_id,what:action,detail:l.use_case,colour:l.is_failed_experiment?'var(--amber)':l.status==='approved'?'var(--teal)':l.status==='rejected'?'var(--red)':'var(--blue)'});
+    });
+    C.slice(0,10).forEach(c=>{activity.push({date:c.created_at,who:c.profiles?.full_name||'Someone',pod:c.pod_id,what:'completed a challenge',detail:c.task_description?.slice(0,80)+'…',colour:'var(--purple)'});});
+    M.slice(0,10).forEach(m=>{const member=P.find(p=>p.id===m.user_id);activity.push({date:m.completed_at,who:m.profiles?.full_name||member?.full_name||'Someone',pod:member?.pod_id,what:`passed Module ${m.module_number}`,detail:modulesData.find(md=>md.n===m.module_number)?.name||'',colour:'var(--green)'});});
+    activity.sort((a,b)=>new Date(b.date)-new Date(a.date));
+    const feed=activity.slice(0,12).map(a=>`<div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)"><div style="width:6px;height:6px;border-radius:50%;background:${a.colour};margin-top:8px;flex-shrink:0"></div><div style="flex:1;min-width:0"><div style="font-size:13px;color:var(--text);margin-bottom:2px"><strong>${a.who}</strong>${a.pod?` <span style="color:var(--text3);font-size:11.5px">(Pod ${a.pod})</span>`:''} ${a.what}</div>${a.detail?`<div style="font-size:11.5px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.detail}</div>`:''}</div><div style="font-size:11px;color:var(--text3);white-space:nowrap;flex-shrink:0">${new Date(a.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div></div>`).join('');
+    
+    // Top-line stats
+    const totalMembers=P.filter(p=>p.pod_id).length;
+    const totalSignups=P.length;
+    const totalUC=L.filter(l=>l.status==='approved'&&!l.is_failed_experiment).length;
+    
+    document.getElementById('mypod-content').innerHTML=`
+      <div class="stats-grid">
+        <div class="stat"><div class="stat-n" style="color:var(--blue)">${totalSignups}</div><div class="stat-l">Total signups</div></div>
+        <div class="stat"><div class="stat-n" style="color:var(--teal)">${totalMembers}/24</div><div class="stat-l">In a pod</div></div>
+        <div class="stat"><div class="stat-n" style="color:var(--amber)">${pendingCount||0}</div><div class="stat-l">Pending approvals</div></div>
+        <div class="stat"><div class="stat-n" style="color:var(--purple)">${totalUC}</div><div class="stat-l">Approved use cases</div></div>
+      </div>
+      ${pendingCount?`<div style="background:var(--amber-bg);border:1px solid rgba(212,130,10,.25);border-radius:var(--r);padding:14px 18px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><div style="font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:2px">⏳ ${pendingCount} pending ${pendingCount===1?'entry':'entries'} awaiting review</div><div style="font-size:12px;color:var(--text2)">Approve to add to the use case library and award pod points.</div></div><button class="submit-btn" style="background:var(--amber);margin:0" onclick="go('approvals',document.querySelector('.nav[onclick*=approvals]'))">Review →</button></div>`:''}
+      <div class="sec-label">Pod snapshot</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:28px">${podGrid}</div>
+      <div class="sec-label">Recent activity</div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:4px 18px">
+        ${feed||'<div style="padding:20px 0;text-align:center;color:var(--text3);font-size:13px">No activity yet — once people start submitting, you\\'ll see it here.</div>'}
+      </div>
+    `;
+  }catch(e){
+    console.warn('Admin overview load:',e);
+    document.getElementById('mypod-content').innerHTML='<div class="empty-state">Could not load overview \u2014 try refreshing.</div>';
+  }
 }
 
 // ── TUTORIALS ──
